@@ -1,0 +1,89 @@
+package views
+
+import (
+	"playword/internal/adapters/index/lookup"
+	"playword/internal/domain/entry"
+)
+
+templ DictionaryPage(m DictModel) {
+	@Layout(dictTitle(m.Query), "dict", m.Page) {
+		<form class="search-form" action="/dictionary" method="get" role="search">
+			@langSwitch("/dictionary", m.Query, string(m.Lang))
+			if isEN(m.Lang) {
+				<input type="hidden" name="lang" value="en"/>
+			}
+			<div class="qbox">
+				<input
+					id="dq"
+					name="q"
+					type="search"
+					value={ m.Query }
+					placeholder="Tra từ… gõ không dấu hay telex đều được"
+					aria-label="Từ cần tra"
+					autocomplete="off"
+					autocapitalize="off"
+					spellcheck="false"
+					enterkeyhint="search"
+					role="combobox"
+					aria-controls="suggest"
+					aria-expanded="false"
+					hx-get="/dictionary/suggest"
+					hx-include="closest form"
+					hx-trigger="keyup changed delay:150ms, search"
+					hx-target="#suggest"
+					hx-swap="innerHTML"
+					hx-sync="this:replace"
+					autofocus
+				/>
+			</div>
+			<div id="suggest" class="suggest" role="listbox"></div>
+		</form>
+		<p class="small muted">Thiếu slang? <a href="/slang/new">Đóng góp một từ</a></p>
+		if m.Error != "" {
+			<p class="msg err">{ m.Error }</p>
+		}
+		if m.Entry != nil {
+			<article class="entry">
+				<h1>{ m.Entry.Headword }</h1>
+				@Definition(m.Entry)
+			</article>
+		} else if m.Query != "" {
+			<p class="msg">Không có mục “{ m.Query }”.</p>
+			if len(m.Suggestions) > 0 {
+				<h2 class="sub">Có phải bạn muốn tìm</h2>
+				<div class="list">
+					@Suggestions(m.Lang, m.Suggestions)
+				</div>
+			}
+			if len(m.Meanings) > 0 {
+				<h2 class="sub">Xuất hiện trong phần nghĩa</h2>
+				<div class="list">
+					for _, e := range m.Meanings {
+						<a class="sg" href={ templ.URL(dictURLLang(e.Lang, e.Headword)) }>
+							<span class="sg-word">{ e.Headword }</span>
+							<span class="sg-gloss">{ firstSense(e).Gloss }</span>
+						</a>
+					}
+				</div>
+			}
+		}
+	}
+}
+
+templ Suggestions(lang entry.Lang, list []lookup.Suggestion) {
+	for _, s := range list {
+		<a class="sg" role="option" href={ templ.URL(dictURLLang(lang, s.Entry.Word)) }>
+			<span class="sg-word">
+				if a, b := splitHL(s.Entry.Word, s.HL); a != "" {
+					<mark>{ a }</mark>{ b }
+				} else {
+					{ b }
+				}
+			</span>
+			<span class="sg-gloss">{ s.Entry.Gloss() }</span>
+			if s.Fuzzy() {
+				<span class="b">gần đúng</span>
+			}
+		</a>
+	}
+}

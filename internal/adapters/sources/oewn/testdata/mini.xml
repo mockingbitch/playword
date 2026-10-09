@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LexicalResource>
+  <Lexicon id="oewn" language="en">
+    <LexicalEntry id="oewn-money-n">
+      <Lemma writtenForm="money" partOfSpeech="n"/>
+      <Sense id="s1" synset="oewn-1-n"/>
+      <Sense id="s2" synset="oewn-2-n"/>
+    </LexicalEntry>
+    <LexicalEntry id="oewn-honey-n">
+      <Lemma writtenForm="honey" partOfSpeech="n"/>
+      <Sense id="s3" synset="oewn-3-n"/>
+    </LexicalEntry>
+    <LexicalEntry id="oewn-honey-v">
+      <Lemma writtenForm="honey" partOfSpeech="v"/>
+      <Sense id="s4" synset="oewn-4-v"/>
+    </LexicalEntry>
+    <LexicalEntry id="oewn-kick_the_bucket-v">
+      <Lemma writtenForm="kick the bucket" partOfSpeech="v"/>
+      <Sense id="s5" synset="oewn-5-v"/>
+    </LexicalEntry>
+    <LexicalEntry id="oewn-orphan-n">
+      <Lemma writtenForm="orphan" partOfSpeech="n"/>
+      <Sense id="s6" synset="oewn-missing-n"/>
+    </LexicalEntry>
+    <Synset id="oewn-1-n" partOfSpeech="n"><Definition>the most common medium of exchange</Definition><Example>he has money to burn</Example></Synset>
+    <Synset id="oewn-2-n" partOfSpeech="n"><Definition>wealth reckoned in terms of money</Definition></Synset>
+    <Synset id="oewn-3-n" partOfSpeech="n"><Definition>a sweet yellow liquid produced by bees</Definition></Synset>
+    <Synset id="oewn-4-v" partOfSpeech="v"><Definition>sweeten with honey</Definition></Synset>
+    <Synset id="oewn-5-v" partOfSpeech="v"><Definition>die</Definition><Example>he kicked the bucket</Example></Synset>
+  </Lexicon>
+</LexicalResource>

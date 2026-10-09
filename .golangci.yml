@@ -1,0 +1,19 @@
+version: "2"
+linters:
+  enable: [errcheck, govet, staticcheck, gocritic, revive, unused, ineffassign]
+  settings:
+    errcheck:
+      # Deliberately ignored: closing read-only files/bodies (nothing to lose)
+      # and printing CLI output to stdout.
+      exclude-functions:
+        - (io.Closer).Close
+        - (*os.File).Close
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - io.WriteString
+  exclusions:
+    rules:
+      # Methods implementing ports.AccountStore / SlangStore are documented on the interface.
+      - path: (internal/app/apptest/|internal/adapters/postgres/(accounts|slang|analytics)\.go)
+        linters: [revive]
+        text: "exported method"

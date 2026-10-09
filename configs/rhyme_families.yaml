@@ -1,0 +1,34 @@
+# Playword — họ vần cho L2.5 / L3.  ĐỀ XUẤT M0, chờ duyệt.
+# Mã nucleus/coda: xem docs/adr/ADR-001 §2. Loader kiểm tra lúc khởi động (fail-fast):
+#   - mỗi mã nucleus / coda thuộc đúng MỘT họ, không thiếu mã nào;
+#   - cặp chéo chỉ dùng mã coda hợp lệ; in ra các lớp sau khi gộp bắc cầu.
+version: 1
+
+nucleus_families:
+  A*:  [A, AW, AA]        # a · ă · â
+  E*:  [E, EE]            # e · ê
+  I*:  [I, IE]            # i/y · iê
+  O*:  [O, OO]            # o · ô
+  U*:  [U, UO]            # u · uô
+  OW*: [OW, UW, UOW]      # ơ · ư · ươ
+
+coda_families:
+  N*:  [n, ng, nh, m]     # mũi
+  T*:  [t, k, ch, p]      # tắc
+  J*:  [j]                # -i/-y
+  W*:  [w]                # -o/-u
+  "Ø*": [""]              # mở — đổi tên từ "O*" của spec để không trùng họ nucleus O*
+
+# L2.5 "rap-flex": nucleus cùng họ + coda cùng lớp chéo (union-find, BẮC CẦU).
+cross_coda_equivalents:
+  # Q1 = A (mặc định đang dùng): BỎ [j, n] vì nó làm "ngày mai" (mai = A.j) khớp
+  # "ngày tàn" (tàn = A.n) ở L2.5, trái ca test §7. "may mắn" không cần cặp này.
+  - [w, m]
+  - [n, ng]  # chủ sản phẩm duyệt 2026-10-08: "ngày tàn" ~ "chạy làng" ở L2.5
+
+# Q2: cách dựng lớp coda ở L3 để L2.5 ⊂ L3.
+#   merged   — họ coda GỘP thêm cặp chéo → với cấu hình trên còn 4 lớp:
+#              Ø*  T*  J*  N*+W* = {m,n,ng,nh,w}                     (đề xuất, đang dùng)
+#   families — đúng như spec (L2.5 ⊄ L3; tìm ở L3 phải tra thêm L2.5, cụm nhiều âm
+#              tiết khớp lẫn mức sẽ bị sót)
+l3_coda_mode: merged

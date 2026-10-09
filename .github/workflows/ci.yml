@@ -1,0 +1,78 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version-file: go.mod}
+      - uses: golangci/golangci-lint-action@v8
+        with: {version: latest}
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_USER: playword, POSTGRES_PASSWORD: playword, POSTGRES_DB: playword}
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U playword" --health-interval 2s --health-retries 30
+    env:
+      PLAYWORD_TEST_DATABASE_URL: postgres://playword:playword@localhost:5432/playword?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version-file: go.mod}
+      - name: generated code is up to date
+        run: |
+          go tool templ generate
+          docker run --rm -v "$PWD":/src -w /src sqlc/sqlc:1.30.0 diff
+          git diff --exit-code
+      - run: go test -race -count=1 ./...
+      - name: domain coverage
+        run: go test -cover ./pkg/... ./internal/domain/...
+
+  bench:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env: {PLAYWORD_BENCH_ENTRIES: "100000"}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-go@v5
+        with: {go-version-file: go.mod}
+      # Base and head run on the same runner, so the 30% gate compares like with like.
+      - name: base
+        run: |
+          git worktree add ../base "origin/${{ github.base_ref }}"
+          (cd ../base && go test ./internal/adapters/index/rhymeindex -run '^$' -bench 'Lookup' -count 5 -timeout 30m) | tee base.txt
+      - name: head
+        run: go test ./internal/adapters/index/rhymeindex -run '^$' -bench 'Lookup' -count 5 -timeout 30m | tee head.txt
+      - run: go run ./scripts/benchgate -max 0.30 base.txt head.txt
+
+  image:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name == 'push' }}
+          build-args: VERSION=${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

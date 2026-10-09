@@ -1,0 +1,188 @@
+package views
+
+import "net/url"
+
+type AuthModel struct {
+	Page     Page
+	Register bool
+	Email    string
+	Name     string
+	Next      string
+	Error     string
+	Providers []string // enabled sign-in providers ("google")
+}
+
+templ AuthPage(m AuthModel) {
+	@Layout(authTitle(m.Register), "login", m.Page) {
+		<section class="card narrow">
+			<h1>{ authTitle(m.Register) }</h1>
+			if m.Error != "" {
+				<p class="msg err" role="alert">{ m.Error }</p>
+			}
+			if len(m.Providers) > 0 {
+				<div class="stack oauth">
+					for _, p := range m.Providers {
+						<a class="btn oauth-btn" href={ templ.URL(oauthURL(p, m.Next)) }>{ providerLabel(p) }</a>
+					}
+				</div>
+				<p class="divider muted small"><span>hoặc dùng email</span></p>
+			}
+			<form method="post" action={ templ.URL(authAction(m.Register)) } class="stack">
+				@csrfField(m.Page)
+				<input type="hidden" name="next" value={ m.Next }/>
+				<label>Email <input name="email" type="email" value={ m.Email } autocomplete="email" required/></label>
+				if m.Register {
+					<label>Tên hiển thị <span class="muted">(tuỳ chọn)</span> <input name="name" value={ m.Name } maxlength="60" autocomplete="nickname"/></label>
+				}
+				<label>
+					Mật khẩu
+					<input name="password" type="password" minlength="10" required autocomplete={ passwordAutocomplete(m.Register) }/>
+				</label>
+				if m.Register {
+					<p class="muted small">Ít nhất 10 ký tự. Sổ tạm bạn đã lưu khi chưa đăng nhập sẽ được chuyển vào tài khoản.</p>
+				}
+				<button class="btn primary" type="submit">{ authTitle(m.Register) }</button>
+			</form>
+			<p class="muted small">
+				if m.Register {
+					Đã có tài khoản? <a href={ templ.URL("/login?next=" + m.Next) }>Đăng nhập</a>
+				} else {
+					Chưa có tài khoản? <a href={ templ.URL("/register?next=" + m.Next) }>Đăng ký</a>
+				}
+			</p>
+		</section>
+	}
+}
+
+type MeModel struct {
+	Page    Page
+	Message string
+	Error   string
+}
+
+templ MePage(m MeModel) {
+	@Layout("Tài khoản — Playword", "me", m.Page) {
+		<section class="card">
+			<h1>Tài khoản</h1>
+			<p class="muted">{ m.Page.User.Email }</p>
+			if m.Message != "" {
+				<p class="msg ok" role="status">{ m.Message }</p>
+			}
+			if m.Error != "" {
+				<p class="msg err" role="alert">{ m.Error }</p>
+			}
+			<form method="post" action="/me" class="stack">
+				@csrfField(m.Page)
+				<label>Tên hiển thị <input name="name" value={ m.Page.User.DisplayName } maxlength="60"/></label>
+				<label>
+					Ngôn ngữ mặc định
+					<select name="lang">
+						for _, o := range langOptions {
+							<option value={ o.Value } selected?={ o.Value == m.Page.User.DefaultLang }>{ o.Label }</option>
+						}
+					</select>
+				</label>
+				<label>
+					Giọng mặc định
+					<select name="dialect">
+						for _, o := range dialectOptions {
+							<option value={ o.Value } selected?={ o.Value == m.Page.User.DefaultDialect }>{ o.Label }</option>
+						}
+					</select>
+				</label>
+				<label>
+					Mức chặt mặc định
+					<select name="level">
+						for _, o := range append(append([]option{}, levelOptions...), enLevelOptions...) {
+							<option value={ o.Value } selected?={ o.Value == m.Page.User.DefaultLevel }>{ o.Label }</option>
+						}
+					</select>
+				</label>
+				<button class="btn primary" type="submit">Lưu cài đặt</button>
+			</form>
+		</section>
+		<section class="card">
+			<form method="post" action="/logout">
+				@csrfField(m.Page)
+				<button class="btn" type="submit">Đăng xuất</button>
+			</form>
+		</section>
+		<section class="card">
+			<h2>Đăng nhập</h2>
+			if len(m.Page.User.Providers) > 0 {
+				<p class="muted small">
+					Đã liên kết:
+					for i, p := range m.Page.User.Providers {
+						if i > 0 {
+							{ ", " }
+						}
+						<strong>{ providerName(p) }</strong>
+					}
+				</p>
+			}
+			<form method="post" action="/me/password" class="stack">
+				@csrfField(m.Page)
+				if m.Page.User.HasPassword {
+					<label>Mật khẩu hiện tại <input name="current" type="password" required autocomplete="current-password"/></label>
+					<label>Mật khẩu mới <input name="password" type="password" minlength="10" required autocomplete="new-password"/></label>
+					<button class="btn" type="submit">Đổi mật khẩu</button>
+				} else {
+					<p class="muted small">Tài khoản chưa có mật khẩu. Đặt mật khẩu để đăng nhập bằng email ngoài Google.</p>
+					<label>Mật khẩu <input name="password" type="password" minlength="10" required autocomplete="new-password"/></label>
+					<button class="btn" type="submit">Đặt mật khẩu</button>
+				}
+			</form>
+		</section>
+		<section class="card danger">
+			<h2>Xoá tài khoản</h2>
+			<p class="muted small">Xoá vĩnh viễn tài khoản và mọi sổ vần. Lịch sử tra cứu được ẩn danh hoá.</p>
+			<form method="post" action="/me/delete" class="stack">
+				@csrfField(m.Page)
+				if m.Page.User.HasPassword {
+					<label>Nhập mật khẩu để xác nhận <input name="password" type="password" required autocomplete="current-password"/></label>
+				} else {
+					<label>Nhập email <strong>{ m.Page.User.Email }</strong> để xác nhận <input name="password" type="email" required autocomplete="off"/></label>
+				}
+				<button class="btn danger" type="submit">Xoá tài khoản</button>
+			</form>
+		</section>
+	}
+}
+
+func authTitle(register bool) string {
+	if register {
+		return "Đăng ký"
+	}
+	return "Đăng nhập"
+}
+
+func authAction(register bool) string {
+	if register {
+		return "/register"
+	}
+	return "/login"
+}
+
+func passwordAutocomplete(register bool) string {
+	if register {
+		return "new-password"
+	}
+	return "current-password"
+}
+
+func oauthURL(provider, next string) string {
+	u := "/auth/" + url.PathEscape(provider)
+	if next != "" && next != "/" {
+		u += "?next=" + url.QueryEscape(next)
+	}
+	return u
+}
+
+func providerName(p string) string {
+	if p == "google" {
+		return "Google"
+	}
+	return p
+}
+
+func providerLabel(p string) string { return "Tiếp tục với " + providerName(p) }

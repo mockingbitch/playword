@@ -1,0 +1,18 @@
+version: "2"
+sql:
+  - engine: postgresql
+    schema: migrations
+    queries: [internal/adapters/postgres/queries.sql, internal/adapters/postgres/accounts.sql, internal/adapters/postgres/slang.sql, internal/adapters/postgres/analytics.sql]
+    gen:
+      go:
+        package: db
+        out: internal/adapters/postgres/db
+        sql_package: pgx/v5
+        emit_empty_slices: true
+        overrides:
+          - db_type: uuid
+            go_type: string
+          - db_type: citext
+            go_type: string
+          - db_type: pg_catalog.interval
+            go_type: time.Duration

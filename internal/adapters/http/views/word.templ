@@ -1,0 +1,44 @@
+package views
+
+import (
+	"playword/internal/adapters/index/rhymeindex"
+	"playword/internal/domain/entry"
+)
+
+// Definition is the inline (HTMX) definition of an entry.
+templ Definition(e *rhymeindex.Entry) {
+	<div class="defbody">
+		<ol class="senses">
+			for _, s := range e.Senses {
+				<li>
+					if s.POS != "" {
+						<span class="pos">{ s.POS }</span>
+					}
+					{ s.Gloss }
+					for _, ex := range s.Examples {
+						<span class="ex">{ ex }</span>
+					}
+				</li>
+			}
+		</ol>
+		<p class="meta">
+			Nguồn: { e.Source }
+			if e.Confidence > 0 && e.Confidence < 1 {
+				· <span title="Phát âm suy ra từ gốc từ">phát âm suy ra</span>
+			}
+			if !e.RhymeError {
+				· <a href={ templ.URL(rhymeURLLang(e.Lang, e.Headword)) }>Tìm vần cho “{ e.Headword }”</a>
+			}
+			· <a href={ templ.URL(dictURLLang(e.Lang, e.Headword)) }>Mở trong từ điển</a>
+		</p>
+	</div>
+}
+
+templ WordPage(pc Page, lang entry.Lang, e *rhymeindex.Entry) {
+	@Layout(e.Headword+" — Playword", "dict", pc) {
+		<article class="entry">
+			<h1>{ e.Headword }</h1>
+			@Definition(e)
+		</article>
+	}
+}

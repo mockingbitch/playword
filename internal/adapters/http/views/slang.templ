@@ -1,0 +1,106 @@
+package views
+
+import (
+	"playword/internal/domain/slang"
+	"strconv"
+)
+
+type SlangModel struct {
+	Page    Page
+	Sub     slang.Submission
+	Message string
+	Error   string
+}
+
+templ SlangNewPage(m SlangModel) {
+	@Layout("Đóng góp slang — Playword", "dict", m.Page) {
+		<section class="card">
+			<h1>Đóng góp slang</h1>
+			<p class="muted small">Slang được admin duyệt trước khi xuất hiện trong kết quả. Với từ mượn, ghi thêm cách đọc theo âm Việt để từ đó gieo vần được, ví dụ <em>chill → chiu</em>.</p>
+			if m.Message != "" {
+				<p class="msg ok" role="status">{ m.Message }</p>
+			}
+			if m.Error != "" {
+				<p class="msg err" role="alert">{ m.Error }</p>
+			}
+			<form method="post" action="/slang/new" class="stack">
+				@csrfField(m.Page)
+				<label>Từ / cụm <input name="headword" value={ m.Sub.Headword } maxlength="60" required/></label>
+				<label>
+					Ngôn ngữ
+					<select name="lang">
+						for _, o := range langOptions {
+							<option value={ o.Value } selected?={ o.Value == string(m.Sub.Lang) }>{ o.Label }</option>
+						}
+					</select>
+				</label>
+				<label>Nghĩa <textarea name="gloss" maxlength="500" required>{ m.Sub.Gloss }</textarea></label>
+				<label>Ví dụ <span class="muted">(tuỳ chọn)</span> <input name="example" value={ m.Sub.Example } maxlength="500"/></label>
+				<label>Cách đọc theo âm Việt <span class="muted">(cho từ mượn, tuỳ chọn)</span> <input name="respelling" value={ m.Sub.Respelling } maxlength="60"/></label>
+				<button class="btn primary" type="submit">Gửi</button>
+			</form>
+		</section>
+	}
+}
+
+type AdminSlangModel struct {
+	Page   Page
+	Status string
+	Subs   []slang.Submission
+	Error  string
+}
+
+templ AdminSlangPage(m AdminSlangModel) {
+	@Layout("Duyệt slang — Playword", "admin", m.Page) {
+		<h1 class="page-title">Duyệt slang</h1>
+		@adminNav("slang")
+		<nav class="langs">
+			for _, st := range []string{"pending", "approved", "rejected"} {
+				<a class={ "chip", templ.KV("on", st == m.Status) } href={ templ.URL("/admin/slang?status=" + st) }>{ st }</a>
+			}
+		</nav>
+		if m.Error != "" {
+			<p class="msg err">{ m.Error }</p>
+		}
+		if len(m.Subs) == 0 {
+			<p class="msg">Không có mục nào.</p>
+		}
+		<ul class="items">
+			for _, s := range m.Subs {
+				@AdminSlangRow(s, "")
+			}
+		</ul>
+	}
+}
+
+templ AdminSlangRow(s slang.Submission, msg string) {
+	<li class="item" id={ "sub-" + strconv.FormatInt(s.ID, 10) }>
+		<div class="item-body">
+			<span class="item-text">{ s.Headword } <span class="b">{ string(s.Lang) }</span></span>
+			<span>{ s.Gloss }</span>
+			if s.Example != "" {
+				<span class="ex">{ s.Example }</span>
+			}
+			if s.Respelling != "" {
+				<span class="muted small">đọc: { s.Respelling }</span>
+			}
+			<span class="muted small">{ s.SubmittedBy } · { s.CreatedAt.Format("02/01 15:04") } · { s.Status }</span>
+			if msg != "" {
+				<span class="msg err small">{ msg }</span>
+			}
+		</div>
+		if s.Status == "pending" {
+			<div class="row-actions">
+				<button class="btn primary" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/approve" } hx-target="closest li" hx-swap="outerHTML">Duyệt</button>
+				<button class="btn" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/reject" } hx-target="closest li" hx-swap="outerHTML">Bỏ</button>
+			</div>
+		}
+	</li>
+}
+
+templ adminNav(active string) {
+	<nav class="langs" aria-label="Admin">
+		<a class={ "chip", templ.KV("on", active == "dashboard") } href="/admin/dashboard">Dashboard</a>
+		<a class={ "chip", templ.KV("on", active == "slang") } href="/admin/slang">Slang</a>
+	</nav>
+}

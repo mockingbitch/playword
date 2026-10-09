@@ -1,0 +1,237 @@
+package views
+
+import (
+	"playword/internal/app"
+	"playword/internal/domain/analytics"
+	"strconv"
+)
+
+type DashboardModel struct {
+	Page   Page
+	O      *app.Overview
+	Window string
+	Error  string
+}
+
+templ DashboardPage(m DashboardModel) {
+	@Layout("Dashboard — Playword", "admin", m.Page) {
+		<h1 class="page-title">Dashboard</h1>
+		@adminNav("dashboard")
+		<nav class="langs" aria-label="Khoảng thời gian">
+			for _, w := range []string{"7d", "30d", "90d"} {
+				<a class={ "chip", templ.KV("on", w == m.Window) } href={ templ.URL("/admin/dashboard?window=" + w) }>{ w }</a>
+			}
+			<a class="chip ghost" href={ templ.URL("/api/v1/admin/dashboard/export.csv?window=" + m.Window) }>CSV</a>
+			<a class="chip ghost" href="/admin/users">Người dùng</a>
+		</nav>
+		@DashboardBody(m)
+	}
+}
+
+// DashboardBody refreshes itself every minute (spec: hx-trigger every 60s).
+templ DashboardBody(m DashboardModel) {
+	<div id="dash" hx-get={ "/admin/dashboard?window=" + m.Window } hx-trigger="every 60s" hx-select="#dash" hx-swap="outerHTML">
+		if m.Error != "" {
+			<p class="msg err">{ m.Error }</p>
+		} else {
+			@summaryTiles(m.O.Summary)
+			<div class="grid2">
+				@dailyChart("Người dùng hoạt động mỗi ngày", m.O.Daily, func(d analytics.Day) int64 { return d.Actives }, "người")
+				@dailyChart("Lượt tìm vần mỗi ngày", m.O.Daily, func(d analytics.Day) int64 { return d.Searches }, "lượt")
+			</div>
+			<section class="card">
+				<h2>Người ta đang tra gì nhiều lên</h2>
+				<p class="muted small">7 ngày qua so với 30 ngày trước đó (quy về mỗi tuần). Cập nhật 10 phút một lần.</p>
+				@risingTable(m.O.Rising)
+			</section>
+			<section class="card">
+				<h2>Tra mà không ra kết quả</h2>
+				<p class="muted small">Ứng viên để nạp slang — { windowLabel(m.O.Window) } qua.</p>
+				@queryTable(m.O.Zero, true)
+			</section>
+			<section class="card">
+				<h2>Mức, giọng, ngôn ngữ được dùng</h2>
+				<div class="grid2">
+					@breakdownChart("Mức chặt", m.O.Breakdown, "level")
+					@breakdownChart("Giọng (tiếng Việt)", m.O.Breakdown, "dialect")
+					@breakdownChart("Ngôn ngữ", m.O.Breakdown, "lang")
+					@breakdownChart("Số âm của truy vấn", m.O.Breakdown, "n_syllables")
+				</div>
+			</section>
+			<section class="card">
+				<h2>Slang được bấm và lưu nhiều</h2>
+				<p class="muted small">Slang chiếm { pct(m.O.SlangRate) } lượt bấm/lưu. Mỗi tuần, slang có tỉ lệ lưu thuộc top 10% được cộng 0.2 trend.</p>
+				@slangTable(m.O.Slang)
+			</section>
+			<section class="card">
+				<h2>Tra nhiều nhất</h2>
+				@queryTable(m.O.Top, false)
+			</section>
+		}
+	</div>
+}
+
+templ summaryTiles(s analytics.Summary) {
+	<div class="tiles">
+		@tile("Hoạt động hôm nay", compact(s.DAU))
+		@tile("7 ngày", compact(s.WAU))
+		@tile("30 ngày", compact(s.MAU))
+		@tile("Lượt tìm", compact(s.Searches))
+		@tile("Lượt lưu", compact(s.Saves))
+		@tile("Người dùng mới", compact(s.NewUsers))
+		@tile("Độ trễ p50", ms(s.P50Ms))
+		@tile("Độ trễ p99", ms(s.P99Ms))
+		@tile("Sự kiện bị bỏ", compact(int64(s.EventsDropped)))
+	</div>
+}
+
+templ tile(label, value string) {
+	<div class="tile"><span class="tile-label">{ label }</span><span class="tile-value">{ value }</span></div>
+}
+
+templ dailyChart(title string, days []analytics.Day, value func(analytics.Day) int64, unit string) {
+	<figure class="card chart">
+		<figcaption>{ title }</figcaption>
+		if len(days) == 0 {
+			<p class="muted small">Chưa có dữ liệu.</p>
+		} else {
+			{{ cols, peak := dailyColumns(days, value, unit) }}
+			<svg viewBox="0 0 640 160" role="img" aria-label={ title } class="plot">
+				<line x1="0" x2="640" y1="138" y2="138" class="axis"></line>
+				<text x="0" y="12" class="tick">{ compact(peak) }</text>
+				for _, c := range cols {
+					<g class="mark">
+						<rect x={ fpx(c.X - 4) } y="0" width={ fpx(c.W + 8) } height="160" class="hit"></rect>
+						<path d={ c.Path } class="bar"></path>
+						<title>{ c.Title }</title>
+					</g>
+				}
+				<text x="0" y="156" class="tick">{ day(days[0].Day) }</text>
+				<text x="640" y="156" class="tick" text-anchor="end">{ day(days[len(days)-1].Day) }</text>
+			</svg>
+			<details class="small">
+				<summary>Bảng số liệu</summary>
+				<table class="tbl">
+					<tr><th>Ngày</th><th>{ unit }</th></tr>
+					for _, d := range days {
+						<tr><td>{ day(d.Day) }</td><td class="num">{ compact(value(d)) }</td></tr>
+					}
+				</table>
+			</details>
+		}
+	</figure>
+}
+
+templ breakdownChart(title string, rows []analytics.BreakdownRow, dim string) {
+	{{ bars, h := hbars(rows, dim) }}
+	<figure class="chart">
+		<figcaption>{ title }</figcaption>
+		if len(bars) == 0 {
+			<p class="muted small">Chưa có dữ liệu.</p>
+		} else {
+			<svg viewBox={ "0 0 580 " + fpx(h) } role="img" aria-label={ title } class="plot">
+				for _, b := range bars {
+					<g class="mark">
+						<text x="0" y={ fpx(b.LabelY) } class="lbl">{ b.Label }</text>
+						<path d={ b.Path } class="bar"></path>
+						<text x={ fpx(b.ValueX) } y={ fpx(b.LabelY) } class="val">{ b.Value }</text>
+						<title>{ b.Label }: { b.Value }</title>
+					</g>
+				}
+			</svg>
+		}
+	</figure>
+}
+
+templ risingTable(rows []analytics.RisingQuery) {
+	if len(rows) == 0 {
+		<p class="muted small">Chưa đủ dữ liệu (cần ≥ 5 lượt tìm).</p>
+	} else {
+		<table class="tbl">
+			<tr><th>Truy vấn</th><th class="num">7 ngày</th><th class="num">30 ngày trước</th><th class="num">Tăng</th></tr>
+			for _, r := range rows {
+				<tr>
+					<td><a href={ templ.URL(rhymeURLLang(langOf(r.Lang), r.Query)) }>{ r.Query }</a> <span class="b">{ r.Lang }</span></td>
+					<td class="num">{ compact(r.C7) }</td>
+					<td class="num">{ compact(r.C30) }</td>
+					<td class="num">{ rising(r) }</td>
+				</tr>
+			}
+		</table>
+	}
+}
+
+templ queryTable(rows []analytics.QueryCount, suggestSlang bool) {
+	if len(rows) == 0 {
+		<p class="muted small">Không có.</p>
+	} else {
+		<table class="tbl">
+			<tr><th>Truy vấn</th><th class="num">Lượt</th>
+				if suggestSlang {
+					<th></th>
+				}
+			</tr>
+			for _, r := range rows {
+				<tr>
+					<td>{ r.Query } <span class="b">{ r.Lang }</span></td>
+					<td class="num">{ compact(r.N) }</td>
+					if suggestSlang {
+						<td><a href={ templ.URL("/slang/new?headword=" + r.Query) }>Thêm slang</a></td>
+					}
+				</tr>
+			}
+		</table>
+	}
+}
+
+templ slangTable(rows []analytics.SlangStat) {
+	if len(rows) == 0 {
+		<p class="muted small">Chưa có lượt bấm hay lưu slang.</p>
+	} else {
+		<table class="tbl">
+			<tr><th>Slang</th><th class="num">Xem</th><th class="num">Lưu</th><th class="num">Tỉ lệ lưu</th><th class="num">Trend</th></tr>
+			for _, s := range rows {
+				<tr>
+					<td>{ s.Headword }</td>
+					<td class="num">{ compact(s.Views) }</td>
+					<td class="num">{ compact(s.Saves) }</td>
+					<td class="num">{ saveRate(s) }</td>
+					<td class="num">{ f1(s.Trend) }</td>
+				</tr>
+			}
+		</table>
+	}
+}
+
+type UsersModel struct {
+	Page  Page
+	Users []analytics.UserRow
+	Sort  string
+}
+
+templ UsersPage(m UsersModel) {
+	@Layout("Người dùng — Playword", "admin", m.Page) {
+		<h1 class="page-title">Người dùng</h1>
+		@adminNav("dashboard")
+		<nav class="langs">
+			for _, s := range []string{"active", "new", "searches"} {
+				<a class={ "chip", templ.KV("on", s == m.Sort) } href={ templ.URL("/admin/users?sort=" + s) }>{ s }</a>
+			}
+		</nav>
+		<div class="card scroll-x">
+			<table class="tbl">
+				<tr><th>Email</th><th>Vai trò</th><th>Lần cuối</th><th class="num">Tìm</th><th class="num">Sổ</th><th class="num">Mục</th></tr>
+				for _, u := range m.Users {
+					<tr>
+						<td>{ u.Email }</td>
+						<td>{ u.Role }</td>
+						<td>{ lastSeen(u) }</td>
+						<td class="num">{ strconv.FormatInt(u.Searches, 10) }</td>
+						<td class="num">{ strconv.FormatInt(u.Books, 10) }</td>
+						<td class="num">{ strconv.FormatInt(u.Items, 10) }</td>
+					</tr>
+				}
+			</table>
+		</div>
+	}
+}

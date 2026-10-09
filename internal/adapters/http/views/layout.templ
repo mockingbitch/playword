@@ -1,0 +1,49 @@
+package views
+
+templ Layout(title, nav string, pc Page) {
+	<!DOCTYPE html>
+	<html lang="vi">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+			<meta name="color-scheme" content="dark"/>
+			<meta name="theme-color" content="#0f0f12"/>
+			<meta name="htmx-config" content='{"includeIndicatorStyles":false,"allowEval":false}'/>
+			<title>{ title }</title>
+			<link rel="stylesheet" href="/static/app.css"/>
+			<script src="/static/htmx.min.js" defer></script>
+			<script src="/static/sortable.min.js" defer></script>
+			<script src="/static/app.js" defer></script>
+		</head>
+		<body hx-headers={ csrfHeaders(pc.CSRF) }>
+			<header class="top">
+				<a class="brand" href="/">Play<span>word</span></a>
+				<nav aria-label="Chính">
+					<a href="/" class={ templ.KV("on", nav == "rhyme") }>Tìm vần</a>
+					<a href="/dictionary" class={ templ.KV("on", nav == "dict") }>Từ điển</a>
+					<a href="/books" class={ templ.KV("on", nav == "books") }>Sổ vần</a>
+					if pc.User != nil {
+						if pc.User.IsAdmin() {
+							<a href="/admin" class={ templ.KV("on", nav == "admin") }>Admin</a>
+						}
+						<a href="/me" class={ "me", templ.KV("on", nav == "me") } title={ pc.User.Email }>{ pc.User.Name() }</a>
+					} else {
+						<a href="/login" class={ templ.KV("on", nav == "login") }>Đăng nhập</a>
+					}
+				</nav>
+			</header>
+			<main>
+				{ children... }
+			</main>
+			<footer class="foot">
+				Dữ liệu: Từ điển Tiếng Việt (Hồ Ngọc Đức, GPL) · Wikipedia tiếng Việt (CC BY-SA 4.0) ·
+				Open English WordNet (CC BY 4.0) · CMUdict (BSD) · FrequencyWords (CC BY-SA 4.0)
+			</footer>
+		</body>
+	</html>
+}
+
+// csrfField is the hidden input every plain form carries.
+templ csrfField(pc Page) {
+	<input type="hidden" name="csrf_token" value={ pc.CSRF }/>
+}

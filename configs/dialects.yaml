@@ -1,0 +1,53 @@
+# Playword — biến đổi theo phương ngữ.
+#
+# Ngữ nghĩa (ADR-001 §5):
+#   - Áp theo thứ tự cố định: nucleus_rules → coda_rules → tone_merge.
+#   - MỌI điều kiện xét trên âm tiết GỐC (sau parse chính tả), không xét kết quả trung gian.
+#   - Lúc nạp, loader liệt kê mọi (vần hợp lệ × 6 thanh) và kiểm tra Map(Map(s)) == Map(s);
+#     vi phạm → không khởi động, in ví dụ.
+#   - Dùng MÃ nucleus/coda (A, AW, EE, IE, UOW; n, ng, nh, ch, k, t, j, w ...), không dùng chữ viết.
+#
+# Nguồn giá trị:
+#   [spec]  từ đặc tả · [đề xuất] tôi thêm, cần nghe thử
+#   [IPA]   kiểm chứng bằng IPA theo vùng của Wiktionary tiếng Việt (2026-10-08): so âm cuối và đường
+#           nét thanh của ~500 âm tiết có IPA Sài Gòn / Huế. Trước khi sửa: Nam khớp 94,6%, Trung 89%.
+#   Sau khi sửa theo IPA, các cặp còn lệch đều là chỗ không biểu diễn được mà vẫn giữ tính idempotent
+#   (ghi chú tại chỗ). Anh nghe lại, gạch dòng nào sai.
+version: 1
+
+bac: {}   # chuẩn chính tả, không biến đổi
+
+nam:
+  nucleus_rules:
+    - {when_coda: [nh, ch], from: EE,  to: I}    # [spec][IPA] ênh → in, ếch → ít (kệnh [kən])
+    - {when_coda: [w],      from: IE,  to: I}    # [đề xuất] nhiều ≈ nhìu, tiêu ≈ tiu
+    - {when_coda: [w],      from: UOW, to: UW}   # [đề xuất] rượu ≈ rựu, hươu ≈ hưu
+    - {when_coda: [j],      from: UOW, to: UW}   # [đề xuất] người ≈ ngừi, mười ≈ mừi
+    - {when_coda: [j],      from: UO,  to: U}    # [đề xuất] muối ≈ múi, tuổi ≈ tủi
+    - {when_coda: [m, p],   from: IE,  to: I}    # [đề xuất] kiếm ≈ kím, điểm ≈ đỉm
+    - {when_coda: [m, p],   from: UOW, to: UW}   # [đề xuất] bướm ≈ bứm
+    # Bỏ luật spec "A + nh/ch → AW": IPA Sài Gòn đọc anh [an], ách [at] — KHÔNG trùng ăn [aŋ], ắc [ak].
+    # anh/ách giữ nguyên ở L0–L2 và vẫn gần ăn/ang ở L3 (họ A*, họ mũi). Không thể ghi "anh → [an]"
+    # vì luật n → ng bên dưới sẽ bắt lại (không idempotent).
+  coda_rules:
+    - {from: n,  to: ng, unless_nucleus: [I]}      # [spec][IPA] tàn ≈ tàng; ên ≈ êng (nên [nəːŋ]); en ≈ eng (Q9: có)
+    - {from: t,  to: k,  unless_nucleus: [I, EE]}  # [spec][IPA] mát ≈ mác; ít, ết giữ t
+    - {from: nh, to: n,  when_nucleus:  [I, EE]}   # [IPA] tinh ≈ tin, bệnh ≈ bịn
+    - {from: ch, to: t,  when_nucleus:  [I, EE]}   # [IPA] ích ≈ ít, ếch ≈ ít
+  tone_merge: {5: 4}                               # [spec][IPA] ngã = hỏi (cùng ˨˩˦): bảo ≈ bão
+  # CẶP SẼ TRÙNG L0 Ở GIỌNG NAM (nghe thử giúp tôi):
+  #   tàn=tàng  lan=lang  mát=mác  tiên=tiêng  luôn=luông  vườn=vường  tuần=tuầng  nên=nêng
+  #   đen=đeng  tin=tinh  ít=ích  bênh=bin  ếch=ít  nhiều=nhìu  rượu=rựu  người=ngừi
+  #   muối=múi  kiếm=kím  bướm=bứm  bảo=bão  mỏi=mõi
+
+trung:   # chuẩn Huế (Q10, mặc định)
+  nucleus_rules:
+    - {when_coda: [nh, ch], from: EE, to: I}       # [IPA] kệnh [kḛn], chệch [ʨḛt] → như in/ít
+  coda_rules:
+    - {from: n,  to: ng, unless_nucleus: [I, EE]}  # [spec][IPA] như Nam (ên giữ n ở Huế)
+    - {from: t,  to: k,  unless_nucleus: [I, EE]}  # [spec][IPA] như Nam
+    - {from: nh, to: n,  when_nucleus:  [I, EE]}   # [IPA] lính [lḭn], binh [ɓin]
+    - {from: ch, to: t,  when_nucleus:  [I, EE]}   # [IPA] hích [hḭt], huých [hwḭt]
+    # anh [an], ách [at] ở Huế cũng như Nam: giữ nguyên (lý do idempotent như trên).
+  tone_merge: {5: 4}                               # [IPA] Huế: hỏi = ngã (˧˩˨), nặng (˨˨) KHÁC — spec tạm ghi
+                                                   #       {4:6, 5:6} nhưng dữ liệu không ủng hộ gộp vào nặng

@@ -1,0 +1,248 @@
+package views
+
+import (
+	"net/url"
+	"playword/internal/app"
+)
+
+templ SearchPage(m SearchModel) {
+	@Layout(pageTitle(m.Params.Text), "rhyme", m.Page) {
+		<form
+			id="rhyme-form"
+			class="search-form"
+			action="/search"
+			method="get"
+			role="search"
+			hx-get="/search"
+			hx-target="#results"
+			hx-swap="outerHTML"
+			hx-push-url="true"
+			hx-trigger="keyup changed delay:300ms from:#q, search from:#q, change, submit"
+			hx-sync="this:replace"
+			hx-indicator="#spin"
+		>
+			@langSwitch("/", m.Params.Text, string(m.Params.Lang))
+			if isEN(m.Params.Lang) {
+				<input type="hidden" name="lang" value="en"/>
+			}
+			<div class="qbox">
+				<input
+					id="q"
+					name="q"
+					type="search"
+					value={ m.Params.Text }
+					placeholder="Từ cuối câu, vd: ngày tàn"
+					aria-label="Từ cần tìm vần"
+					autocomplete="off"
+					autocapitalize="off"
+					spellcheck="false"
+					enterkeyhint="search"
+					autofocus
+				/>
+				<span id="spin" class="spin htmx-indicator" aria-hidden="true"></span>
+			</div>
+			@filters(m.Params)
+		</form>
+		if m.Page.User != nil && len(m.Page.Books) > 0 {
+			<div class="savebar">
+				<label for="save-book">Lưu vào</label>
+				<select id="save-book" name="book_id">
+					for _, b := range m.Page.Books {
+						<option value={ b.ID }>{ b.Title }</option>
+					}
+				</select>
+			</div>
+		}
+		@Results(m)
+	}
+}
+
+templ filters(p app.RhymeParams) {
+	<details class="filters">
+		<summary>Bộ lọc <span class="muted">{ filterSummary(p) }</span></summary>
+		@chipGroup("Mức chặt", "level", levelOptionsFor(p.Lang), p.Level.String())
+		@chipGroup("Khớp tối thiểu", "min_syl", sylOptions, itoa(p.MinSyl))
+		if !isEN(p.Lang) {
+			@chipGroup("Giọng", "dialect", dialectOptions, string(p.Dialect))
+		}
+		@chipGroup("Vị trí vần", "match", matchOptions, string(p.Match))
+		<fieldset class="chips">
+			<legend>Gồm</legend>
+			<input type="hidden" name="slang" value="false"/>
+			<label class="chip"><input type="checkbox" name="slang" value="true" checked?={ p.IncludeSlang }/>Slang</label>
+			<input type="hidden" name="proper" value="false"/>
+			<label class="chip"><input type="checkbox" name="proper" value="true" checked?={ p.IncludeProper }/>Tên riêng</label>
+		</fieldset>
+	</details>
+}
+
+templ chipGroup(title, name string, opts []option, current string) {
+	<fieldset class="chips">
+		<legend>{ title }</legend>
+		for _, o := range opts {
+			<label class="chip" title={ o.Hint }>
+				<input type="radio" name={ name } value={ o.Value } checked?={ o.Value == current }/>
+				{ o.Label }
+			</label>
+		}
+	</fieldset>
+}
+
+// Results is the swappable result section (spec §6: section#results).
+templ Results(m SearchModel) {
+	<section id="results" class="results" aria-live="polite">
+		if m.Error != "" {
+			<p class="msg err">{ m.Error }</p>
+		} else if m.Result == nil {
+			@intro()
+		} else {
+			<p class="summary">Vần cho <strong>{ m.Params.Text }</strong></p>
+			for _, w := range m.Result.Warnings {
+				<p class="msg">{ w }</p>
+			}
+			if !isEN(m.Params.Lang) {
+				<div class="extra-bar">
+					<span class="muted">Khớp thêm ở giọng</span>
+					for _, d := range otherDialects(m.Params.Dialect) {
+						<button
+							type="button"
+							class="chip ghost"
+							hx-get={ extraURL(m.Params, d) }
+							hx-target="#extra"
+							hx-swap="innerHTML"
+						>+ { DialectLabel(d) }</button>
+					}
+				</div>
+			} else if m.Result.Confidence < 1 {
+				<p class="msg">Phát âm của “{ m.Params.Text }” được suy ra từ gốc từ (độ tin cậy thấp hơn).</p>
+			}
+			<div id="extra"></div>
+			if len(m.Result.Hits) == 0 {
+				<p class="msg">Chưa có vần cho “{ m.Params.Text }” ở mức này. Thử nới “Mức chặt” hoặc đổi giọng.</p>
+			} else {
+				<ol class="hits">
+					@HitItems(m.Result)
+				</ol>
+			}
+		}
+	</section>
+}
+
+// HitItems renders one page of results plus the infinite-scroll sentinel.
+templ HitItems(r *app.RhymeResult) {
+	for i, h := range r.Hits {
+		if showGroup(r.Hits, i, r.PrevMatched) {
+			<li class="group">Khớp { itoa(h.Matched) } âm · “{ matchedPart(r, h.Matched) }”</li>
+		}
+		@hit(h, r.Params)
+	}
+	if r.NextCursor != "" {
+		<li class="more" hx-get={ nextURL(r) } hx-trigger="revealed" hx-swap="outerHTML">
+			<span class="spin"></span>
+		</li>
+	}
+}
+
+templ hit(h app.Hit, p app.RhymeParams) {
+	<li class="hit">
+		<button
+			type="button"
+			class="hit-head"
+			hx-get={ WordURL(p.Lang, h.Entry.Headword) + "?from=rhyme&q=" + url.QueryEscape(p.Text) }
+			hx-target="next .def"
+			hx-swap="innerHTML"
+			aria-expanded="false"
+		>
+			<span class="word">
+				for i, w := range words(h.Entry.Headword) {
+					if inWindow(i, h) {
+						<mark>{ w }</mark>
+					} else {
+						<span>{ w }</span>
+					}
+				}
+			</span>
+			<span class="badges">
+				<span class={ "lv", "lv-" + h.Level.String() } title={ LevelLabel(h.Level) }>{ LevelLabel(h.Level) }</span>
+				if h.Entry.IsSlang {
+					<span class="b slang">slang</span>
+				}
+				if isProper(h.Entry) {
+					<span class="b">tên riêng</span>
+				}
+			</span>
+		</button>
+		@SaveButton(h.Entry.ID, p, "")
+		<p class="gloss">
+			if s := firstSense(h.Entry); s.POS != "" {
+				<span class="pos">{ s.POS }</span>
+			}
+			{ firstSense(h.Entry).Gloss }
+		</p>
+		<div class="def"></div>
+	</li>
+}
+
+// Extra lists results that only match in another dialect.
+templ Extra(r *app.RhymeResult) {
+	<h2 class="extra-title">
+		Khớp thêm khi đọc giọng { DialectLabel(r.Params.Dialect) }
+		<span class="muted">({ itoa(len(r.Hits)) }{ moreMark(r) })</span>
+	</h2>
+	if len(r.Hits) == 0 {
+		<p class="msg">Không có thêm kết quả.</p>
+	} else {
+		<ol class="hits extra">
+			for _, h := range r.Hits {
+				@hit(h, r.Params)
+			}
+		</ol>
+	}
+}
+
+templ intro() {
+	<div class="intro">
+		<p>Gõ từ hoặc cụm cuối câu để tìm từ cùng vần, có nghĩa, kèm định nghĩa.</p>
+		<p class="try">
+			Thử:
+			<a href={ templ.URL(rhymeURL("ngày tàn")) }>ngày tàn</a>
+			<a href={ templ.URL(rhymeURL("may mắn")) }>may mắn</a>
+			<a href={ templ.URL(rhymeURL("cuộc đời")) }>cuộc đời</a>
+			<a href={ templ.URL(rhymeURL("thành phố")) }>thành phố</a>
+		</p>
+	</div>
+}
+
+// langSwitch links to the same page in each language.
+templ langSwitch(path, text, current string) {
+	<nav class="langs" aria-label="Ngôn ngữ">
+		for _, o := range langOptions {
+			<a
+				href={ templ.URL(langURL(path, text, o.Value)) }
+				class={ "chip", templ.KV("on", o.Value == current || (current == "" && o.Value == "vi")) }
+			>{ o.Label }</a>
+		}
+	</nav>
+}
+
+// SaveButton saves a hit into the chosen book (or the guest notebook);
+// state is "" (not saved), "saved", "guest" or an error message.
+templ SaveButton(entryID int64, p app.RhymeParams, state string) {
+	switch state {
+		case "":
+			<form class="save" hx-post="/save" hx-swap="outerHTML" hx-include="#save-book">
+				<input type="hidden" name="entry_id" value={ i64(entryID) }/>
+				<input type="hidden" name="lang" value={ string(p.Lang) }/>
+				<input type="hidden" name="dialect" value={ string(p.Dialect) }/>
+				<input type="hidden" name="level" value={ p.Level.String() }/>
+				<input type="hidden" name="matched_from" value={ p.Text }/>
+				<button type="submit" class="save-btn" title="Lưu vào sổ vần" aria-label="Lưu vào sổ vần">＋</button>
+			</form>
+		case "saved":
+			<span class="save saved" title="Đã lưu vào sổ">✓</span>
+		case "guest":
+			<a class="save saved guest" href="/register" title="Đã lưu tạm — đăng ký để giữ lại">✓</a>
+		default:
+			<span class="save err" title={ state }>!</span>
+	}
+}
