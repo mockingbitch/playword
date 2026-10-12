@@ -21,7 +21,8 @@ import (
 
 // page is the context every full page renders with.
 func (s *Server) page(r *http.Request) views.Page {
-	return views.Page{User: currentUser(r), CSRF: csrfToken(r)}
+	return views.Page{User: currentUser(r), CSRF: csrfToken(r), View: viewMode(r), URL: r.URL.RequestURI(),
+		Site: views.Site{PublicURL: s.opts.PublicURL, Contact: s.opts.Contact, Version: s.opts.Version}}
 }
 
 // accountMessage is the Vietnamese text for an account error.
@@ -201,7 +202,11 @@ func (s *Server) pageBooks(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := s.accounts.CreateBook(r.Context(), u, r.PostFormValue("title"), r.PostFormValue("description"), false)
 		if err == nil {
-			http.Redirect(w, r, "/books/"+b.ID, http.StatusSeeOther)
+			to := "/books/" + b.ID
+			if r.PostFormValue("next") == "write" {
+				to += "/write"
+			}
+			http.Redirect(w, r, to, http.StatusSeeOther)
 			return
 		}
 		m.Error = accountMessage(err)
@@ -288,6 +293,10 @@ func (s *Server) pageDeleteItem(w http.ResponseWriter, r *http.Request) {
 		writeAccountProblem(w, r, err)
 		return
 	}
+	if !isHTMX(r) && r.Header.Get("X-Requested-With") == "" {
+		http.Redirect(w, r, "/books/"+r.PathValue("id"), http.StatusSeeOther)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -298,6 +307,10 @@ func (s *Server) pageItemNote(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		writeAccountProblem(w, r, err)
+		return
+	}
+	if !isHTMX(r) {
+		http.Redirect(w, r, "/books/"+r.PathValue("id"), http.StatusSeeOther)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -351,59 +364,69 @@ func (s *Server) pageExport(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(data)
 }
 
-// pageSave is the "＋" next to a result: into the chosen (or most recent)
-// book for users, into the cookie notebook for guests.
+// pageSave is "＋ Lưu vào sổ": into the chosen (or most recent) book for
+// users, into the cookie notebook for guests. HTMX swaps the button for its
+// new state; a plain form post comes back to next.
 func (s *Server) pageSave(w http.ResponseWriter, r *http.Request) {
 	entryID, _ := strconv.ParseInt(r.PostFormValue("entry_id"), 10, 64)
 	p := app.DefaultRhymeParams(r.PostFormValue("matched_from"))
 	p.Lang = entry.Lang(r.PostFormValue("lang"))
-	n := app.NewItem{EntryID: entryID, Lang: r.PostFormValue("lang"), Dialect: r.PostFormValue("dialect"),
-		Level: r.PostFormValue("level"), MatchedFrom: r.PostFormValue("matched_from")}
+	next := safeNext(r.PostFormValue("next"))
+	state := s.save(w, r, entryID, app.NewItem{EntryID: entryID, Lang: r.PostFormValue("lang"), Dialect: r.PostFormValue("dialect"),
+		Level: r.PostFormValue("level"), MatchedFrom: r.PostFormValue("matched_from")})
+	if !isHTMX(r) {
+		if state != "saved" && state != "guest" {
+			render(w, r, http.StatusOK, views.SaveResultPage(s.page(r), state, next))
+			return
+		}
+		http.Redirect(w, r, next, http.StatusSeeOther)
+		return
+	}
+	render(w, r, http.StatusOK, views.SaveButton(entryID, p, csrfToken(r), next, state))
+}
+
+// save stores one word and returns the button state: "saved", "guest" or
+// an error message.
+func (s *Server) save(w http.ResponseWriter, r *http.Request, entryID int64, n app.NewItem) string {
 	u := currentUser(r)
 	if u == nil {
 		items := guestItems(r)
 		if len(items) >= account.GuestMaxItems {
-			render(w, r, http.StatusOK, views.SaveButton(entryID, p, "Sổ tạm đã đầy (20) — đăng ký để lưu tiếp"))
-			return
+			return "Sổ tạm đã đầy (20) — đăng ký để lưu tiếp"
 		}
 		e, err := s.svc.EntryByID(entryID)
 		if err != nil {
-			render(w, r, http.StatusOK, views.SaveButton(entryID, p, "Không tìm thấy mục từ"))
-			return
+			return "Không tìm thấy mục từ"
 		}
 		items = append(items, account.GuestItem{Text: e.Headword, EntryID: entryID, Lang: n.Lang, Dialect: n.Dialect,
 			Level: n.Level, MatchedFrom: n.MatchedFrom})
 		s.setGuestItems(w, items)
 		s.record(r, analytics.Event{Type: analytics.SaveItem, Lang: n.Lang, Dialect: n.Dialect, Level: n.Level,
 			EntryID: entryID, Query: queryText(n.MatchedFrom)})
-		render(w, r, http.StatusOK, views.SaveButton(entryID, p, "guest"))
-		return
+		return "guest"
 	}
 	bookID := r.PostFormValue("book_id")
 	if bookID == "" {
 		books, err := s.accounts.Books(r.Context(), u)
 		if err != nil {
-			render(w, r, http.StatusOK, views.SaveButton(entryID, p, accountMessage(err)))
-			return
+			return accountMessage(err)
 		}
 		if len(books) > 0 {
 			bookID = books[0].ID
 		} else {
 			b, err := s.accounts.CreateBook(r.Context(), u, "Sổ của tôi", "", false)
 			if err != nil {
-				render(w, r, http.StatusOK, views.SaveButton(entryID, p, accountMessage(err)))
-				return
+				return accountMessage(err)
 			}
 			bookID = b.ID
 		}
 	}
 	if _, err := s.accounts.AddItem(r.Context(), u, bookID, n); err != nil {
-		render(w, r, http.StatusOK, views.SaveButton(entryID, p, accountMessage(err)))
-		return
+		return accountMessage(err)
 	}
 	s.record(r, analytics.Event{Type: analytics.SaveItem, Lang: n.Lang, Dialect: n.Dialect, Level: n.Level,
 		EntryID: entryID, Query: queryText(n.MatchedFrom)})
-	render(w, r, http.StatusOK, views.SaveButton(entryID, p, "saved"))
+	return "saved"
 }
 
 func writeAccountProblem(w http.ResponseWriter, r *http.Request, err error) {

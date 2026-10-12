@@ -7,12 +7,12 @@ import (
 
 templ DictionaryPage(m DictModel) {
 	@Layout(dictTitle(m.Query), "dict", m.Page) {
-		<form class="search-form" action="/dictionary" method="get" role="search">
-			@langSwitch("/dictionary", m.Query, string(m.Lang))
+		<form class="search-form dict-form" action="/dictionary" method="get" role="search">
 			if isEN(m.Lang) {
 				<input type="hidden" name="lang" value="en"/>
 			}
 			<div class="qbox">
+				<svg class="ico qico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5 21 21"></path></svg>
 				<input
 					id="dq"
 					name="q"
@@ -36,19 +36,28 @@ templ DictionaryPage(m DictModel) {
 					autofocus
 				/>
 			</div>
-			<div id="suggest" class="suggest" role="listbox"></div>
+			<div id="suggest" class="suggest" role="listbox" aria-label="Gợi ý"></div>
+			<div class="toolbar">
+				@langSwitch("/dictionary", m.Query, string(m.Lang))
+			</div>
 		</form>
-		<p class="small muted">Thiếu slang? <a href="/slang/new">Đóng góp một từ</a></p>
 		if m.Error != "" {
-			<p class="msg err">{ m.Error }</p>
+			<div class="empty"><p>{ m.Error }</p></div>
 		}
 		if m.Entry != nil {
 			<article class="entry">
-				<h1>{ m.Entry.Headword }</h1>
+				@WordHeader(m.Entry, "", true)
+				@wordActions(m.Entry, false)
 				@Definition(m.Entry)
 			</article>
 		} else if m.Query != "" {
-			<p class="msg">Không có mục “{ m.Query }”.</p>
+			<div class="empty">
+				<p>Không có mục “{ m.Query }”.</p>
+				<p class="actions">
+					<a class="btn" href={ templ.URL(rhymeURLLang(m.Lang, m.Query)) }>Tìm vần cho “{ m.Query }”</a>
+					<a class="btn" href="/slang/new">Đóng góp từ này</a>
+				</p>
+			</div>
 			if len(m.Suggestions) > 0 {
 				<h2 class="sub">Có phải bạn muốn tìm</h2>
 				<div class="list">
@@ -66,6 +75,8 @@ templ DictionaryPage(m DictModel) {
 					}
 				</div>
 			}
+		} else {
+			<p class="muted small">Gõ không dấu hay Telex đều được: “tan”, “tanf” → tàn. Thiếu slang? <a href="/slang/new">Đóng góp một từ</a>.</p>
 		}
 	}
 }

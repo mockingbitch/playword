@@ -168,7 +168,12 @@ func (s *Store) Book(ctx context.Context, id string) (*account.Book, error) {
 		return nil, notFound(err)
 	}
 	b := bookFrom(r.ID, r.UserID, r.Title, r.Description, r.IsPublic, r.CreatedAt, r.UpdatedAt, r.ItemCount)
+	b.Lyrics = r.Lyrics
 	return &b, nil
+}
+
+func (s *Store) SetLyrics(ctx context.Context, id, userID, lyrics string) error {
+	return affected(db.New(s.pool).SetBookLyrics(ctx, db.SetBookLyricsParams{ID: id, UserID: userID, Lyrics: lyrics}))
 }
 
 func affected(n int64, err error) error {

@@ -250,3 +250,25 @@ func FuzzParseSyllable(f *testing.F) {
 		}
 	})
 }
+
+func TestOnsetLen(t *testing.T) {
+	for word, want := range map[string]int{
+		"ngày": 2, "Nghĩa": 3, "quân": 1, "Quyết": 1, "giết": 1, "gì": 1, "gìn": 1, "giai": 2, "giữ": 2,
+		"an": 0, "ước": 0, "hoàng": 1, "trắng": 2, "đời": 1, "wifi": 0, "": 0,
+	} {
+		if got := OnsetLen(word); got != want {
+			t.Errorf("OnsetLen(%q) = %d, want %d", word, got, want)
+		}
+	}
+}
+
+func TestWrittenRime(t *testing.T) {
+	for word, want := range map[string]string{"ngày": "ay", "quân": "uân", "giết": "iêt", "gì": "i", "Tàn": "an", "ước": "ươc"} {
+		if got, ok := WrittenRime(word); !ok || got != want {
+			t.Errorf("WrittenRime(%q) = %q, want %q", word, got, want)
+		}
+	}
+	if _, ok := WrittenRime("wifi"); ok {
+		t.Error("wifi is not a syllable")
+	}
+}

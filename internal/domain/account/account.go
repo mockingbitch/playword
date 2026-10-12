@@ -184,10 +184,14 @@ type Book struct {
 	Title       string
 	Description string
 	IsPublic    bool
+	Lyrics      string // the writing desk's text; filled by Book, not by Books
 	ItemCount   int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+// MaxLyrics bounds a book's lyrics, in characters.
+const MaxLyrics = 20000
 
 // Item is one saved rhyme, either a dictionary entry or the rapper's own text.
 type Item struct {

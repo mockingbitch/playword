@@ -3,6 +3,7 @@ package vnphon
 import (
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"golang.org/x/text/unicode/norm"
 )
@@ -161,4 +162,36 @@ func ParsePhrase(phrase string) ([]Syllable, error) {
 		out[i] = s
 	}
 	return out, nil
+}
+
+// OnsetLen is how many leading letters of a written syllable spell its
+// onset, for highlighting the rhyming part: 2 for "ngày", 1 for "quân"
+// (the u is the medial, part of the rime) and for "giết" and "gì" (the i
+// is shared with the rime), 0 for "an". It is 0 when word is not a
+// Vietnamese syllable.
+func OnsetLen(word string) int {
+	if _, err := ParseSyllable(word); err != nil {
+		return 0
+	}
+	body, _, _ := splitTone(word)
+	onset, rest := splitOnset(body)
+	n := utf8.RuneCountInString(onset)
+	switch {
+	case onset == "qu":
+		return 1
+	case onset == "gi" && utf8.RuneCountInString(rest) == utf8.RuneCountInString(body)-1:
+		return 1 // the i was put back into the rime
+	}
+	return n
+}
+
+// WrittenRime is the rime of a written syllable without its tone mark, as a
+// rapper would name it: "ay" for "ngày", "uân" for "quân", "iêt" for
+// "giết". ok is false when word is not a Vietnamese syllable.
+func WrittenRime(word string) (rime string, ok bool) {
+	if _, err := ParseSyllable(word); err != nil {
+		return "", false
+	}
+	body, _, _ := splitTone(word)
+	return string([]rune(body)[OnsetLen(word):]), true
 }

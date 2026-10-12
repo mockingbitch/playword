@@ -1,0 +1,165 @@
+package views
+
+import (
+	"playword/internal/app"
+	"playword/internal/domain/account"
+)
+
+// DeskModel is the writing desk: lyrics on one side, rhymes for the line
+// being written on the other. Book is nil for a guest, whose draft stays
+// in the browser.
+type DeskModel struct {
+	Page   Page
+	Book   *account.Book
+	Books  []account.Book // the user's other books, to switch
+	Params app.RhymeParams
+	Saved  bool // came back from a no-JavaScript save
+	Error  string
+}
+
+templ DeskPage(m DeskModel) {
+	@Layout(deskTitle(m), "write", m.Page) {
+		<div class="desk" data-desk={ deskKind(m) }>
+			<section class="desk-write" aria-label="Lời">
+				<header class="desk-head">
+					if m.Book != nil {
+						<h1 class="page-title">{ m.Book.Title }</h1>
+						<p class="small muted">
+							<a href={ templ.URL("/books/" + m.Book.ID) }>Vần đã lưu ({ itoa(m.Book.ItemCount) })</a>
+							if len(m.Books) > 1 {
+								· <a href="/books">Bài khác</a>
+							}
+						</p>
+					} else {
+						<h1 class="page-title">Bàn viết</h1>
+						<p class="small muted">Bản nháp được giữ trong trình duyệt này. <a href="/register?next=/write">Đăng ký</a> để lưu vào sổ và mở ở máy khác.</p>
+					}
+				</header>
+				if m.Error != "" {
+					<p class="msg err" role="alert">{ m.Error }</p>
+				}
+				<div id="draft-banner" class="banner" hidden>
+					<span>Có bản nháp viết lúc chưa đăng nhập.</span>
+					<button type="button" class="btn" data-draft="use">Dùng bản nháp</button>
+					<button type="button" class="btn ghost" data-draft="drop">Bỏ</button>
+				</div>
+				if m.Book != nil {
+					<form
+						id="lyrics-form"
+						class="lyrics-form"
+						method="post"
+						action={ templ.URL("/books/" + m.Book.ID + "/lyrics") }
+						hx-post={ "/books/" + m.Book.ID + "/lyrics" }
+						hx-trigger="input changed delay:1200ms from:#lyrics, submit"
+						hx-target="#save-status"
+						hx-swap="innerHTML"
+						hx-sync="this:replace"
+					>
+						@csrfField(m.Page)
+						<input type="hidden" name="next" value={ m.Page.URL }/>
+						@lyricsBox(m.Book.Lyrics)
+						<div class="desk-bar">
+							<span id="save-status" class="muted small" role="status">
+								if m.Saved {
+									Đã lưu.
+								}
+							</span>
+							@checkToggle()
+							<button class="btn" type="submit">Lưu</button>
+						</div>
+					</form>
+				} else {
+					<form class="lyrics-form" method="post" action="/write/check">
+						@csrfField(m.Page)
+						<input type="hidden" name="next" value="/write"/>
+						@lyricsBox("")
+						<div class="desk-bar">
+							<span id="save-status" class="muted small" role="status"></span>
+							@checkToggle()
+						</div>
+					</form>
+				}
+				@checkPanel()
+			</section>
+			<section class="desk-rhymes" aria-label="Vần">
+				@rhymeForm(m.Params, "/search", false)
+				if m.Book != nil {
+					@saveTarget(m.Page, m.Book.ID)
+				} else {
+					@saveTarget(m.Page, "")
+				}
+				@Results(SearchModel{Page: m.Page, Params: m.Params, Desk: true})
+			</section>
+			@panelShell()
+		</div>
+		<p id="rstatus" class="sr-only" role="status"></p>
+	}
+}
+
+templ lyricsBox(text string) {
+	<label class="sr-only" for="lyrics">Lời bài</label>
+	<div class="lyrics-wrap">
+		<div id="lyrics-mirror" class="lyrics-mirror" aria-hidden="true"></div>
+		<textarea
+			id="lyrics"
+			name="lyrics"
+			maxlength="20000"
+			spellcheck="false"
+			autocapitalize="sentences"
+			placeholder="Viết lời ở đây. Vần cho từ cuối của câu đang viết sẽ hiện bên cạnh; chạm vào một vần để xem nghĩa hoặc chèn vào bài."
+		>{ text }</textarea>
+	</div>
+}
+
+// checkToggle turns the rhyme check on (live colours, app.js) or, without
+// JavaScript, posts the lyrics to the coloured view.
+templ checkToggle() {
+	<button class="btn rc-toggle" id="rc-toggle" type="submit" formaction="/write/check" formmethod="post" aria-pressed="false">
+		<span class="rc-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+		Kiểm tra vần
+	</button>
+}
+
+// checkPanel holds the live legend; app.js fills it from the JSON API.
+templ checkPanel() {
+	<section id="rc-panel" class="rc-panel" aria-label="Kiểm tra vần" hidden>
+		<p id="rc-stats" class="check-stats" role="status"></p>
+		<ul id="rc-legend" class="check-legend" aria-label="Các nhóm vần — chạm để chỉ xem một nhóm"></ul>
+		<p id="rc-scheme" class="muted small"></p>
+		<p class="muted small">Chỉ tô chuỗi từ hai âm tiết trở lên vần với nhau trong cùng khổ (khổ cách nhau bằng một dòng trống). <span class="rep">Gạch chấm</span> là lặp từ.</p>
+	</section>
+}
+
+// DeskStart is the desk for a signed-in user with no book yet.
+templ DeskStart(pc Page) {
+	@Layout("Bàn viết — Playword", "write", pc) {
+		<h1 class="page-title">Bàn viết</h1>
+		<div class="empty">
+			<p>Viết lời bên trái, vần cho từ cuối câu hiện ngay bên phải. Mỗi bài là một sổ vần.</p>
+		</div>
+		@newBookForm(pc, "write", "Bắt đầu bài mới")
+	}
+}
+
+// LyricsSaved answers an autosave.
+templ LyricsSaved(msg string, ok bool) {
+	if ok {
+		{ msg }
+	} else {
+		<span class="err">{ msg }</span>
+	}
+}
+
+func deskTitle(m DeskModel) string {
+	if m.Book != nil {
+		return m.Book.Title + " — Bàn viết"
+	}
+	return "Bàn viết — Playword"
+}
+
+func deskKind(m DeskModel) string {
+	if m.Book != nil {
+		return "book"
+	}
+	return "guest"
+}

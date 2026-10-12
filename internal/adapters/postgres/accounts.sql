@@ -57,13 +57,16 @@ select b.id, b.user_id, b.title, coalesce(b.description, '')::text as descriptio
 from rhyme_books b where b.user_id = $1 order by b.updated_at desc, b.id;
 
 -- name: GetBook :one
-select b.id, b.user_id, b.title, coalesce(b.description, '')::text as description, b.is_public, b.created_at, b.updated_at,
+select b.id, b.user_id, b.title, coalesce(b.description, '')::text as description, b.is_public, b.created_at, b.updated_at, b.lyrics,
        (select count(*) from rhyme_book_items i where i.book_id = b.id)::int as item_count
 from rhyme_books b where b.id = $1;
 
 -- name: UpdateBook :execrows
 update rhyme_books set title = $3, description = nullif(@description::text, ''), is_public = $4, updated_at = now()
 where id = $1 and user_id = $2;
+
+-- name: SetBookLyrics :execrows
+update rhyme_books set lyrics = $3, updated_at = now() where id = $1 and user_id = $2;
 
 -- name: TouchBook :exec
 update rhyme_books set updated_at = now() where id = $1;

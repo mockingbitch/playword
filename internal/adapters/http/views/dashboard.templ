@@ -4,6 +4,7 @@ import (
 	"playword/internal/app"
 	"playword/internal/domain/analytics"
 	"strconv"
+	"strings"
 )
 
 type DashboardModel struct {
@@ -17,12 +18,13 @@ templ DashboardPage(m DashboardModel) {
 	@Layout("Dashboard — Playword", "admin", m.Page) {
 		<h1 class="page-title">Dashboard</h1>
 		@adminNav("dashboard")
-		<nav class="langs" aria-label="Khoảng thời gian">
+		<nav class="seg" aria-label="Khoảng thời gian">
 			for _, w := range []string{"7d", "30d", "90d"} {
-				<a class={ "chip", templ.KV("on", w == m.Window) } href={ templ.URL("/admin/dashboard?window=" + w) }>{ w }</a>
+				<a class={ "seg-opt", templ.KV("on", w == m.Window) } href={ templ.URL("/admin/dashboard?window=" + w) }>{ windowName(w) }</a>
 			}
-			<a class="chip ghost" href={ templ.URL("/api/v1/admin/dashboard/export.csv?window=" + m.Window) }>CSV</a>
-			<a class="chip ghost" href="/admin/users">Người dùng</a>
+		</nav>
+		<nav class="dash-tools" aria-label="Xuất">
+			<a class="btn ghost" href={ templ.URL("/api/v1/admin/dashboard/export.csv?window=" + m.Window) }>Tải CSV</a>
 		</nav>
 		@DashboardBody(m)
 	}
@@ -166,7 +168,9 @@ templ queryTable(rows []analytics.QueryCount, suggestSlang bool) {
 		<p class="muted small">Không có.</p>
 	} else {
 		<table class="tbl">
-			<tr><th>Truy vấn</th><th class="num">Lượt</th>
+			<tr>
+				<th>Truy vấn</th>
+				<th class="num">Lượt</th>
 				if suggestSlang {
 					<th></th>
 				}
@@ -212,10 +216,10 @@ type UsersModel struct {
 templ UsersPage(m UsersModel) {
 	@Layout("Người dùng — Playword", "admin", m.Page) {
 		<h1 class="page-title">Người dùng</h1>
-		@adminNav("dashboard")
-		<nav class="langs">
+		@adminNav("users")
+		<nav class="seg" aria-label="Sắp xếp">
 			for _, s := range []string{"active", "new", "searches"} {
-				<a class={ "chip", templ.KV("on", s == m.Sort) } href={ templ.URL("/admin/users?sort=" + s) }>{ s }</a>
+				<a class={ "seg-opt", templ.KV("on", s == m.Sort) } href={ templ.URL("/admin/users?sort=" + s) }>{ sortLabel(s) }</a>
 			}
 		</nav>
 		<div class="card scroll-x">
@@ -234,4 +238,18 @@ templ UsersPage(m UsersModel) {
 			</table>
 		</div>
 	}
+}
+
+func windowName(w string) string {
+	return strings.TrimSuffix(w, "d") + " ngày"
+}
+
+func sortLabel(s string) string {
+	switch s {
+	case "active":
+		return "Hoạt động gần đây"
+	case "new":
+		return "Mới đăng ký"
+	}
+	return "Tra nhiều"
 }

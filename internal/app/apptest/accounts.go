@@ -262,7 +262,7 @@ func (a *Accounts) Books(_ context.Context, userID string) ([]account.Book, erro
 	for _, b := range a.books {
 		if b.UserID == userID {
 			c := *b
-			c.ItemCount = len(a.items[b.ID])
+			c.ItemCount, c.Lyrics = len(a.items[b.ID]), ""
 			out = append(out, c)
 		}
 	}
@@ -290,6 +290,17 @@ func (a *Accounts) UpdateBook(_ context.Context, b *account.Book) error {
 		return account.ErrNotFound
 	}
 	cur.Title, cur.Description, cur.IsPublic, cur.UpdatedAt = b.Title, b.Description, b.IsPublic, a.Now()
+	return nil
+}
+
+func (a *Accounts) SetLyrics(_ context.Context, id, userID, lyrics string) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	b, ok := a.books[id]
+	if !ok || b.UserID != userID {
+		return account.ErrNotFound
+	}
+	b.Lyrics, b.UpdatedAt = lyrics, a.Now()
 	return nil
 }
 

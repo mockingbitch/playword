@@ -7,7 +7,9 @@ import (
 	"errors"
 	"io/fs"
 	"log/slog"
+	"maps"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -18,6 +20,7 @@ import (
 	"playword/internal/app"
 	"playword/internal/domain/analytics"
 	"playword/internal/domain/entry"
+	"playword/internal/domain/rhyme"
 	"playword/internal/ports"
 	"playword/pkg/vnphon"
 )
@@ -43,15 +46,20 @@ type Options struct {
 	Recorder      *app.Recorder                  // analytics events; nil disables
 	Dashboard     *app.Dashboard                 // admin dashboard; nil hides it
 	OAuth         map[string]ports.OAuthProvider // sign-in providers by name ("google"); empty hides the buttons
+	PublicURL     string                         // https://playword.vn: canonical and Open Graph URLs, sitemap
+	Contact       string                         // contact email on the legal pages and footer
+	Version       string
 }
 
 // Server routes requests to the app service.
 type Server struct {
-	svc      *app.Service
-	accounts *app.Accounts
-	slang    *app.Slang
-	opts     Options
-	mux      *http.ServeMux
+	svc           *app.Service
+	accounts      *app.Accounts
+	slang         *app.Slang
+	opts          Options
+	mux           *http.ServeMux
+	site          siteCache
+	checkThrottle throttle
 }
 
 // New wires the routes; ctx bounds background work such as the rate limiter janitor.
@@ -79,11 +87,22 @@ func New(ctx context.Context, svc *app.Service, o Options) *Server {
 	s.mux.Handle("GET /api/v1/parse", plain(s.apiParse))
 	s.mux.Handle("GET /api/v1/suggest", plain(s.apiSuggest))
 
-	s.mux.Handle("GET /{$}", search(s.pageSearch))
+	s.mux.Handle("GET /{$}", search(s.pageHome))
+	s.mux.Handle("GET /about", plain(s.pageAbout))
+	s.mux.Handle("GET /sources", plain(s.pageSources))
+	s.mux.Handle("GET /terms", plain(s.pageTerms))
+	s.mux.Handle("GET /privacy", plain(s.pagePrivacy))
+	s.mux.Handle("GET /robots.txt", plain(s.robots))
+	s.mux.Handle("GET /sitemap.xml", plain(s.sitemap))
+	s.mux.Handle("GET /", plain(s.pageNotFound))
 	s.mux.Handle("GET /search", search(s.pageSearch))
 	s.mux.Handle("GET /word/{lang}/{text}", plain(s.pageWord))
 	s.mux.Handle("GET /dictionary", plain(s.pageDictionary))
 	s.mux.Handle("GET /dictionary/suggest", plain(s.pageSuggest))
+	s.mux.Handle("GET /view", plain(s.pageView))
+	s.mux.Handle("GET /write", plain(s.pageWrite))
+	s.mux.Handle("POST /write/check", plain(s.pageCheck))
+	s.mux.Handle("POST /api/v1/rhymecheck", search(s.apiRhymeCheck))
 
 	if s.accounts != nil {
 		var loginLimiter *ipLimiter
@@ -113,6 +132,9 @@ func New(ctx context.Context, svc *app.Service, o Options) *Server {
 		s.mux.Handle("POST /books/{id}/items/{item}/note", plain(s.pageItemNote))
 		s.mux.Handle("PUT /books/{id}/order", plain(s.pageOrder))
 		s.mux.Handle("GET /books/{id}/export", plain(s.pageExport))
+		s.mux.Handle("GET /books/{id}/write", plain(s.pageBookWrite))
+		s.mux.Handle("GET /books/{id}/check", plain(s.pageBookCheck))
+		s.mux.Handle("POST /books/{id}/lyrics", plain(s.pageLyrics))
 		s.mux.Handle("POST /save", plain(s.pageSave))
 
 		s.mux.Handle("GET /api/v1/auth/csrf", plain(s.apiCSRF))
@@ -220,8 +242,8 @@ func render(w http.ResponseWriter, r *http.Request, status int, c templ.Componen
 // result section; everything else gets the full page (shareable URLs).
 func (s *Server) pageSearch(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
-	m := views.SearchModel{Page: s.page(r)}
-	p, err := rhymeParamsFor(r.URL.Query(), m.Page.User)
+	m := views.SearchModel{Page: s.page(r), Desk: r.URL.Query().Get("desk") == "1", Partial: isHTMX(r)}
+	p, err := rhymeParamsFor(pageQuery(r.URL.Query()), m.Page.User)
 	m.Params = p
 	if !isHTMX(r) && m.Page.User != nil && s.accounts != nil {
 		m.Page.Books, _ = s.accounts.Books(r.Context(), m.Page.User)
@@ -246,10 +268,12 @@ func (s *Server) pageSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	// htmx ignores 4xx/5xx swaps by default; errors are shown in-page.
 	switch {
+	case m.Result != nil && p.Cursor != "" && m.Desk:
+		render(w, r, http.StatusOK, views.DeskHitItems(m.Result))
 	case m.Result != nil && p.Cursor != "":
 		render(w, r, http.StatusOK, views.HitItems(m.Result))
 	case m.Result != nil && p.ExtraOver != "":
-		render(w, r, http.StatusOK, views.Extra(m.Result))
+		render(w, r, http.StatusOK, views.Extra(m.Result, m.Desk))
 	default:
 		render(w, r, http.StatusOK, views.Results(m))
 	}
@@ -267,17 +291,95 @@ func (s *Server) pageWord(w http.ResponseWriter, r *http.Request) {
 		render(w, r, status, views.DictionaryPage(views.DictModel{Page: s.page(r), Query: r.PathValue("text"), Lang: lang, Error: userMessage(err)}))
 		return
 	}
+	q := r.URL.Query()
+	from := s.fromResults(r, lang)
+	if from != nil {
+		from.Entry = e
+		s.record(r, analytics.Event{Type: analytics.ClickResult, Lang: string(lang), EntryID: e.ID,
+			Query: queryText(from.Params.Text)})
+	}
 	if isHTMX(r) {
-		if r.URL.Query().Get("from") == "rhyme" {
-			s.record(r, analytics.Event{Type: analytics.ClickResult, Lang: string(lang), EntryID: e.ID,
-				Query: queryText(r.URL.Query().Get("q"))})
-		}
 		w.Header().Set("Cache-Control", "private, max-age=300") // per-visitor: clicks are counted
+		if from != nil {
+			render(w, r, http.StatusOK, views.WordPanel(*from))
+			return
+		}
 		render(w, r, http.StatusOK, views.Definition(e))
 		return
 	}
-	s.record(r, analytics.Event{Type: analytics.ViewWord, Lang: string(lang), EntryID: e.ID})
-	render(w, r, http.StatusOK, views.WordPage(s.page(r), lang, e))
+	if from == nil {
+		s.record(r, analytics.Event{Type: analytics.ViewWord, Lang: string(lang), EntryID: e.ID})
+	}
+	saved := ""
+	if q.Get("saved") != "" {
+		saved = "saved"
+		if currentUser(r) == nil {
+			saved = "guest"
+		}
+	}
+	render(w, r, http.StatusOK, views.WordPage(s.page(r), e, from, saved))
+}
+
+// fromResults is the search a word was opened from (?from=rhyme&q=…), which
+// the save button records; nil when the word was opened directly.
+func (s *Server) fromResults(r *http.Request, lang entry.Lang) *views.PanelModel {
+	q := r.URL.Query()
+	if q.Get("from") != "rhyme" {
+		return nil
+	}
+	v := url.Values{"q": {q.Get("q")}, "lang": {string(lang)}, "dialect": {q.Get("dialect")}, "level": {q.Get("level")}}
+	p, err := rhymeParamsFor(pageQuery(v), nil)
+	if err != nil {
+		p = app.DefaultRhymeParams(q.Get("q"))
+		p.Lang = lang
+	}
+	m := &views.PanelModel{Params: p, CSRF: csrfToken(r), Desk: q.Get("desk") == "1"}
+	if l, err := rhyme.ParseLevel(q.Get("hl")); err == nil {
+		m.Level = views.LevelLabel(l)
+	}
+	next := *r.URL
+	nq := next.Query()
+	nq.Del("saved")
+	nq.Set("saved", "1")
+	next.RawQuery = nq.Encode()
+	m.Next = next.RequestURI()
+	return m
+}
+
+// pageQuery adapts query parameters from pages: a level from the other
+// language (left over after switching language on the writing desk) falls
+// back to the new language's default instead of failing.
+func pageQuery(v url.Values) url.Values {
+	l, err := rhyme.ParseLevel(v.Get("level"))
+	if err == nil && l.IsEnglish() != (v.Get("lang") == string(entry.EN)) {
+		v = maps.Clone(v)
+		v.Del("level")
+	}
+	return v
+}
+
+// viewMode is how result lists show: the visitor's choice (cookie pw_view),
+// else compact on phones and full on wide screens. Phones are told by the
+// client hint Chromium sends, or "Mobi" in the user agent (others).
+func viewMode(r *http.Request) string {
+	if c, err := r.Cookie(viewCookie); err == nil && (c.Value == views.ViewCompact || c.Value == views.ViewFull) {
+		return c.Value
+	}
+	if r.Header.Get("Sec-CH-UA-Mobile") == "?1" || strings.Contains(r.UserAgent(), "Mobi") {
+		return views.ViewCompact
+	}
+	return views.ViewFull
+}
+
+// pageView switches the result view without JavaScript.
+func (s *Server) pageView(w http.ResponseWriter, r *http.Request) {
+	mode := r.URL.Query().Get("mode")
+	if mode != views.ViewCompact && mode != views.ViewFull {
+		mode = views.ViewFull
+	}
+	c := s.cookie(viewCookie, mode, 365*24*time.Hour, false)
+	http.SetCookie(w, c)
+	http.Redirect(w, r, safeNext(r.URL.Query().Get("next")), http.StatusSeeOther)
 }
 
 func (s *Server) pageDictionary(w http.ResponseWriter, r *http.Request) {

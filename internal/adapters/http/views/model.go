@@ -3,6 +3,7 @@
 package views
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 	"strconv"
@@ -23,6 +24,49 @@ type Page struct {
 	User  *account.User
 	CSRF  string
 	Books []account.Book // the user's books, for "save to" (search page only)
+	View  string         // ViewCompact or ViewFull: how result lists show
+	URL   string         // this page's path and query, for links that come back
+	Site  Site           // the deployment: public URL, contact, version
+	Desc  string         // meta description; a default when empty
+}
+
+// Site is what pages say about the deployment itself.
+type Site struct {
+	PublicURL string // https://playword.vn, for canonical and Open Graph URLs; may be empty
+	Contact   string // contact email shown on the legal pages; may be empty
+	Version   string
+}
+
+// DefaultDesc describes Playword in search results and link previews.
+const DefaultDesc = "Từ điển vần cho rapper Việt: gõ từ cuối câu, nhận về từ có thật, cùng vần, kèm nghĩa. Năm mức vần, ba giọng Bắc, Trung, Nam, có cả tiếng Anh."
+
+func (pc Page) desc() string {
+	if pc.Desc != "" {
+		return pc.Desc
+	}
+	return DefaultDesc
+}
+
+// abs makes a site path absolute when the public URL is known.
+func (pc Page) abs(path string) string { return pc.Site.PublicURL + path }
+
+// canonical is this page without its query, except a search keeps q (and
+// lang), so shared results stay shareable.
+func (pc Page) canonical() string {
+	u, err := url.Parse(pc.URL)
+	if err != nil {
+		return pc.abs("/")
+	}
+	q := url.Values{}
+	for _, k := range []string{"q", "lang"} {
+		if v := u.Query().Get(k); v != "" {
+			q.Set(k, v)
+		}
+	}
+	if len(q) > 0 {
+		return pc.abs(u.Path + "?" + q.Encode())
+	}
+	return pc.abs(u.Path)
 }
 
 func csrfHeaders(token string) string {
@@ -32,10 +76,12 @@ func csrfHeaders(token string) string {
 
 // SearchModel is what the rhyme search page renders.
 type SearchModel struct {
-	Page   Page
-	Params app.RhymeParams
-	Result *app.RhymeResult // nil before the first query
-	Error  string
+	Page    Page
+	Params  app.RhymeParams
+	Result  *app.RhymeResult // nil before the first query
+	Error   string
+	Desk    bool // rendered inside the writing desk
+	Partial bool // an HTMX swap: also update the screen-reader status
 }
 
 // DictModel is what the dictionary page renders.
@@ -325,4 +371,17 @@ func lastSeen(u analytics.UserRow) string {
 		return "—"
 	}
 	return u.LastSeen.Format("02/01/2006")
+}
+
+type csrfCtxKey struct{}
+
+// WithCSRF lets components deep in a page (a book item) embed the CSRF
+// token without threading it through every call.
+func WithCSRF(ctx context.Context, token string) context.Context {
+	return context.WithValue(ctx, csrfCtxKey{}, token)
+}
+
+func csrfOf(ctx context.Context) string {
+	t, _ := ctx.Value(csrfCtxKey{}).(string)
+	return t
 }

@@ -265,7 +265,7 @@ func (q *Queries) EntryExists(ctx context.Context, id int64) (bool, error) {
 }
 
 const getBook = `-- name: GetBook :one
-select b.id, b.user_id, b.title, coalesce(b.description, '')::text as description, b.is_public, b.created_at, b.updated_at,
+select b.id, b.user_id, b.title, coalesce(b.description, '')::text as description, b.is_public, b.created_at, b.updated_at, b.lyrics,
        (select count(*) from rhyme_book_items i where i.book_id = b.id)::int as item_count
 from rhyme_books b where b.id = $1
 `
@@ -278,6 +278,7 @@ type GetBookRow struct {
 	IsPublic    bool
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
+	Lyrics      string
 	ItemCount   int32
 }
 
@@ -292,6 +293,7 @@ func (q *Queries) GetBook(ctx context.Context, id string) (GetBookRow, error) {
 		&i.IsPublic,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Lyrics,
 		&i.ItemCount,
 	)
 	return i, err
@@ -602,6 +604,24 @@ update users set failed_logins = 0, locked_until = null, last_seen_at = now() wh
 func (q *Queries) ResetLoginFailures(ctx context.Context, id string) error {
 	_, err := q.db.Exec(ctx, resetLoginFailures, id)
 	return err
+}
+
+const setBookLyrics = `-- name: SetBookLyrics :execrows
+update rhyme_books set lyrics = $3, updated_at = now() where id = $1 and user_id = $2
+`
+
+type SetBookLyricsParams struct {
+	ID     string
+	UserID string
+	Lyrics string
+}
+
+func (q *Queries) SetBookLyrics(ctx context.Context, arg SetBookLyricsParams) (int64, error) {
+	result, err := q.db.Exec(ctx, setBookLyrics, arg.ID, arg.UserID, arg.Lyrics)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
 }
 
 const setItemOrd = `-- name: SetItemOrd :execrows

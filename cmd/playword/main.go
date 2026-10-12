@@ -55,6 +55,7 @@ type config struct {
 	PublicURL    string // https://playword.vn: base of OAuth redirect URLs
 	GoogleID     string // Google sign-in; both empty disables it
 	GoogleSecret string
+	Contact      string // contact email on the legal pages
 }
 
 func loadConfig() (config, error) {
@@ -87,15 +88,16 @@ func loadConfig() (config, error) {
 	num("PLAYWORD_ANALYTICS", func(v string) (err error) { c.Analytics, err = strconv.ParseBool(v); return })
 	num("PLAYWORD_INGEST_SCHEDULE", func(v string) (err error) { c.Schedule, err = ingest.ParseSchedule(v); return })
 	str("PLAYWORD_PUBLIC_URL", &c.PublicURL)
+	str("PLAYWORD_CONTACT_EMAIL", &c.Contact)
 	str("PLAYWORD_GOOGLE_CLIENT_ID", &c.GoogleID)
 	str("PLAYWORD_GOOGLE_CLIENT_SECRET", &c.GoogleSecret)
 	c.PublicURL = strings.TrimRight(c.PublicURL, "/")
 	if (c.GoogleID == "") != (c.GoogleSecret == "") {
 		errs = append(errs, errors.New("set both PLAYWORD_GOOGLE_CLIENT_ID and PLAYWORD_GOOGLE_CLIENT_SECRET, or neither"))
 	}
-	if c.GoogleID != "" {
+	if c.GoogleID != "" || c.PublicURL != "" {
 		if u, err := url.Parse(c.PublicURL); err != nil || (u.Scheme != "https" && u.Scheme != "http") || u.Host == "" || u.Path != "" {
-			errs = append(errs, errors.New("google sign-in needs PLAYWORD_PUBLIC_URL, e.g. https://playword.vn (scheme and host only)"))
+			errs = append(errs, errors.New("PLAYWORD_PUBLIC_URL must be like https://playword.vn (scheme and host only); Google sign-in needs it"))
 		} else if u.Scheme == "http" && !c.Insecure {
 			errs = append(errs, errors.New("PLAYWORD_PUBLIC_URL is http: use https, or PLAYWORD_INSECURE_COOKIES=true for local development"))
 		}
@@ -252,6 +254,7 @@ func run() error {
 	}
 	web := httpadapter.New(ctx, svc, httpadapter.Options{
 		Recorder: recorder, Dashboard: dash, OAuth: providers,
+		PublicURL: cfg.PublicURL, Contact: cfg.Contact, Version: version,
 		Slang: slangSvc, Ingest: ingester, AdminToken: cfg.AdminToken, SubmitRPM: 1,
 		Log: log, RateLimitRPS: cfg.RateLimitRPS, RateBurst: cfg.RateBurst, TrustProxy: cfg.TrustProxy,
 		Accounts: app.NewAccounts(st, cfg.IPSalt), SecureCookies: !cfg.Insecure, LoginRPM: 5,

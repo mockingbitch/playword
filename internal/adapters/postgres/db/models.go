@@ -116,6 +116,7 @@ type RhymeBook struct {
 	IsPublic    bool
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
+	Lyrics      string
 }
 
 type RhymeBookItem struct {

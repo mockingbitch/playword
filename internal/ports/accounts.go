@@ -36,6 +36,7 @@ type AccountStore interface {
 	Books(ctx context.Context, userID string) ([]account.Book, error)
 	Book(ctx context.Context, id string) (*account.Book, error)
 	UpdateBook(ctx context.Context, b *account.Book) error
+	SetLyrics(ctx context.Context, id, userID, lyrics string) error // ErrNotFound unless userID owns the book
 	DeleteBook(ctx context.Context, id, userID string) error
 
 	Items(ctx context.Context, bookID string) ([]account.Item, error)

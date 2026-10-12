@@ -230,3 +230,29 @@ func TestIdentityStore(t *testing.T) {
 		t.Errorf("identity outlived its user: %v", err)
 	}
 }
+
+func TestBookLyrics(t *testing.T) {
+	ctx := context.Background()
+	st := testStore(t)
+	u, _ := st.CreateUser(ctx, "lyr@example.vn", "h", "", false)
+	other, _ := st.CreateUser(ctx, "x2@example.vn", "h", "", false)
+	b := &account.Book{UserID: u.ID, Title: "Bài"}
+	if err := st.CreateBook(ctx, b); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := st.Book(ctx, b.ID); got.Lyrics != "" {
+		t.Errorf("new book lyrics = %q", got.Lyrics)
+	}
+	if err := st.SetLyrics(ctx, b.ID, u.ID, "Đêm nay phố vắng\nngày tàn"); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := st.Book(ctx, b.ID); got.Lyrics != "Đêm nay phố vắng\nngày tàn" {
+		t.Errorf("lyrics = %q", got.Lyrics)
+	}
+	if err := st.SetLyrics(ctx, b.ID, other.ID, "x"); !errors.Is(err, account.ErrNotFound) {
+		t.Errorf("someone else's book: %v", err)
+	}
+	if list, _ := st.Books(ctx, u.ID); len(list) != 1 || list[0].Lyrics != "" {
+		t.Errorf("the list stays light: %+v", list)
+	}
+}

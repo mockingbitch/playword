@@ -43,6 +43,7 @@ type bookJSON struct {
 	Title       string     `json:"title"`
 	Description string     `json:"description"`
 	IsPublic    bool       `json:"is_public"`
+	Lyrics      *string    `json:"lyrics,omitempty"` // only on a single book
 	ItemCount   int        `json:"item_count"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	Items       []itemJSON `json:"items,omitempty"`
@@ -66,6 +67,16 @@ func toBookJSON(b *account.Book, items []account.Item) bookJSON {
 		out.Items = append(out.Items, toItemJSON(it))
 	}
 	if items != nil && out.Items == nil {
+		out.Items = []itemJSON{}
+	}
+	return out
+}
+
+// toBookDetail is one book with its lyrics and items (always a list).
+func toBookDetail(b *account.Book, items []account.Item) bookJSON {
+	out := toBookJSON(b, items)
+	out.Lyrics = &b.Lyrics
+	if out.Items == nil {
 		out.Items = []itemJSON{}
 	}
 	return out
@@ -186,6 +197,7 @@ type bookBody struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
 	IsPublic    *bool   `json:"is_public"`
+	Lyrics      *string `json:"lyrics"`
 }
 
 func (s *Server) apiBooks(w http.ResponseWriter, r *http.Request) {
@@ -232,7 +244,7 @@ func (s *Server) apiBook(w http.ResponseWriter, r *http.Request) {
 			writeAccountProblem(w, r, err)
 			return
 		}
-		writeJSON(w, http.StatusOK, toBookJSON(b, items))
+		writeJSON(w, http.StatusOK, toBookDetail(b, items))
 	case http.MethodPatch:
 		u := apiUser(w, r)
 		if u == nil {
@@ -259,11 +271,19 @@ func (s *Server) apiBook(w http.ResponseWriter, r *http.Request) {
 			public = *body.IsPublic
 		}
 		nb, err := s.accounts.UpdateBook(r.Context(), u, id, title, desc, public)
+		if err == nil && body.Lyrics != nil {
+			err = s.accounts.SetLyrics(r.Context(), u, id, *body.Lyrics)
+			nb.Lyrics = *body.Lyrics
+		}
 		if err != nil {
 			writeAccountProblem(w, r, err)
 			return
 		}
-		writeJSON(w, http.StatusOK, toBookJSON(nb, nil))
+		out := toBookJSON(nb, nil)
+		if body.Lyrics != nil {
+			out.Lyrics = &nb.Lyrics
+		}
+		writeJSON(w, http.StatusOK, out)
 	case http.MethodDelete:
 		if err := s.accounts.DeleteBook(r.Context(), currentUser(r), id); err != nil {
 			writeAccountProblem(w, r, err)
@@ -328,5 +348,5 @@ func (s *Server) apiPublicBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Cache-Control", "public, max-age=60")
-	writeJSON(w, http.StatusOK, toBookJSON(b, items))
+	writeJSON(w, http.StatusOK, toBookDetail(b, items))
 }

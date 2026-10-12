@@ -1,46 +1,170 @@
 package views
 
+import "strconv"
+
 templ Layout(title, nav string, pc Page) {
 	<!DOCTYPE html>
-	<html lang="vi">
+	<html lang="vi" data-view={ pc.View }>
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-			<meta name="color-scheme" content="dark"/>
-			<meta name="theme-color" content="#0f0f12"/>
+			<meta name="color-scheme" content="dark light"/>
+			<meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)"/>
+			<meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)"/>
 			<meta name="htmx-config" content='{"includeIndicatorStyles":false,"allowEval":false}'/>
 			<title>{ title }</title>
+			<meta name="description" content={ pc.desc() }/>
+			if pc.Site.PublicURL != "" {
+				<link rel="canonical" href={ pc.canonical() }/>
+				<meta property="og:url" content={ pc.canonical() }/>
+				<meta property="og:image" content={ pc.abs("/static/og.png") }/>
+			}
+			<meta property="og:type" content="website"/>
+			<meta property="og:site_name" content="Playword"/>
+			<meta property="og:locale" content="vi_VN"/>
+			<meta property="og:title" content={ title }/>
+			<meta property="og:description" content={ pc.desc() }/>
+			<meta name="twitter:card" content="summary_large_image"/>
+			<link rel="icon" href="/static/favicon.svg" type="image/svg+xml"/>
+			<link rel="apple-touch-icon" href="/static/apple-touch-icon.png"/>
+			<link rel="manifest" href="/static/manifest.webmanifest"/>
+			<link rel="preload" href="/static/fonts/be-vietnam-pro-latin-800.woff2" as="font" type="font/woff2" crossorigin/>
 			<link rel="stylesheet" href="/static/app.css"/>
 			<script src="/static/htmx.min.js" defer></script>
 			<script src="/static/sortable.min.js" defer></script>
 			<script src="/static/app.js" defer></script>
 		</head>
-		<body hx-headers={ csrfHeaders(pc.CSRF) }>
+		<body hx-headers={ csrfHeaders(pc.CSRF) } class={ "nav-" + nav }>
+			<a class="skip" href="#main">Bỏ qua tới nội dung</a>
 			<header class="top">
-				<a class="brand" href="/">Play<span>word</span></a>
-				<nav aria-label="Chính">
-					<a href="/" class={ templ.KV("on", nav == "rhyme") }>Tìm vần</a>
-					<a href="/dictionary" class={ templ.KV("on", nav == "dict") }>Từ điển</a>
-					<a href="/books" class={ templ.KV("on", nav == "books") }>Sổ vần</a>
-					if pc.User != nil {
-						if pc.User.IsAdmin() {
-							<a href="/admin" class={ templ.KV("on", nav == "admin") }>Admin</a>
+				<div class="top-in">
+					@Logo()
+					<nav class="nav-top" aria-label="Chính">
+						@navLinks(nav, pc)
+					</nav>
+					<div class="top-end">
+						if pc.User != nil {
+							<a class={ "me-link", templ.KV("on", nav == "me") } href="/me" title={ pc.User.Email }>
+								<span class="avatar" aria-hidden="true">{ initial(pc.User.Name()) }</span>
+								<span class="me-name">{ pc.User.Name() }</span>
+							</a>
+						} else {
+							<a class={ "btn small ghost", templ.KV("on", nav == "login") } href="/login">Đăng nhập</a>
+							<a class="btn small primary hide-sm" href="/register">Đăng ký</a>
 						}
-						<a href="/me" class={ "me", templ.KV("on", nav == "me") } title={ pc.User.Email }>{ pc.User.Name() }</a>
-					} else {
-						<a href="/login" class={ templ.KV("on", nav == "login") }>Đăng nhập</a>
-					}
-				</nav>
+					</div>
+				</div>
 			</header>
-			<main>
+			<main id="main">
 				{ children... }
 			</main>
-			<footer class="foot">
-				Dữ liệu: Từ điển Tiếng Việt (Hồ Ngọc Đức, GPL) · Wikipedia tiếng Việt (CC BY-SA 4.0) ·
-				Open English WordNet (CC BY 4.0) · CMUdict (BSD) · FrequencyWords (CC BY-SA 4.0)
-			</footer>
+			@siteFooter(pc)
+			<nav class="tabbar" aria-label="Chính">
+				@navLinks(nav, pc)
+			</nav>
+			<p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
 		</body>
 	</html>
+}
+
+// Logo is the mark (a yellow tile of sound bars) and the wordmark.
+templ Logo() {
+	<a class="brand" href="/" aria-label="Playword — trang chủ">
+		@logoMark()
+		<span class="brand-word" aria-hidden="true">PLAY<b>WORD</b></span>
+	</a>
+}
+
+templ logoMark() {
+	<svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+		<rect width="64" height="64" rx="14" fill="#FFD60A"></rect>
+		<g fill="#0B0B0C"><rect x="11" y="26" width="7" height="12" rx="3.5"></rect><rect x="21.5" y="17" width="7" height="30" rx="3.5"></rect><rect x="32" y="10" width="7" height="44" rx="3.5"></rect><rect x="42.5" y="21" width="7" height="22" rx="3.5"></rect></g>
+		<rect x="52" y="29" width="4" height="6" rx="2" fill="#FF4D2E"></rect>
+	</svg>
+}
+
+templ siteFooter(pc Page) {
+	<footer class="foot">
+		<div class="foot-in">
+			<div class="foot-brand">
+				@Logo()
+				<p class="muted">Từ điển vần cho rapper Việt. Mọi kết quả là từ có thật, kèm nghĩa.</p>
+			</div>
+			<nav class="foot-col" aria-label="Sản phẩm">
+				<h2>Sản phẩm</h2>
+				<a href="/search">Tìm vần</a>
+				<a href="/dictionary">Từ điển</a>
+				<a href="/write">Bàn viết</a>
+				<a href="/books">Sổ vần</a>
+				<a href="/slang/new">Đóng góp slang</a>
+			</nav>
+			<nav class="foot-col" aria-label="Tìm hiểu">
+				<h2>Tìm hiểu</h2>
+				<a href="/about">Giới thiệu</a>
+				<a href="/about#muc-van">Các mức vần</a>
+				<a href="/about#giong">Ba giọng đọc</a>
+				<a href="/sources">Nguồn dữ liệu</a>
+			</nav>
+			<nav class="foot-col" aria-label="Pháp lý">
+				<h2>Pháp lý</h2>
+				<a href="/terms">Điều khoản sử dụng</a>
+				<a href="/privacy">Quyền riêng tư</a>
+				if pc.Site.Contact != "" {
+					<a href={ templ.URL("mailto:" + pc.Site.Contact) }>Liên hệ</a>
+				}
+			</nav>
+		</div>
+		<div class="foot-base">
+			<p>
+				Dữ liệu: Từ điển Tiếng Việt (Hồ Ngọc Đức, GPL) · Wikipedia &amp; Wiktionary tiếng Việt (CC BY-SA) ·
+				Open English WordNet (CC BY 4.0) · CMUdict (BSD) · FrequencyWords (CC BY-SA 4.0).
+				<a href="/sources">Chi tiết</a>
+			</p>
+			<p>© { strconv.Itoa(year()) } Playword{ versionNote(pc.Site.Version) }</p>
+		</div>
+	</footer>
+}
+
+// navLinks is the main navigation, as top links on wide screens and as the
+// bottom tab bar on phones.
+templ navLinks(nav string, pc Page) {
+	@navLink("/search", "Tìm vần", nav == "rhyme", iconRhyme())
+	@navLink("/dictionary", "Từ điển", nav == "dict", iconDict())
+	@navLink("/write", "Viết", nav == "write", iconWrite())
+	@navLink("/books", "Sổ vần", nav == "books", iconBook())
+	if pc.User != nil && pc.User.IsAdmin() {
+		<a href="/admin" class={ "nav-admin", templ.KV("on", nav == "admin") } aria-current={ ariaCurrent(nav == "admin") }>Admin</a>
+	}
+}
+
+templ navLink(href, label string, on bool, icon templ.Component) {
+	<a href={ templ.URL(href) } class={ templ.KV("on", on) } aria-current={ ariaCurrent(on) }>
+		@icon
+		<span>{ label }</span>
+	</a>
+}
+
+func ariaCurrent(on bool) string {
+	if on {
+		return "page"
+	}
+	return "false"
+}
+
+templ iconRhyme() {
+	<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5 21 21"></path></svg>
+}
+
+templ iconDict() {
+	<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"></path><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"></path></svg>
+}
+
+templ iconWrite() {
+	<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13 7l4 4"></path></svg>
+}
+
+templ iconBook() {
+	<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>
 }
 
 // csrfField is the hidden input every plain form carries.

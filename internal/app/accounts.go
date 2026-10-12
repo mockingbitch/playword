@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	lru "github.com/hashicorp/golang-lru/v2"
 
@@ -404,6 +405,21 @@ func (a *Accounts) UpdateBook(ctx context.Context, u *account.User, id, title, d
 	return b, a.store.UpdateBook(ctx, b)
 }
 
+// SetLyrics saves the lyrics of u's book (the writing desk autosaves).
+func (a *Accounts) SetLyrics(ctx context.Context, u *account.User, id, lyrics string) error {
+	if u == nil {
+		return account.ErrUnauthenticated
+	}
+	lyrics = strings.ReplaceAll(lyrics, "\r\n", "\n")
+	if utf8.RuneCountInString(lyrics) > account.MaxLyrics {
+		return fmt.Errorf("%w: lời bài dài quá %d ký tự", account.ErrInvalidInput, account.MaxLyrics)
+	}
+	if !utf8.ValidString(lyrics) {
+		return fmt.Errorf("%w: lyrics", account.ErrInvalidInput)
+	}
+	return a.store.SetLyrics(ctx, id, u.ID, lyrics)
+}
+
 // DeleteBook removes a notebook and its items.
 func (a *Accounts) DeleteBook(ctx context.Context, u *account.User, id string) error {
 	if _, err := a.owned(ctx, u, id); err != nil {
@@ -526,6 +542,9 @@ func (a *Accounts) Export(ctx context.Context, viewer *account.User, bookID, for
 	switch format {
 	case "txt", "":
 		fmt.Fprintf(&buf, "%s\n", b.Title)
+		if b.Lyrics != "" {
+			fmt.Fprintf(&buf, "\n%s\n\n", strings.TrimRight(b.Lyrics, "\n"))
+		}
 		for _, it := range items {
 			fmt.Fprintf(&buf, "%s", it.Text)
 			if it.Note != "" {
@@ -538,6 +557,13 @@ func (a *Accounts) Export(ctx context.Context, viewer *account.User, bookID, for
 		fmt.Fprintf(&buf, "# %s\n\n", b.Title)
 		if b.Description != "" {
 			fmt.Fprintf(&buf, "%s\n\n", b.Description)
+		}
+		if b.Lyrics != "" {
+			buf.WriteString("## Lời\n\n")
+			for _, line := range strings.Split(strings.TrimRight(b.Lyrics, "\n"), "\n") {
+				fmt.Fprintf(&buf, "%s  \n", line) // two spaces: a markdown line break
+			}
+			buf.WriteString("\n## Vần đã lưu\n\n")
 		}
 		for _, it := range items {
 			fmt.Fprintf(&buf, "- **%s**", it.Text)
@@ -563,8 +589,9 @@ func (a *Accounts) Export(ctx context.Context, viewer *account.User, bookID, for
 		out := struct {
 			Title       string `json:"title"`
 			Description string `json:"description,omitempty"`
+			Lyrics      string `json:"lyrics,omitempty"`
 			Items       []item `json:"items"`
-		}{Title: b.Title, Description: b.Description, Items: []item{}}
+		}{Title: b.Title, Description: b.Description, Lyrics: b.Lyrics, Items: []item{}}
 		for _, it := range items {
 			out.Items = append(out.Items, item{it.Text, it.EntryID, it.Note, it.Lang, it.Dialect, it.Level, it.MatchedFrom})
 		}

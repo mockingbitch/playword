@@ -223,19 +223,23 @@ func TestPages(t *testing.T) {
 		want   []string
 		not    []string
 	}{
-		{"/", false, 200, []string{`<form id="rhyme-form"`, `hx-get="/search"`, "Thử:"}, nil},
-		{"/?q=" + q("ngày tàn"), false, 200, []string{"<!doctype html>", `<mark>may</mark>`, "Khớp 2 âm"}, nil},
+		{"/", false, 200, []string{`class="hero"`, `action="/search"`, "Gieo vần", "Năm mức"}, []string{`id="rhyme-form"`}},
+		{"/search", false, 200, []string{`<form id="rhyme-form"`, `hx-get="/search"`, "Thử:"}, nil},
+		{"/?q=" + q("ngày tàn"), false, 200, []string{"<!doctype html>", `m<b class="rh">ay</b>`, "Khớp 2 âm"}, nil},
 		{"/search?q=" + q("ngày tàn"), true, 200, []string{`<section id="results"`, "+ Nam"}, []string{"<!doctype html>"}},
 		{"/search?q=wifi", true, 200, []string{"không phải âm tiết tiếng Việt chuẩn"}, nil},
 		{"/search?q=wifi", false, 422, []string{"không phải âm tiết"}, nil},
-		{"/search?q=" + q("tàn") + "&dialect=nam&extra_over=bac&level=L0", true, 200, []string{"Khớp thêm khi đọc giọng Nam", "tàng"}, []string{">lan<"}},
+		{"/search?q=" + q("tàn") + "&dialect=nam&extra_over=bac&level=L0", true, 200, []string{"Khớp thêm khi đọc giọng Nam", `t<b class="rh">àng</b>`}, []string{`l<b class="rh">an</b>`}},
 		{"/word/vi/" + url.PathEscape("may mắn"), true, 200, []string{`class="defbody"`, "Gặp dịp tốt."}, []string{"<!doctype html>"}},
-		{"/word/vi/" + url.PathEscape("may mắn"), false, 200, []string{"<!doctype html>", "<h1>may mắn</h1>"}, nil},
+		{"/word/vi/" + url.PathEscape("may mắn"), false, 200, []string{"<!doctype html>", `<h1 class="hw">may mắn</h1>`, "Vần", "<b>ay</b>"}, []string{"Lưu vào sổ"}},
+		{"/word/vi/" + url.PathEscape("may mắn") + "?from=rhyme&q=" + q("ngày tàn") + "&hl=L25", false, 200, []string{"Mức khớp: Rap-flex", `action="/save"`, "Vần cho “ngày tàn”"}, nil},
+		{"/word/vi/" + url.PathEscape("may mắn") + "?from=rhyme&q=" + q("ngày tàn"), true, 200, []string{`class="panel-body"`, `hx-post="/save"`, "Gặp dịp tốt."}, []string{"<!doctype html>", "Chèn vào bài"}},
+		{"/word/vi/" + url.PathEscape("may mắn") + "?from=rhyme&desk=1&q=" + q("ngày tàn"), true, 200, []string{`data-insert="may mắn"`}, nil},
 		{"/word/vi/nope", true, 200, []string{`class="msg err"`}, nil},
 		{"/word/vi/nope", false, 404, []string{"Không tìm thấy"}, nil},
 		{"/dictionary", false, 200, []string{`id="dq"`}, nil},
-		{"/dictionary?q=" + q("may mắn"), false, 200, []string{"<h1>may mắn</h1>", "Tìm vần cho"}, nil},
-		{"/dictionary?q=wifi", false, 200, []string{"<h1>wifi</h1>"}, []string{"Tìm vần cho"}},
+		{"/dictionary?q=" + q("may mắn"), false, 200, []string{`<h1 class="hw">may mắn</h1>`, "Tìm vần cho"}, nil},
+		{"/dictionary?q=wifi", false, 200, []string{`<h1 class="hw">wifi</h1>`}, []string{"Tìm vần cho"}},
 		{"/dictionary?q=mayman", false, 404, []string{"Có phải bạn muốn tìm", "may mắn"}, nil},
 		{"/dictionary/suggest?q=ngayf", true, 200, []string{"ngày tàn"}, nil},
 		{"/static/app.css", false, 200, []string{"--accent"}, nil},
@@ -278,7 +282,7 @@ func TestInfiniteScroll(t *testing.T) {
 	}
 	next = strings.ReplaceAll(next[:end], "&amp;", "&")
 	_, page2 := get(t, ts, next, true)
-	if strings.Contains(page2, "<section") || !strings.Contains(page2, "Thái") || strings.Contains(page2, `class="more"`) {
+	if strings.Contains(page2, "<section") || !strings.Contains(page2, "Tên xã.") || strings.Contains(page2, `class="more"`) {
 		t.Errorf("page 2 must be bare items without a further sentinel: %s", page2)
 	}
 }
@@ -358,7 +362,7 @@ func TestEnglish(t *testing.T) {
 		t.Errorf("derived pronunciation: %s", body)
 	}
 	_, body = get(t, ts, "/?q=money&lang=en", false)
-	for _, want := range []string{`name="lang" value="en"`, "Perfect", "<mark>honey</mark>"} {
+	for _, want := range []string{`name="lang" value="en"`, "Perfect", `<b class="rh">honey</b>`} {
 		if !strings.Contains(body, want) {
 			t.Errorf("page: missing %q", want)
 		}
@@ -367,7 +371,7 @@ func TestEnglish(t *testing.T) {
 		t.Error("English has no dialect chips")
 	}
 	_, body = get(t, ts, "/dictionary?q=honey&lang=en", false)
-	if !strings.Contains(body, "<h1>honey</h1>") || !strings.Contains(body, "lang=en") {
+	if !strings.Contains(body, `<h1 class="hw">honey</h1>`) || !strings.Contains(body, "lang=en") {
 		t.Errorf("dictionary: %s", body)
 	}
 	_, body = get(t, ts, "/dictionary/suggest?q=hon&lang=en", true)
@@ -379,7 +383,7 @@ func TestEnglish(t *testing.T) {
 func TestEnglishHighlight(t *testing.T) {
 	ts, _ := testServer(t, 0)
 	_, body := get(t, ts, "/search?q=money&lang=en", true)
-	if !strings.Contains(body, "<mark>honey</mark>") || !strings.Contains(body, "AH1 N IY0") {
+	if !strings.Contains(body, `<b class="rh">honey</b>`) || !strings.Contains(body, `title="AH1 N IY0"`) {
 		t.Errorf("%s", body)
 	}
 }

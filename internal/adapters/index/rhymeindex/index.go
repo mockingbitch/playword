@@ -423,3 +423,17 @@ func (h *Holder) Rebuild(ctx context.Context, loader ports.IndexLoader, e *rhyme
 	h.cur.Store(s)
 	return s, nil
 }
+
+// SourceCounts is how many entries each source contributed; an entry merged
+// from several sources ("hnd, wiktionary-vi") counts for each of them.
+func (s *Snapshot) SourceCounts() map[string]int {
+	out := map[string]int{}
+	for i := range s.entries {
+		for _, src := range strings.Split(s.entries[i].Source, ",") {
+			if src = strings.TrimSpace(src); src != "" {
+				out[src]++
+			}
+		}
+	}
+	return out
+}

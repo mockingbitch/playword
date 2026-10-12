@@ -25,7 +25,8 @@ templ BooksPage(m BooksModel) {
 					<h2>Sổ tạm</h2>
 					<ul class="items">
 						for _, g := range m.Guest {
-							<li class="item"><span class="item-text">{ g.Text }</span>
+							<li class="item">
+								<span class="item-text">{ g.Text }</span>
 								if g.MatchedFrom != "" {
 									<span class="muted small">vần với “{ g.MatchedFrom }”</span>
 								}
@@ -35,13 +36,12 @@ templ BooksPage(m BooksModel) {
 				</section>
 			}
 		} else {
-			<form method="post" action="/books" class="card inline-form">
-				@csrfField(m.Page)
-				<input name="title" placeholder="Tên sổ mới, vd: Bài mới — verse 1" maxlength="120" required aria-label="Tên sổ"/>
-				<button class="btn primary" type="submit">Tạo sổ</button>
-			</form>
+			@newBookForm(m.Page, "", "Tạo sổ")
 			if len(m.Books) == 0 {
-				<p class="msg">Chưa có sổ nào. Tạo sổ rồi bấm ＋ cạnh kết quả tìm vần để lưu.</p>
+				<div class="empty">
+					<p>Chưa có sổ nào. Mỗi sổ là một bài: lời bạn viết, cùng những vần đã lưu cho nó.</p>
+					<p class="muted small">Bấm vào một vần khi tìm, rồi chọn “＋ Lưu vào sổ”.</p>
+				</div>
 			}
 			<ul class="books">
 				for _, b := range m.Books {
@@ -75,6 +75,9 @@ templ BookPage(m BookModel) {
 			if m.Book.Description != "" {
 				<p class="muted">{ m.Book.Description }</p>
 			}
+			if m.Owner {
+				<p class="actions"><a class="btn primary" href={ templ.URL("/books/" + m.Book.ID + "/write") }>Mở bàn viết</a></p>
+			}
 			<p class="small">
 				Tải về:
 				<a href={ templ.URL("/books/" + m.Book.ID + "/export?format=txt") }>txt</a> ·
@@ -88,9 +91,18 @@ templ BookPage(m BookModel) {
 		if m.Error != "" {
 			<p class="msg err" role="alert">{ m.Error }</p>
 		}
-		if len(m.Items) == 0 {
-			<p class="msg">Sổ trống.</p>
+		if m.Book.Lyrics != "" {
+			<section class="card">
+				<h2 class="sub">Lời</h2>
+				<pre class="lyrics-view">{ m.Book.Lyrics }</pre>
+				<p class="actions"><a class="btn rc-toggle" href={ templ.URL("/books/" + m.Book.ID + "/check") }><span class="rc-dots" aria-hidden="true"><i></i><i></i><i></i></span> Xem vần</a></p>
+			</section>
 		}
+		<h2 class="sub">Vần đã lưu <span class="muted">({ itoa(len(m.Items)) })</span></h2>
+		if len(m.Items) == 0 {
+			<p class="msg">Chưa lưu vần nào.</p>
+		}
+		<p id="order-status" class="sr-only" role="status"></p>
 		<ol
 			class={ "items", templ.KV("sortable", m.Owner) }
 			id="items"
@@ -127,7 +139,7 @@ templ BookPage(m BookModel) {
 templ BookItem(bookID string, it account.Item, owner bool) {
 	<li class="item" data-id={ i64(it.ID) }>
 		if owner {
-			<span class="grip" aria-hidden="true" title="Kéo để sắp xếp">⋮⋮</span>
+			<button type="button" class="grip" title="Kéo, hoặc dùng phím ↑ ↓ để sắp xếp" aria-label={ "Sắp xếp “" + it.Text + "”: dùng phím mũi tên lên, xuống" }>⋮⋮</button>
 		}
 		<div class="item-body">
 			if it.EntryID != 0 {
@@ -139,23 +151,30 @@ templ BookItem(bookID string, it account.Item, owner bool) {
 				<span class="muted small">vần với “{ it.MatchedFrom }”{ levelNote(it.Level) }</span>
 			}
 			if owner {
-				<form class="note" hx-post={ "/books/" + bookID + "/items/" + i64(it.ID) + "/note" } hx-trigger="change" hx-swap="none">
-					<input name="note" value={ it.Note } placeholder="ghi chú…" maxlength="1000" aria-label="Ghi chú"/>
+				<form class="note" method="post" action={ templ.URL("/books/" + bookID + "/items/" + i64(it.ID) + "/note") } hx-post={ "/books/" + bookID + "/items/" + i64(it.ID) + "/note" } hx-trigger="change" hx-swap="none">
+					<input type="hidden" name="csrf_token" value={ csrfOf(ctx) }/>
+					<input name="note" value={ it.Note } placeholder="＋ ghi chú" maxlength="1000" aria-label={ "Ghi chú cho “" + it.Text + "”" }/>
 				</form>
 			} else if it.Note != "" {
 				<p class="small">{ it.Note }</p>
 			}
 		</div>
 		if owner {
-			<button
-				type="button"
-				class="icon-btn"
-				hx-post={ "/books/" + bookID + "/items/" + i64(it.ID) + "/delete" }
-				hx-target="closest li"
-				hx-swap="outerHTML"
-				aria-label="Xoá"
-				title="Xoá"
-			>×</button>
+			<form class="del" method="post" action={ templ.URL("/books/" + bookID + "/items/" + i64(it.ID) + "/delete") } data-undo={ it.Text }>
+				<input type="hidden" name="csrf_token" value={ csrfOf(ctx) }/>
+				<button type="submit" class="icon-btn" aria-label={ "Xoá “" + it.Text + "”" } title="Xoá">×</button>
+			</form>
 		}
 	</li>
+}
+
+templ newBookForm(pc Page, next, label string) {
+	<form method="post" action="/books" class="card inline-form">
+		@csrfField(pc)
+		if next != "" {
+			<input type="hidden" name="next" value={ next }/>
+		}
+		<input name="title" placeholder="Tên bài, vd: Ngày tàn — verse 1" maxlength="120" required aria-label="Tên sổ"/>
+		<button class="btn primary" type="submit">{ label }</button>
+	</form>
 }

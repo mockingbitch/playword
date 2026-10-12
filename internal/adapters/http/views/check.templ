@@ -1,0 +1,90 @@
+package views
+
+import "playword/internal/domain/rhyme"
+
+// CheckModel is a coloured, read-only view of lyrics.
+type CheckModel struct {
+	Page    Page
+	Title   string // the book's, if any
+	Text    string
+	Result  rhyme.CheckResult
+	Dialect rhyme.Dialect
+	Level   rhyme.Level
+	Back    string
+	Error   string
+}
+
+templ CheckPage(m CheckModel) {
+	@Layout(checkTitle(m), "write", m.Page) {
+		<article class="check-page">
+			<header class="page-hero">
+				<p class="eyebrow"><span class="sticker">Kiểm tra vần</span> { LevelLabel(m.Level) } · giọng { DialectLabel(m.Dialect) }</p>
+				<h1 class="page-title">
+					if m.Title != "" {
+						{ m.Title }
+					} else {
+						Lời đã kiểm tra
+					}
+				</h1>
+				if m.Back != "" && m.Back != "/" {
+					<p><a class="btn ghost" href={ templ.URL(m.Back) }>← Quay lại</a></p>
+				}
+			</header>
+			if m.Error != "" {
+				<div class="empty"><p>{ m.Error }</p></div>
+			} else {
+				@CheckSummary(m.Result)
+				<div class="check-view" aria-label="Lời, vần được tô màu">
+					{{ styles := CheckStyles(m.Result) }}
+					for _, ln := range checkLines(m.Text, m.Result) {
+						<div class={ "cl", templ.KV("blank", ln.Blank) }>
+							<span class="cl-scheme" aria-hidden="true">{ ln.Scheme }</span>
+							<span class="cl-text">
+								for _, sg := range ln.Segs {
+									if sg.Group > 0 {
+										<mark class={ groupClass(styles, sg.Group) } data-k={ sg.Label }>{ sg.Text }</mark>
+									} else if sg.Repeat {
+										<span class="rep" title="Lặp từ">{ sg.Text }</span>
+									} else {
+										{ sg.Text }
+									}
+								}
+							</span>
+						</div>
+					}
+				</div>
+			}
+		</article>
+	}
+}
+
+// CheckSummary is the legend and the numbers; the desk fills the same
+// markup from JSON.
+templ CheckSummary(r rhyme.CheckResult) {
+	<div class="check-sum">
+		<p class="check-stats">
+			if len(r.Groups) == 0 {
+				Chưa thấy chuỗi vần đa âm nào (hai âm tiết liền nhau vần với hai âm tiết khác trong cùng khổ).
+			} else {
+				<b>{ itoa(len(r.Groups)) } nhóm vần</b> · mật độ { density(r.Density) } · { pct(r.Rhymed) } âm tiết có vần
+			}
+		</p>
+		if len(r.Groups) > 0 {
+			<ul class="check-legend" aria-label="Các nhóm vần">
+				for i, g := range r.Groups {
+					<li class={ groupClass(CheckStyles(r), i+1) } title={ joinMembers(g.Members) }>
+						<b>{ g.Letter }</b> <span>-{ g.Label }</span> <span class="n">×{ itoa(g.Chains) }</span>
+					</li>
+				}
+			</ul>
+			<p class="muted small">Sơ đồ: { joinSchemes(r.Schemes()) }</p>
+		}
+	</div>
+}
+
+func checkTitle(m CheckModel) string {
+	if m.Title != "" {
+		return m.Title + " — Kiểm tra vần"
+	}
+	return "Kiểm tra vần — Playword"
+}

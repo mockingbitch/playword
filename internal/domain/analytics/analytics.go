@@ -11,6 +11,7 @@ const (
 	SaveItem    = "save_item"
 	SubmitSlang = "submit_slang"
 	Login       = "login"
+	RhymeCheck  = "rhyme_check" // props: the rhyme scheme and counts, never the lyrics
 )
 
 // Event is one append-only usage record. It carries no raw PII: a user id

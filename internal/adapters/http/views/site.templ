@@ -1,0 +1,467 @@
+package views
+
+import (
+	"playword/internal/app"
+	"playword/internal/domain/rhyme"
+)
+
+// LevelExample is a few real words that rhyme with a query at one level.
+type LevelExample struct {
+	Level rhyme.Level
+	Hits  []app.Hit
+}
+
+// DialectExample is what rhymes with a query only when read in a dialect.
+type DialectExample struct {
+	Dialect rhyme.Dialect
+	Hits    []app.Hit
+}
+
+// SiteData is what the home and about pages show from the live index.
+type SiteData struct {
+	Entries  int
+	Demo     *app.RhymeResult // the hero example
+	DemoText string
+	Word     string // the word the level examples rhyme with
+	Levels   []LevelExample
+	Dialects []DialectExample
+	ENWord   string
+	EN       []LevelExample
+	Sources  map[string]int
+}
+
+type SiteModel struct {
+	Page Page
+	Data SiteData
+}
+
+// ---------- home ----------
+templ HomePage(m SiteModel) {
+	@Layout("Playword — từ điển vần cho rapper Việt", "home", m.Page) {
+		<section class="hero">
+			<div class="hero-copy">
+				<p class="eyebrow"><span class="sticker">Từ điển vần</span> cho rapper Việt</p>
+				<h1 class="display">Gieo vần<br/>chuẩn từng <span class="hl">chữ.</span></h1>
+				<p class="lede">Gõ từ cuối câu — Playword trả về những từ <strong>có thật</strong>, cùng vần, kèm nghĩa. Năm mức từ vần chuẩn tới ép vần, đủ giọng Bắc, Trung, Nam.</p>
+				<form class="hero-search" action="/search" method="get" role="search">
+					<label class="sr-only" for="hq">Từ cần tìm vần</label>
+					<input id="hq" name="q" type="search" placeholder="vd: ngày tàn" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"/>
+					<button class="btn primary" type="submit">Tìm vần</button>
+				</form>
+				<p class="try">
+					<span class="muted">Thử:</span>
+					for _, w := range []string{"ngày tàn", "may mắn", "cuộc đời", "thành phố", "money"} {
+						<a href={ templ.URL(tryURL(w)) }>{ w }</a>
+					}
+				</p>
+			</div>
+			if m.Data.Demo != nil && len(m.Data.Demo.Hits) > 0 {
+				<aside class="hero-demo" aria-label="Ví dụ kết quả">
+					<p class="demo-q"><span class="muted">Vần cho</span> “{ m.Data.DemoText }”</p>
+					<ul class="demo-hits">
+						for _, h := range m.Data.Demo.Hits {
+							<li class={ levelClass(h.Level) }>
+								<a class="hit-word" href={ templ.URL(panelURL(h, m.Data.Demo.Params, false)) }>
+									<span class="word">
+										for _, w := range hitWords(h) {
+											<span class="w">{ w.Head }<b class="rh">{ w.Rime }</b></span>
+										}
+									</span>
+								</a>
+							</li>
+						}
+					</ul>
+					<p class="demo-foot">
+						<a href={ templ.URL(SearchURL(m.Data.Demo.Params, nil)) }>Xem tất cả { countLabel(m.Data.Demo) } →</a>
+					</p>
+				</aside>
+			}
+		</section>
+		<section class="stats" aria-label="Số liệu">
+			<div><strong>{ thousands(m.Data.Entries) }</strong><span>mục từ có nghĩa</span></div>
+			<div><strong>5</strong><span>mức vần</span></div>
+			<div><strong>3</strong><span>giọng đọc</span></div>
+			<div><strong>VI + EN</strong><span>hai ngôn ngữ</span></div>
+		</section>
+		<section class="features">
+			<h2 class="section-title">Mọi thứ cho một câu rap</h2>
+			<div class="feature-grid">
+				<article class="feature">
+					<span class="feature-ico">
+						@iconRhyme()
+					</span>
+					<h3>Tìm vần theo mức</h3>
+					<p>Từ <b>Chuẩn</b> (trùng cả thanh) tới <b>Ép vần</b> (chỉ cần nguyên âm cùng họ). Khớp nhiều âm luôn xếp trước.</p>
+					<a href="/search">Mở tìm vần →</a>
+				</article>
+				<article class="feature">
+					<span class="feature-ico">
+						@iconWrite()
+					</span>
+					<h3>Bàn viết</h3>
+					<p>Viết lời bên trái, vần cho từ cuối câu đang viết hiện ngay bên phải. Chạm để chèn vào bài.</p>
+					<a href="/write">Bắt đầu viết →</a>
+				</article>
+				<article class="feature">
+					<span class="feature-ico">
+						@iconBook()
+					</span>
+					<h3>Sổ vần</h3>
+					<p>Lưu vần cho từng bài, ghi chú, sắp xếp, xuất ra txt, md, json. Chia sẻ bằng link công khai.</p>
+					<a href="/books">Xem sổ vần →</a>
+				</article>
+				<article class="feature">
+					<span class="feature-ico">
+						@iconDict()
+					</span>
+					<h3>Từ điển</h3>
+					<p>Gõ không dấu hay Telex đều ra từ. Nghĩa lấy từ các từ điển mở, có ghi nguồn rõ ràng.</p>
+					<a href="/dictionary">Tra từ điển →</a>
+				</article>
+			</div>
+		</section>
+		if len(m.Data.Levels) > 0 {
+			<section class="ladder-sec">
+				<div class="sec-head">
+					<h2 class="section-title">Năm mức, một từ: “{ m.Data.Word }”</h2>
+					<p class="muted">Càng xuống càng thoáng. Ví dụ dưới đây lấy thẳng từ kết quả tìm vần.</p>
+				</div>
+				@levelLadder(m.Data.Word, m.Data.Levels, 4)
+				<p><a class="btn ghost" href="/about#muc-van">Hiểu kỹ các mức vần</a></p>
+			</section>
+		}
+		<section class="cta">
+			<h2 class="display small">Có câu rồi?<br/>Tìm <span class="hl">vần</span> thôi.</h2>
+			<p class="actions">
+				<a class="btn primary big" href="/write">Mở bàn viết</a>
+				if m.Page.User == nil {
+					<a class="btn big" href="/register">Tạo tài khoản miễn phí</a>
+				}
+			</p>
+		</section>
+	}
+}
+
+templ levelLadder(word string, levels []LevelExample, n int) {
+	<ol class="ladder">
+		for _, l := range levels {
+			<li class={ "rung", levelClass(l.Level) }>
+				<div class="rung-head">
+					<span class={ "sw", levelClass(l.Level) } aria-hidden="true"></span>
+					<strong>{ LevelLabel(l.Level) }</strong>
+					<span class="muted">{ levelHint(l.Level) }</span>
+				</div>
+				<p class="rung-words">
+					for i, h := range l.Hits {
+						if i < n {
+							<a href={ templ.URL(WordURL(h.Entry.Lang, h.Entry.Headword)) }>
+								for _, w := range hitWords(h) {
+									<span class="w">{ w.Head }<b class="rh">{ w.Rime }</b></span>
+								}
+							</a>
+						}
+					}
+				</p>
+			</li>
+		}
+	</ol>
+}
+
+// ---------- about ----------
+templ AboutPage(m SiteModel) {
+	@Layout("Giới thiệu & cách dùng — Playword", "about", m.Page) {
+		<article class="prose">
+			<header class="page-hero">
+				<p class="eyebrow"><span class="sticker">Giới thiệu</span></p>
+				<h1 class="display small">Playword là gì?</h1>
+				<p class="lede">Một từ điển vần làm cho người viết rap tiếng Việt: tìm từ cùng vần trong vài mili giây, mọi kết quả đều là từ có thật và có nghĩa đi kèm, không có từ bịa.</p>
+			</header>
+			<nav class="toc" aria-label="Mục lục">
+				<a href="#cach-dung">Cách dùng</a>
+				<a href="#muc-van">Các mức vần</a>
+				<a href="#giong">Ba giọng đọc</a>
+				<a href="#tieng-anh">Tiếng Anh</a>
+				<a href="#ban-viet">Bàn viết</a>
+				<a href="#meo">Mẹo</a>
+			</nav>
+			<section id="cach-dung">
+				<h2>Cách dùng</h2>
+				<ol class="steps">
+					<li><b>Gõ từ hoặc cụm cuối câu</b> vào ô tìm, ví dụ “ngày tàn”. Gõ đủ dấu cho tiếng Việt.</li>
+					<li><b>Quét danh sách.</b> Từ khớp nhiều âm (cả “ngày” lẫn “tàn”) đứng trước; phần được tô là phần vần.</li>
+					<li><b>Chạm một từ</b> để xem nghĩa, phần vần và thanh, rồi “＋ Lưu vào sổ” hoặc “Tìm vần cho” chính từ đó.</li>
+				</ol>
+			</section>
+			<section id="muc-van">
+				<h2>Các mức vần</h2>
+				<p>Vần của một âm tiết là phần sau phụ âm đầu: âm đệm, nguyên âm và âm cuối, cộng với thanh. Mỗi mức nới lỏng một điều kiện. Kết quả ở một mức luôn gồm cả các mức chặt hơn nó.</p>
+				@levelLadder(m.Data.Word, m.Data.Levels, 8)
+				<table class="tbl level-tbl">
+					<thead><tr><th>Mức</th><th>Điều kiện</th></tr></thead>
+					<tbody>
+						for _, o := range levelOptions {
+							<tr><td><span class={ legendClass(o.Value) } aria-hidden="true"></span> { o.Label }</td><td>{ o.Hint }</td></tr>
+						}
+					</tbody>
+				</table>
+			</section>
+			<section id="giong">
+				<h2>Ba giọng đọc</h2>
+				<p>Cùng một chữ viết, mỗi vùng đọc một khác: giọng Nam không phân biệt “-n” và “-ng” ở nhiều vần, giọng Trung gộp một số thanh. Chọn giọng trong bộ lọc; nút “Khớp thêm khi đọc giọng …” cho thấy những từ chỉ vần khi đọc theo giọng khác.</p>
+				for _, d := range m.Data.Dialects {
+					if len(d.Hits) > 0 {
+						<p class="dialect-ex">
+							<span>Với “{ m.Data.Word }”, chỉ khi đọc giọng <b>{ DialectLabel(d.Dialect) }</b>:</span>
+							for i, h := range d.Hits {
+								if i < 8 {
+									<a class="chip" href={ templ.URL(WordURL(h.Entry.Lang, h.Entry.Headword)) }>{ h.Entry.Headword }</a>
+								}
+							}
+						</p>
+					}
+				}
+				<p class="muted small">Luật giọng được đối chiếu với phiên âm IPA theo vùng của Wiktionary.</p>
+			</section>
+			<section id="tieng-anh">
+				<h2>Tiếng Anh</h2>
+				<p>Vần tiếng Anh tính từ nguyên âm mang trọng âm theo phát âm của CMUdict. Ba mức: <b>Perfect</b> (giống hệt âm từ nguyên âm đó về sau), <b>Family</b> (nguyên âm và phụ âm cùng nhóm), <b>Assonance</b> (chỉ cần nguyên âm cùng nhóm).</p>
+				if len(m.Data.EN) > 0 {
+					@levelLadder(m.Data.ENWord, m.Data.EN, 6)
+				}
+			</section>
+			<section id="ban-viet">
+				<h2>Bàn viết</h2>
+				<p>Mở <a href="/write">Bàn viết</a>, viết lời ở ô bên trái. Con trỏ đặt ở câu nào, cột bên phải tìm vần cho hai từ cuối câu đó. Đang ở dòng trống thì lấy câu ngay trên, đang bôi đen thì lấy đoạn bôi đen. Chạm một vần rồi chọn “Chèn vào bài”.</p>
+				<p>Khi đã đăng nhập, mỗi bài là một sổ vần và được tự lưu. Chưa đăng nhập thì bản nháp nằm trong trình duyệt của bạn.</p>
+			</section>
+			<section id="meo">
+				<h2>Mẹo</h2>
+				<ul>
+					<li>Bấm <kbd>/</kbd> ở bất kỳ trang nào để nhảy vào ô tìm.</li>
+					<li>Từ điển hiểu kiểu gõ không dấu và Telex: “tanf” → tàn.</li>
+					<li>Trên điện thoại, kết quả hiện dạng lưới gọn; bấm “Đủ” để xem kèm nghĩa.</li>
+					<li>Thiếu một từ lóng? <a href="/slang/new">Đóng góp</a>; admin duyệt rồi từ sẽ xuất hiện trong kết quả.</li>
+				</ul>
+			</section>
+		</article>
+	}
+}
+
+// ---------- sources ----------
+
+type sourceInfo struct {
+	Key, Name, Use, License, URL string
+}
+
+var sources = []sourceInfo{
+	{"hnd", "Từ điển Tiếng Việt (Hồ Ngọc Đức)", "Mục từ và nghĩa tiếng Việt", "GPL — Free Vietnamese Dictionary Project; bản đóng gói catusf/tudien (CC0)", ""},
+	{"wiktionary-vi", "Wiktionary tiếng Việt", "Mục từ, nghĩa, ví dụ, phiên âm theo vùng, ứng viên slang", "CC BY-SA 4.0 — người đóng góp Wiktionary; trích xuất bởi wiktextract/kaikki.org", "https://vi.wiktionary.org"},
+	{"oewn", "Open English WordNet", "Mục từ và nghĩa tiếng Anh", "CC BY 4.0 (dựa trên Princeton WordNet, WordNet License)", "https://en-word.net/"},
+	{"cmudict", "CMU Pronouncing Dictionary", "Phát âm tiếng Anh để tính vần (không thêm mục từ)", "BSD-2-Clause — Carnegie Mellon University", "https://github.com/cmusphinx/cmudict"},
+	{"community", "Cộng đồng Playword", "Slang do người dùng đóng góp, đã được duyệt", "Theo Điều khoản sử dụng", "/terms"},
+}
+
+var corpora = []sourceInfo{
+	{"viwiki-freq", "Wikipedia tiếng Việt", "Tần suất từ, để xếp từ thông dụng lên trước", "CC BY-SA 4.0 — người đóng góp Wikipedia", "https://vi.wikipedia.org"},
+	{"en-subtitles-freq", "FrequencyWords (OpenSubtitles)", "Tần suất từ tiếng Anh", "CC BY-SA 4.0 — Hermit Dave", "https://github.com/hermitdave/FrequencyWords"},
+}
+
+var software = []sourceInfo{
+	{"", "Be Vietnam Pro", "Phông chữ", "SIL Open Font License 1.1", "https://github.com/bettergui/BeVietnamPro"},
+	{"", "htmx", "Tương tác trang", "0BSD", "https://htmx.org"},
+	{"", "SortableJS", "Kéo-thả trong sổ vần", "MIT", "https://github.com/SortableJS/Sortable"},
+}
+
+templ SourcesPage(m SiteModel) {
+	@Layout("Nguồn dữ liệu & giấy phép — Playword", "sources", m.Page) {
+		<article class="prose">
+			<header class="page-hero">
+				<p class="eyebrow"><span class="sticker">Minh bạch</span></p>
+				<h1 class="display small">Nguồn dữ liệu &amp; giấy phép</h1>
+				<p class="lede">Playword không tự sinh từ. Mọi mục từ và nghĩa đến từ các nguồn mở dưới đây, và mỗi mục đều ghi nguồn của nó.</p>
+			</header>
+			<h2>Từ điển</h2>
+			@sourceTable(sources, m.Data.Sources, true)
+			<h2>Tần suất từ</h2>
+			<p class="muted">Dùng để xếp từ thông dụng lên trước; không thêm từ mới vào từ điển.</p>
+			@sourceTable(corpora, nil, false)
+			<h2>Phần mềm và phông chữ</h2>
+			@sourceTable(software, nil, false)
+			<p class="muted small">Nội dung dưới giấy phép CC BY-SA và GPL vẫn giữ nguyên giấy phép gốc khi hiển thị lại.</p>
+		</article>
+	}
+}
+
+templ sourceTable(list []sourceInfo, counts map[string]int, showCount bool) {
+	<div class="scroll-x">
+		<table class="tbl src-tbl">
+			<thead>
+				<tr>
+					<th>Nguồn</th>
+					<th>Dùng cho</th>
+					<th>Giấy phép</th>
+					if showCount {
+						<th class="num">Mục từ</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				for _, s := range list {
+					<tr>
+						<td>
+							if s.URL != "" {
+								<a href={ templ.URL(s.URL) }>{ s.Name }</a>
+							} else {
+								{ s.Name }
+							}
+						</td>
+						<td>{ s.Use }</td>
+						<td class="small">{ s.License }</td>
+						if showCount {
+							<td class="num">{ countOrDash(counts[s.Key]) }</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+// ---------- legal ----------
+
+const legalUpdated = "12/10/2026"
+
+templ legalHead(title, lede string) {
+	<header class="page-hero">
+		<p class="eyebrow"><span class="sticker">Pháp lý</span> Cập nhật { legalUpdated }</p>
+		<h1 class="display small">{ title }</h1>
+		<p class="lede">{ lede }</p>
+	</header>
+}
+
+templ contactLine(pc Page) {
+	if pc.Site.Contact != "" {
+		<p>Liên hệ: <a href={ templ.URL("mailto:" + pc.Site.Contact) }>{ pc.Site.Contact }</a>.</p>
+	}
+}
+
+templ TermsPage(m SiteModel) {
+	@Layout("Điều khoản sử dụng — Playword", "terms", m.Page) {
+		<article class="prose">
+			@legalHead("Điều khoản sử dụng", "Những điều cần biết khi dùng Playword. Bằng việc sử dụng trang, bạn đồng ý với các điều khoản này.")
+			<section>
+				<h2>1. Dịch vụ</h2>
+				<p>Playword là từ điển vần và từ điển tiếng Việt, tiếng Anh trên web, gồm tìm vần, tra từ, bàn viết và sổ vần. Dịch vụ miễn phí, được cung cấp “nguyên trạng” và có thể thay đổi, tạm dừng mà không báo trước.</p>
+			</section>
+			<section>
+				<h2>2. Tài khoản</h2>
+				<p>Bạn có thể dùng phần lớn tính năng mà không cần tài khoản. Khi tạo tài khoản, bạn chịu trách nhiệm giữ an toàn mật khẩu và mọi hoạt động trong tài khoản. Bạn có thể xoá tài khoản bất kỳ lúc nào ở trang Tài khoản.</p>
+			</section>
+			<section>
+				<h2>3. Nội dung của bạn</h2>
+				<p>Lời bài, sổ vần và ghi chú bạn viết là của bạn. Playword chỉ lưu và hiển thị chúng cho bạn, và cho người có link khi bạn bật chế độ công khai cho một sổ.</p>
+				<p>Khi đóng góp slang, bạn đồng ý để Playword hiển thị từ, nghĩa và ví dụ đó trong kết quả, cùng với dữ liệu từ điển, sau khi được duyệt. Đừng gửi nội dung bạn không có quyền chia sẻ hoặc thông tin cá nhân của người khác.</p>
+			</section>
+			<section>
+				<h2>4. Sử dụng hợp lý</h2>
+				<ul>
+					<li>Không dùng công cụ tự động để tải hàng loạt dữ liệu vượt quá giới hạn truy cập của trang.</li>
+					<li>Không tìm cách truy cập trái phép, gây quá tải hay làm gián đoạn dịch vụ.</li>
+					<li>Không dùng tính năng đóng góp để đăng nội dung vi phạm pháp luật, quấy rối hay spam.</li>
+				</ul>
+			</section>
+			<section>
+				<h2>5. Dữ liệu từ điển</h2>
+				<p>Mục từ và nghĩa đến từ các nguồn mở và giữ nguyên giấy phép gốc; xem <a href="/sources">Nguồn dữ liệu</a>. Nghĩa từ điển có thể chưa đầy đủ hoặc chưa chính xác; đừng dùng Playword làm căn cứ duy nhất cho việc quan trọng.</p>
+			</section>
+			<section>
+				<h2>6. Giới hạn trách nhiệm</h2>
+				<p>Trong phạm vi pháp luật cho phép, Playword không chịu trách nhiệm về thiệt hại phát sinh từ việc dùng hoặc không dùng được dịch vụ, kể cả việc mất dữ liệu. Hãy xuất sổ vần (txt, md, json) nếu nội dung quan trọng với bạn.</p>
+			</section>
+			<section>
+				<h2>7. Thay đổi điều khoản</h2>
+				<p>Điều khoản có thể được cập nhật; ngày cập nhật ghi ở đầu trang. Tiếp tục dùng dịch vụ sau khi thay đổi nghĩa là bạn chấp nhận bản mới.</p>
+				@contactLine(m.Page)
+			</section>
+		</article>
+	}
+}
+
+templ PrivacyPage(m SiteModel) {
+	@Layout("Quyền riêng tư — Playword", "privacy", m.Page) {
+		<article class="prose">
+			@legalHead("Quyền riêng tư", "Playword thu thập ít nhất có thể, không chạy quảng cáo và không bán dữ liệu của bạn.")
+			<section>
+				<h2>Chúng tôi lưu gì</h2>
+				<div class="scroll-x">
+					<table class="tbl">
+						<thead><tr><th>Dữ liệu</th><th>Khi nào</th><th>Lưu bao lâu</th></tr></thead>
+						<tbody>
+							<tr><td>Email, tên hiển thị, cài đặt tìm vần</td><td>Khi bạn tạo tài khoản</td><td>Tới khi bạn xoá tài khoản</td></tr>
+							<tr><td>Mật khẩu (chỉ lưu dạng băm argon2id, không lưu mật khẩu gốc)</td><td>Khi bạn đặt mật khẩu</td><td>Tới khi bạn xoá tài khoản</td></tr>
+							<tr><td>Mã tài khoản Google, email và tên từ Google</td><td>Khi bạn chọn “Tiếp tục với Google”</td><td>Tới khi bạn xoá tài khoản</td></tr>
+							<tr><td>Phiên đăng nhập: mã phiên đã băm, địa chỉ IP đã băm kèm muối, thông tin trình duyệt</td><td>Mỗi lần đăng nhập</td><td>30 ngày, hoặc tới khi đăng xuất</td></tr>
+							<tr><td>Sổ vần, lời bài, ghi chú</td><td>Khi bạn lưu</td><td>Tới khi bạn xoá chúng hoặc xoá tài khoản</td></tr>
+							<tr><td>Slang bạn đóng góp</td><td>Khi bạn gửi</td><td>Lâu dài nếu được duyệt (là một phần của từ điển)</td></tr>
+							<tr><td>Sự kiện sử dụng: từ đã tìm, từ đã bấm, từ đã lưu, kèm mã tài khoản hoặc mã ẩn danh trong cookie; không lưu địa chỉ IP</td><td>Khi bạn dùng trang</td><td>180 ngày; khi xoá tài khoản, các sự kiện được tách khỏi tài khoản</td></tr>
+							<tr><td>Kiểm tra vần: sơ đồ vần (ví dụ “AABB”), số nhóm vần, số dòng, mật độ vần; <b>không lưu lời</b></td><td>Khi bạn bật Kiểm tra vần ở Bàn viết (tối đa một lần mỗi phút)</td><td>180 ngày, như các sự kiện khác</td></tr>
+						</tbody>
+					</table>
+				</div>
+				<p>Sự kiện sử dụng chỉ dùng để thống kê tổng hợp: từ nào được tìm nhiều, tìm mà không ra kết quả, slang nào được lưu nhiều. Chúng giúp cải thiện từ điển.</p>
+			</section>
+			<section>
+				<h2>Cookie và lưu trữ trên trình duyệt</h2>
+				<div class="scroll-x">
+					<table class="tbl">
+						<thead><tr><th>Tên</th><th>Mục đích</th><th>Thời hạn</th></tr></thead>
+						<tbody>
+							<tr><td><code>pw_session</code></td><td>Giữ đăng nhập</td><td>30 ngày</td></tr>
+							<tr><td><code>pw_csrf</code></td><td>Chống giả mạo yêu cầu (bảo mật)</td><td>1 năm</td></tr>
+							<tr><td><code>pw_guest</code></td><td>Sổ tạm khi chưa đăng nhập (tối đa 20 từ)</td><td>30 ngày</td></tr>
+							<tr><td><code>pw_anon</code></td><td>Mã ẩn danh cho thống kê khi chưa đăng nhập</td><td>1 năm</td></tr>
+							<tr><td><code>pw_view</code></td><td>Nhớ kiểu hiển thị kết quả (Gọn/Đủ)</td><td>1 năm</td></tr>
+							<tr><td><code>pw_oauth</code></td><td>Bảo vệ bước đăng nhập bằng Google</td><td>10 phút</td></tr>
+							<tr><td><code>pw_lyrics</code> (localStorage)</td><td>Bản nháp ở Bàn viết khi chưa đăng nhập; chỉ nằm trên máy bạn</td><td>Tới khi bạn xoá</td></tr>
+						</tbody>
+					</table>
+				</div>
+				<p>Không có cookie quảng cáo hay công cụ theo dõi của bên thứ ba.</p>
+			</section>
+			<section>
+				<h2>Chia sẻ với bên thứ ba</h2>
+				<p>Chúng tôi không bán hay cho thuê dữ liệu. Chỉ khi bạn chọn đăng nhập bằng Google thì trình duyệt mới chuyển bạn sang Google; Google gửi lại mã tài khoản, email và tên của bạn. Sổ vần chỉ người khác xem được khi bạn bật “Công khai”.</p>
+			</section>
+			<section>
+				<h2>Quyền của bạn</h2>
+				<ul>
+					<li><b>Xem và sửa:</b> trang <a href="/me">Tài khoản</a> và các sổ vần của bạn.</li>
+					<li><b>Mang đi:</b> xuất từng sổ ra txt, md hoặc json.</li>
+					<li><b>Xoá:</b> xoá tài khoản ở trang Tài khoản; mọi sổ vần, lời bài và phiên đăng nhập bị xoá ngay, sự kiện sử dụng được tách khỏi tài khoản.</li>
+				</ul>
+				@contactLine(m.Page)
+			</section>
+			<section>
+				<h2>Bảo mật</h2>
+				<p>Kết nối được mã hoá (HTTPS); mật khẩu và mã phiên chỉ lưu dạng băm; đăng nhập sai nhiều lần sẽ tạm khoá tài khoản 15 phút. Không hệ thống nào an toàn tuyệt đối. Hãy dùng mật khẩu riêng cho Playword.</p>
+			</section>
+		</article>
+	}
+}
+
+// ---------- 404 ----------
+templ NotFoundPage(pc Page) {
+	@Layout("Không tìm thấy — Playword", "", pc) {
+		<section class="notfound">
+			<p class="display huge">404</p>
+			<h1>Trang này không có vần.</h1>
+			<p class="muted">Đường dẫn không tồn tại hoặc đã đổi. Thử tìm vần hay tra từ:</p>
+			<form class="hero-search" action="/search" method="get" role="search">
+				<label class="sr-only" for="nq">Từ cần tìm vần</label>
+				<input id="nq" name="q" type="search" placeholder="vd: ngày tàn" autocomplete="off"/>
+				<button class="btn primary" type="submit">Tìm vần</button>
+			</form>
+			<p class="actions"><a class="btn ghost" href="/">Về trang chủ</a></p>
+		</section>
+	}
+}

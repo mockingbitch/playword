@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"playword/internal/adapters/http/views"
 	"playword/internal/domain/account"
 )
 
@@ -17,6 +18,7 @@ const (
 	sessionCookie = "pw_session"
 	csrfCookie    = "pw_csrf"
 	guestCookie   = "pw_guest"
+	viewCookie    = "pw_view" // compact or full result lists; read by app.js too
 	csrfHeader    = "X-CSRF-Token"
 	csrfField     = "csrf_token"
 )
@@ -74,7 +76,7 @@ func (s *Server) identify(next http.Handler) http.Handler {
 			token = account.NewToken()
 			http.SetCookie(w, s.cookie(csrfCookie, token, 365*24*time.Hour, true))
 		}
-		ctx = context.WithValue(ctx, csrfKey, token)
+		ctx = views.WithCSRF(context.WithValue(ctx, csrfKey, token), token)
 		bearer := s.bearerAdmin(r)
 		if bearer {
 			ctx = context.WithValue(ctx, adminTokenKey, true)

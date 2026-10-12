@@ -54,9 +54,10 @@ templ AdminSlangPage(m AdminSlangModel) {
 	@Layout("Duyệt slang — Playword", "admin", m.Page) {
 		<h1 class="page-title">Duyệt slang</h1>
 		@adminNav("slang")
-		<nav class="langs">
+		<p class="muted small kbd-hint">Phím tắt: <kbd>j</kbd>/<kbd>k</kbd> chọn mục, <kbd>a</kbd> duyệt, <kbd>r</kbd> bỏ.</p>
+		<nav class="seg" aria-label="Trạng thái">
 			for _, st := range []string{"pending", "approved", "rejected"} {
-				<a class={ "chip", templ.KV("on", st == m.Status) } href={ templ.URL("/admin/slang?status=" + st) }>{ st }</a>
+				<a class={ "seg-opt", templ.KV("on", st == m.Status) } href={ templ.URL("/admin/slang?status=" + st) }>{ statusLabel(st) }</a>
 			}
 		</nav>
 		if m.Error != "" {
@@ -65,7 +66,7 @@ templ AdminSlangPage(m AdminSlangModel) {
 		if len(m.Subs) == 0 {
 			<p class="msg">Không có mục nào.</p>
 		}
-		<ul class="items">
+		<ul class="items review" data-review>
 			for _, s := range m.Subs {
 				@AdminSlangRow(s, "")
 			}
@@ -74,7 +75,7 @@ templ AdminSlangPage(m AdminSlangModel) {
 }
 
 templ AdminSlangRow(s slang.Submission, msg string) {
-	<li class="item" id={ "sub-" + strconv.FormatInt(s.ID, 10) }>
+	<li class="item" id={ "sub-" + strconv.FormatInt(s.ID, 10) } tabindex="0">
 		<div class="item-body">
 			<span class="item-text">{ s.Headword } <span class="b">{ string(s.Lang) }</span></span>
 			<span>{ s.Gloss }</span>
@@ -91,16 +92,29 @@ templ AdminSlangRow(s slang.Submission, msg string) {
 		</div>
 		if s.Status == "pending" {
 			<div class="row-actions">
-				<button class="btn primary" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/approve" } hx-target="closest li" hx-swap="outerHTML">Duyệt</button>
-				<button class="btn" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/reject" } hx-target="closest li" hx-swap="outerHTML">Bỏ</button>
+				<button class="btn primary" data-key="a" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/approve" } hx-target="closest li" hx-swap="outerHTML">Duyệt</button>
+				<button class="btn" data-key="r" hx-post={ "/admin/slang/" + strconv.FormatInt(s.ID, 10) + "/reject" } hx-target="closest li" hx-swap="outerHTML">Bỏ</button>
 			</div>
 		}
 	</li>
 }
 
 templ adminNav(active string) {
-	<nav class="langs" aria-label="Admin">
-		<a class={ "chip", templ.KV("on", active == "dashboard") } href="/admin/dashboard">Dashboard</a>
-		<a class={ "chip", templ.KV("on", active == "slang") } href="/admin/slang">Slang</a>
+	<nav class="tabs" aria-label="Admin">
+		<a class={ templ.KV("on", active == "dashboard") } aria-current={ ariaCurrent(active == "dashboard") } href="/admin/dashboard">Dashboard</a>
+		<a class={ templ.KV("on", active == "slang") } aria-current={ ariaCurrent(active == "slang") } href="/admin/slang">Duyệt slang</a>
+		<a class={ templ.KV("on", active == "users") } aria-current={ ariaCurrent(active == "users") } href="/admin/users">Người dùng</a>
 	</nav>
+}
+
+func statusLabel(st string) string {
+	switch st {
+	case "pending":
+		return "Chờ duyệt"
+	case "approved":
+		return "Đã duyệt"
+	case "rejected":
+		return "Đã bỏ"
+	}
+	return st
 }

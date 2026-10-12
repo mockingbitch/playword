@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"sync/atomic"
+	"unicode/utf8"
 
 	lru "github.com/hashicorp/golang-lru/v2"
 	"golang.org/x/sync/singleflight"
@@ -120,8 +121,9 @@ type RhymeResult struct {
 	Confidence   float64           // en: pronunciation confidence of the query
 	Hits         []Hit
 	Offset       int
-	PrevMatched  int // matched syllables of the hit before this page (0 on the first page)
-	Total        int // ranked results in all (at most MaxDepth)
+	PrevMatched  int  // matched syllables of the hit before this page (0 on the first page)
+	Prev         *Hit // the hit before this page, nil on the first page
+	Total        int  // ranked results in all (at most MaxDepth)
 	NextCursor   string
 	Warnings     []string
 	IndexChanged bool // the cursor came from an older snapshot
@@ -178,7 +180,7 @@ func (s *Service) SearchRhymes(ctx context.Context, p RhymeParams) (*RhymeResult
 		IndexChanged: p.Cursor != "" && gen != snap.Gen}
 	res.Total = len(hits)
 	if offset > 0 && offset <= len(hits) {
-		res.PrevMatched = hits[offset-1].Matched
+		res.PrevMatched, res.Prev = hits[offset-1].Matched, &hits[offset-1]
 	}
 	if offset < len(hits) {
 		end := min(offset+p.Limit, len(hits))
@@ -350,4 +352,23 @@ func (s *Service) EntryByID(id int64) (*rhymeindex.Entry, error) {
 		return e, nil
 	}
 	return nil, ErrNotFound
+}
+
+// MaxCheckText bounds a rhyme check, in characters (a book's lyrics).
+const MaxCheckText = 20000
+
+// RhymeCheck colours the multi-syllable rhymes of a text (the writing
+// desk's "Kiểm tra vần"). Only Vietnamese levels apply; English words break
+// chains for now.
+func (s *Service) RhymeCheck(text string, d rhyme.Dialect, l rhyme.Level) (rhyme.CheckResult, error) {
+	if utf8.RuneCountInString(text) > MaxCheckText {
+		return rhyme.CheckResult{}, fmt.Errorf("%w: text longer than %d characters", ErrInvalidParam, MaxCheckText)
+	}
+	if !utf8.ValidString(text) {
+		return rhyme.CheckResult{}, fmt.Errorf("%w: text is not UTF-8", ErrInvalidParam)
+	}
+	if l.IsEnglish() {
+		return rhyme.CheckResult{}, fmt.Errorf("%w: rhyme check takes a Vietnamese level (L0…L3)", ErrInvalidParam)
+	}
+	return s.engine.Check(text, rhyme.CheckOptions{Dialect: d, Level: l}), nil
 }

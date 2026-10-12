@@ -1,4 +1,4 @@
-# Review UI/UX — Playword (Bước 1)
+# Review UI/UX — Playword
 
 Ngày 08/10/2026. Xem trên dữ liệu thật (169k mục) bằng Chrome headless ở 390×844 và 1280×900, với ba vai: khách,
 người dùng đã đăng nhập, admin. Ảnh chụp: [`docs/ui-review/before/`](ui-review/before/).
@@ -114,3 +114,38 @@ Sổ vần trở thành nơi lưu bài.
 
 Ghi chú: trong lúc review, em tạo tài khoản `ui-review@example.test` để chụp trang đăng nhập và trang admin, rồi đã xoá.
 Sự kiện của tài khoản này đã được ẩn danh, nhưng khoảng 20 lượt tìm thử vẫn nằm trong số liệu dashboard 7 ngày.
+
+---
+
+## Kết quả (12/10/2026)
+
+Anh chọn **B + C**: mỗi sổ vần là một bài; mặc định Gọn trên điện thoại, Đủ trên máy tính; chỉ tô phần vần; thêm theme sáng
+theo hệ thống; không gom sổ theo từ gốc. Ảnh chụp sau khi làm: [`docs/ui-review/after/`](ui-review/after/).
+
+| # | Trạng thái | Ghi chú |
+|---|---|---|
+| 1–3 | Đã sửa | Lưu và mở nghĩa chạy khi tắt JS (đã thử bằng Chrome tắt script); không còn lỗi `#save-book`. |
+| 4 | Đã sửa | Gõ thì *thay* URL (`hx-replace-url`), không thêm mục lịch sử. |
+| 5 | Đã sửa | Một dòng trạng thái ẩn (`#rstatus`) đọc "500+ vần cho …"; vùng kết quả không còn `aria-live`. |
+| 6 | Đã sửa | Nav lên tab bar dưới đáy; ô tìm dính đầu trang; một hàng: ngôn ngữ · Lọc · mức chặt (cuộn ngang). Mobile thấy khoảng 25 vần mỗi màn thay vì 4. |
+| 7 | Đã sửa | Nút lưu chuyển vào panel nghĩa (một chạm từ mọi kết quả); vùng chạm ≥ 44px. |
+| 8 | Đã sửa | Chỉ tô phần vần (`vnphon.OnsetLen`). Mức thể hiện bằng nền + kiểu viền (đậm → nhạt → nét đứt) kèm chú thích, không chỉ bằng màu. |
+| 9 | Một phần | Có tổng số ("500+ vần"), tiêu đề nhóm dính khi cuộn. Không có số đếm riêng từng nhóm (engine không trả). |
+| 10 | Đã sửa | Tiêu đề nhóm EN ghi "Khớp N âm"; ký hiệu ARPAbet chỉ còn trong tooltip. |
+| 11 | Đã sửa | Trạng thái rỗng/lỗi trung tính, có nút: tra từ điển, tìm vần tiếng Anh, nới mức chặt. |
+| 12 | Đã sửa | Bộ lọc là bottom sheet trên điện thoại, dropdown trên máy tính; chạy không cần JS. |
+| 13 | Đã sửa | Tab bar 4 mục (Tìm vần, Từ điển, Viết, Sổ vần); Admin ở nav máy tính và trong `/me`. |
+| 14 | Đã sửa | Đầu mục từ ghi phần vần và thanh ("Vần **ay** huyền · **an** huyền"), nút Tìm vần nổi bật; quá 3 nghĩa thì gập lại. Làm sạch ký hiệu HNĐ: chưa (thuộc ingest). |
+| 15 | Đã sửa | Xoá có "Hoàn tác" 5 giây; ghi chú hiện như chữ, chạm mới sửa; tay nắm ⋮⋮ sắp xếp được bằng phím ↑ ↓. |
+| 16 | Không làm | Theo quyết định của anh. |
+| 17–19 | Đã sửa | `/me`: Đăng xuất lên đầu, "Mật khẩu & đăng nhập", Xoá tài khoản gập lại. Nhãn "(tuỳ chọn)" cùng dòng. Nút Google có logo. |
+| 20 | Đã sửa | Tab admin riêng, khoảng thời gian dạng segmented, 9 ô số liệu chia 3×3, chữ biểu đồ ≈ 11px trở lên, phím tắt duyệt slang j/k/a/r. |
+| 21 | Đã sửa | Theme sáng, `prefers-reduced-motion`, focus ring 2px cho mọi phần tử. |
+
+**Bàn viết (C):** `/write` (khách: nháp trong trình duyệt), `/books/{id}/write` (tự lưu sau 1,2 giây, nút Lưu khi không có JS).
+Con trỏ ở câu nào thì tìm vần cho hai từ cuối câu đó (hoặc câu trước nếu đang ở dòng trống; hoặc đoạn đang bôi đen).
+Chạm một vần → panel có "Chèn vào bài" và "＋ Lưu vào sổ" (lưu vào chính bài đó). Lời bài có trong trang sổ, export
+txt/md/json và API (`lyrics` trong `GET/PATCH /api/v1/books/{id}`). Migration `00008_lyrics`. Bản nháp viết lúc chưa đăng nhập
+được đề nghị chèn vào bài khi mở bàn viết sau khi đăng nhập.
+
+Kích thước: CSS + JS tự viết ≈ 11 KB gzip (ngân sách 30 KB). Không có lỗi console/CSP trên mọi trang đã chụp.

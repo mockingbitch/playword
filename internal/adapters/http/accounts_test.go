@@ -240,8 +240,12 @@ func TestSaveButton(t *testing.T) {
 	ts, _, _ := testServerWith(t, Options{})
 	guest := newBrowser(t, ts)
 	save := url.Values{"entry_id": {"1"}, "lang": {"vi"}, "dialect": {"bac"}, "level": {"L25"}, "matched_from": {"ngày tàn"}}
-	r, body := guest.form("/save", cloneV(save))
-	if r.StatusCode != 200 || !strings.Contains(body, `class="save saved guest"`) {
+	hx := func(b *browser, v url.Values) (*http.Response, string) {
+		v.Set("csrf_token", b.csrf)
+		return b.do("POST", "/save", "application/x-www-form-urlencoded", strings.NewReader(v.Encode()), "HX-Request", "true")
+	}
+	r, body := hx(guest, cloneV(save))
+	if r.StatusCode != 200 || !strings.Contains(body, "Đã lưu tạm") {
 		t.Fatalf("guest save: %s", body)
 	}
 	if _, body := guest.do("GET", "/books", "", nil); !strings.Contains(body, "may mắn") || !strings.Contains(body, "1/20") {
@@ -255,11 +259,23 @@ func TestSaveButton(t *testing.T) {
 	if _, body := guest.do("GET", r.Header.Get("Location"), "", nil); !strings.Contains(body, "Sổ tạm") || !strings.Contains(body, "vần với “ngày tàn”") {
 		t.Errorf("imported book: %s", body)
 	}
-	if _, body := guest.form("/save", cloneV(save)); !strings.Contains(body, `class="save saved"`) {
+	if _, body := hx(guest, cloneV(save)); !strings.Contains(body, "Đã lưu vào sổ") {
 		t.Errorf("user save: %s", body)
 	}
-	if _, body := guest.do("GET", "/?q=ng%C3%A0y+t%C3%A0n", "", nil); !strings.Contains(body, `id="save-book"`) || !strings.Contains(body, `hx-post="/save"`) {
-		t.Error("search page offers saving into a book")
+	// Without JavaScript the save form posts and comes back.
+	plain := cloneV(save)
+	plain.Set("next", "/word/vi/may%20m%E1%BA%AFn?from=rhyme&saved=1")
+	if r, _ := guest.form("/save", plain); r.StatusCode != 303 || r.Header.Get("Location") != plain.Get("next") {
+		t.Errorf("plain save: %d %s", r.StatusCode, r.Header.Get("Location"))
+	}
+	if r, _ := guest.form("/save", url.Values{"entry_id": {"1"}, "next": {"//evil.example"}}); r.Header.Get("Location") != "/" {
+		t.Errorf("open redirect: %s", r.Header.Get("Location"))
+	}
+	if _, body := guest.do("GET", "/word/vi/may%20m%E1%BA%AFn?from=rhyme&saved=1", "", nil); !strings.Contains(body, "Đã lưu vào sổ") {
+		t.Error("the word page shows the saved state")
+	}
+	if _, body := guest.do("GET", "/?q=ng%C3%A0y+t%C3%A0n", "", nil); !strings.Contains(body, `id="save-book"`) || !strings.Contains(body, `hx-target="#panel"`) {
+		t.Error("search page opens words in the panel, which saves into a book")
 	}
 }
 

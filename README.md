@@ -36,7 +36,8 @@ shell được ưu tiên hơn giá trị trong file. `.env` nằm trong `.gitign
 | `PLAYWORD_INSECURE_COOKIES` | `false` | `true` chỉ khi phát triển qua HTTP thường |
 | `PLAYWORD_ADMIN_TOKEN` | — | Bearer token cho admin API (≥ 32 ký tự) |
 | `PLAYWORD_GOOGLE_CLIENT_ID` / `_SECRET` | — | bật "Tiếp tục với Google" (đặt cả hai hoặc không đặt) |
-| `PLAYWORD_PUBLIC_URL` | — | vd. `https://playword.vn`, bắt buộc khi bật Google; redirect URI là `{PUBLIC_URL}/auth/google/callback` |
+| `PLAYWORD_PUBLIC_URL` | — | vd. `https://playword.vn` (chỉ scheme + host). Dùng cho link canonical, ảnh Open Graph, `sitemap.xml`; bắt buộc khi bật Google (redirect URI `{PUBLIC_URL}/auth/google/callback`) |
+| `PLAYWORD_CONTACT_EMAIL` | — | email liên hệ hiện ở footer, Điều khoản và Quyền riêng tư |
 | `PLAYWORD_INGEST_SCHEDULE` | — | vd. `hnd=168h,oewn=720h` |
 | `PLAYWORD_ANALYTICS` | `true` | ghi sự kiện cho dashboard |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | — | bật tracing OTLP/HTTP |
@@ -50,6 +51,9 @@ shell được ưu tiên hơn giá trị trong file. `.env` nằm trong `.gitign
   - Kết quả khớp nhiều âm luôn đứng trước; tên riêng đứng sau từ thường; trong cùng nhóm thì xếp theo mức, tần suất, trend.
 - **Từ điển** `/dictionary` · `GET /api/v1/words/{lang}/{text}` · gợi ý khi gõ không dấu, Telex hoặc gõ sai.
 - **Đăng nhập bằng Google** `/auth/google` (OAuth 2.0 + PKCE, chỉ nhận email đã xác minh). Xem cách cấu hình trong [runbook](docs/runbook.md#đăng-nhập-bằng-google).
+- **Website**: trang chủ `/`, `/about` (giới thiệu, các mức vần, ba giọng — ví dụ lấy trực tiếp từ index), `/sources` (nguồn và giấy phép, số mục từ theo nguồn), `/terms`, `/privacy`, trang 404, `robots.txt`, `sitemap.xml`, manifest + icon + ảnh Open Graph. `/?q=…` vẫn là trang tìm vần như trước. Phông Be Vietnam Pro (OFL) đóng gói trong `static/fonts`.
+- **Bàn viết** `/write`: viết lời bên trái, vần cho từ cuối của câu đang viết hiện bên phải; chạm một vần để xem nghĩa, chèn vào bài hoặc lưu. Mỗi sổ vần là một bài (`/books/{id}/write`); khách viết nháp trong trình duyệt.
+- **Kiểm tra vần** (ở Bàn viết): tô cùng màu các chuỗi từ ≥ 2 âm tiết vần với nhau trong cùng khổ, mỗi bộ vần một màu, ưu tiên cặp khớp chặt nhất; lặp từ được gạch chấm; kèm sơ đồ vần và mật độ vần. `POST /api/v1/rhymecheck`, bản chỉ đọc ở `POST /write/check` và `/books/{id}/check`. Thiết kế: [docs/plans/rhyme-check.md](docs/plans/rhyme-check.md).
 - **Sổ vần** `/books` (đăng ký/đăng nhập, nút ＋ trên kết quả, kéo-thả sắp xếp, export txt/md/json, sổ public). Khách có sổ tạm 20 mục.
 - **Slang** `/slang/new` → admin duyệt ở `/admin/slang`; `respelling` (cách đọc theo âm Việt) cho từ mượn; trend giảm nửa sau 90 ngày.
 - **Dashboard** `/admin/dashboard`: tra gì nhiều lên, tra không ra kết quả, mức/giọng được dùng, slang được lưu nhiều.
