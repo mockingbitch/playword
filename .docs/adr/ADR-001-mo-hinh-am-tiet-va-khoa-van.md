@@ -4,7 +4,7 @@
 - Ngày: 2026-10-08
 - Liên quan: [ADR-002](ADR-002-index-rcu-va-cache.md), [ADR-003](ADR-003-schema-va-pipeline.md),
   [configs/rhyme_families.yaml](../../configs/rhyme_families.yaml), [configs/dialects.yaml](../../configs/dialects.yaml),
-  câu hỏi mở trong [docs/m0-review.md](../m0-review.md) (ký hiệu `Qn`).
+  câu hỏi mở trong [.docs/m0-review.md](../m0-review.md) (ký hiệu `Qn`).
 
 ## Bối cảnh
 

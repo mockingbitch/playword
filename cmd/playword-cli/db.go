@@ -198,7 +198,7 @@ func searchCmd(args []string, out io.Writer) error {
 func freqCmd(args []string, out io.Writer) error {
 	fs := flag.NewFlagSet("freq", flag.ContinueOnError)
 	dsn := dbFlag(fs)
-	corpus := fs.String("corpus", "", "plain-text corpus, e.g. from scripts/viwiki-text.sh")
+	corpus := fs.String("corpus", "", "plain-text corpus, e.g. from .scripts/viwiki-text.sh")
 	list := fs.String("list", "", `"word count" frequency list (FrequencyWords); multiword phrases are estimated`)
 	langFlag := fs.String("lang", "vi", "language of the vocabulary: vi | en")
 	name := fs.String("name", "viwiki-freq", "source name")

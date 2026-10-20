@@ -1,7 +1,7 @@
 # Review UI/UX — Playword
 
 Ngày 08/10/2026. Xem trên dữ liệu thật (169k mục) bằng Chrome headless ở 390×844 và 1280×900, với ba vai: khách,
-người dùng đã đăng nhập, admin. Ảnh chụp: [`docs/ui-review/before/`](ui-review/before/).
+người dùng đã đăng nhập, admin. Ảnh chụp: [`.docs/ui-review/before/`](ui-review/before/).
 
 **Kết luận nhanh:** nền tảng tốt. Theme tối gọn, chữ tiếng Việt dễ đọc, không bị tràn ngang, không có lỗi CSP,
 contrast chữ chính và chữ phụ đều đạt (≈ 7:1). Vấn đề lớn nằm ở **luồng chính trên mobile**: kết quả đầu tiên nằm
@@ -120,7 +120,7 @@ Sự kiện của tài khoản này đã được ẩn danh, nhưng khoảng 20 
 ## Kết quả (12/10/2026)
 
 Anh chọn **B + C**: mỗi sổ vần là một bài; mặc định Gọn trên điện thoại, Đủ trên máy tính; chỉ tô phần vần; thêm theme sáng
-theo hệ thống; không gom sổ theo từ gốc. Ảnh chụp sau khi làm: [`docs/ui-review/after/`](ui-review/after/).
+theo hệ thống; không gom sổ theo từ gốc. Ảnh chụp sau khi làm: [`.docs/ui-review/after/`](ui-review/after/).
 
 | # | Trạng thái | Ghi chú |
 |---|---|---|

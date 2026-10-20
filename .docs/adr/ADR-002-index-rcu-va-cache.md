@@ -127,7 +127,7 @@ nằm trên đường xử lý nóng. Web layer cũ (html/template) sẽ đượ
 
 `BenchmarkLookup_{1,2,3}syl` chạy trên kho tổng hợp 500k entry sinh từ bảng vần thật, có
 `-race` ở CI. Baseline lưu ở `bench/baseline.txt`; CI so bằng `benchstat` và fail nếu chậm hơn
-30%. k6 đặt trong `scripts/k6/`.
+30%. k6 đặt trong `.scripts/k6/`.
 Lưu ý: benchmark Go đo thời gian trung bình, không đo p99. Vì vậy p99 lấy từ k6 cộng với histogram
 Prometheus, còn ngưỡng 30% áp lên ns/op.
 

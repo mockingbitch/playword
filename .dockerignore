@@ -2,5 +2,5 @@ bin/
 .git/
 **/*_test.go
 **/testdata/
-scripts/k6/
-docs/
+.scripts/k6/
+.docs/

@@ -77,8 +77,8 @@ Hành vi:
 ## Backup / restore
 
 ```sh
-DATABASE_URL=… scripts/backup.sh                    # pg_dump -Fc, bỏ dữ liệu rhyme_keys (dựng lại được)
-DATABASE_URL=… scripts/restore.sh file.dump         # vào DB TRỐNG, rồi chạy rebuild-keys
+DATABASE_URL=… .scripts/backup.sh                    # pg_dump -Fc, bỏ dữ liệu rhyme_keys (dựng lại được)
+DATABASE_URL=… .scripts/restore.sh file.dump         # vào DB TRỐNG, rồi chạy rebuild-keys
 ```
 Nên backup hằng ngày và giữ 30 bản. Mỗi tháng phải thử restore một lần trên DB tạm: chạy `restore.sh`, khởi động server,
 rồi kiểm tra `/readyz` và một truy vấn tìm vần.

@@ -1,7 +1,7 @@
 // Command benchgate compares two `go test -bench` outputs and fails when a
 // benchmark got more than -max slower (median ns/op), the M8 CI gate.
 //
-//	go run ./scripts/benchgate -max 0.30 base.txt head.txt
+//	go run ./.scripts/benchgate -max 0.30 base.txt head.txt
 package main
 
 import (

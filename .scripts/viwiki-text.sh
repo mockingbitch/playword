@@ -3,7 +3,7 @@
 # into one plain-text file for `playword-cli freq -corpus`. Runs pyarrow in a
 # throwaway container so nothing is installed on the host.
 #
-#   scripts/viwiki-text.sh <dir>     # <dir> receives parquet/ and viwiki.txt
+#   .scripts/viwiki-text.sh <dir>     # <dir> receives parquet/ and viwiki.txt
 set -eu
 dir=$(realpath "${1:?usage: viwiki-text.sh <dir>}")
 mkdir -p "$dir/parquet"

@@ -56,7 +56,7 @@ jobs:
           (cd ../base && go test ./internal/adapters/index/rhymeindex -run '^$' -bench 'Lookup' -count 5 -timeout 30m) | tee base.txt
       - name: head
         run: go test ./internal/adapters/index/rhymeindex -run '^$' -bench 'Lookup' -count 5 -timeout 30m | tee head.txt
-      - run: go run ./scripts/benchgate -max 0.30 base.txt head.txt
+      - run: go -C .scripts/benchgate run . -max 0.30 "$PWD/base.txt" "$PWD/head.txt"
 
   image:
     needs: [lint, test]

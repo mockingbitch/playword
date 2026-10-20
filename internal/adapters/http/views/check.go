@@ -9,7 +9,7 @@ import (
 
 // CheckSlots is how many fills the rhyme check has: seven bright fills under
 // black ink that full-colour and colour-blind readers tell apart in every
-// pair (CVD ΔE ≥ 8.0, normal ≥ 15.8, ink 7–15:1; docs/plans/rhyme-check.md).
+// pair (CVD ΔE ≥ 8.0, normal ≥ 15.8, ink 7–15:1; .docs/plans/rhyme-check.md).
 const CheckSlots = 7
 
 // CheckStyle is how one group is drawn.

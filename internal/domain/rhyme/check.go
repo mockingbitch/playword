@@ -14,7 +14,7 @@ import (
 )
 
 // Rhyme check: colour the multi-syllable rhymes of a text, the way rappers
-// mark a rhyme scheme on paper (docs/plans/rhyme-check.md).
+// mark a rhyme scheme on paper (.docs/plans/rhyme-check.md).
 //
 // A chain is two or more consecutive syllables of one line that rhyme,
 // syllable by syllable, with as many consecutive syllables elsewhere in the

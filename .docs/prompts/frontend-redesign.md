@@ -52,7 +52,7 @@ cho người dùng mobile. Nhiệm vụ: **review rồi làm lại UI/UX** của
 - Đánh giá theo: luồng chính (tìm vần → nghĩa → lưu), hierarchy thông tin, khả năng quét danh sách dài, bộ lọc
   (mức/giọng/số âm/vị trí), empty/loading/error state, form & thông báo lỗi, điều hướng mobile, typography tiếng Việt
   (dấu chồng, line-height), contrast, focus ring, thao tác bàn phím, `aria-*`, vùng chạm ≥ 44px, `prefers-reduced-motion`.
-- Viết báo cáo ngắn vào `docs/ui-review.md`: mỗi vấn đề gồm **trang · mô tả · mức độ (cao/vừa/thấp) · đề xuất**,
+- Viết báo cáo ngắn vào `.docs/ui-review.md`: mỗi vấn đề gồm **trang · mô tả · mức độ (cao/vừa/thấp) · đề xuất**,
   xếp theo mức độ. Kèm 2–3 hướng thiết kế tổng thể (mô tả bằng lời + ASCII wireframe cho trang tìm vần), nêu
   ưu/nhược và hướng bạn khuyên chọn.
 

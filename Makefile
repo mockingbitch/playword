@@ -11,7 +11,7 @@ endif
 DATABASE_URL ?= postgres://playword:playword@127.0.0.1:55432/playword?sslmode=disable
 export DATABASE_URL
 
-.PHONY: run generate loadtest ingest-en docker backup build test test-integration cover fuzz bench lint sqlc db-up migrate ingest-hnd rebuild-keys freq-viwiki
+.PHONY: check uicheck run generate loadtest ingest-en docker backup build test test-integration cover fuzz bench lint sqlc db-up migrate ingest-hnd rebuild-keys freq-viwiki
 
 # Local development: plain HTTP (cookies without Secure), a fixed dev salt.
 run: generate
@@ -43,6 +43,23 @@ bench:
 lint:
 	golangci-lint run ./...
 
+# check is the definition of done for a change (CLAUDE.md): generated code
+# fresh, formatted, vetted, linted, tested with the race detector.
+STATICCHECK = honnef.co/go/tools/cmd/staticcheck@v0.8.1
+check: generate
+	@test -z "$$(gofmt -l ./cmd ./internal ./pkg ./.scripts)" || { gofmt -l ./cmd ./internal ./pkg ./.scripts; echo "gofmt: files above need formatting"; exit 1; }
+	go vet ./...
+	go -C .scripts/benchgate vet ./...  # the tools are their own modules: ./... skips dot directories
+	go -C .scripts/uicheck vet ./...
+	@if command -v golangci-lint >/dev/null; then golangci-lint run ./...; else go run $(STATICCHECK) ./...; fi
+	go test -race -count=1 ./...
+
+# uicheck screenshots pages of a running server at several widths and fails
+# on horizontal overflow or console errors: make uicheck BASE=http://localhost:8020
+BASE ?= http://localhost:8020
+uicheck:
+	go -C .scripts/uicheck run . -base $(BASE) -out $(CURDIR)/.uicheck-out $(UICHECK_FLAGS)
+
 sqlc:
 	docker run --rm -u $$(id -u):$$(id -g) -v "$$PWD":/src -w /src sqlc/sqlc:1.30.0 generate
 
@@ -60,12 +77,12 @@ rebuild-keys:
 
 VIWIKI_DIR ?= /tmp/viwiki
 freq-viwiki:
-	scripts/viwiki-text.sh $(VIWIKI_DIR)
+	.scripts/viwiki-text.sh $(VIWIKI_DIR)
 	go run ./cmd/playword-cli freq -corpus $(VIWIKI_DIR)/viwiki.txt
 
 # M3 DoD: p99 < 50ms at 500 RPS. Start the server with PLAYWORD_RATE_LIMIT_RPS=0 first.
 loadtest:
-	docker run --rm --network host -v $$PWD/scripts/k6:/k6 grafana/k6:latest run /k6/search.js
+	docker run --rm --network host -v $$PWD/.scripts/k6:/k6 grafana/k6:latest run /k6/search.js
 
 EN_DIR ?= /tmp/playword-en
 ingest-en:
@@ -80,4 +97,4 @@ docker:
 	docker build -t playword:dev --build-arg VERSION=$$(git rev-parse --short HEAD 2>/dev/null || echo dev) .
 
 backup:
-	scripts/backup.sh
+	.scripts/backup.sh

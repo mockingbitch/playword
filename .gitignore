@@ -1,2 +1,4 @@
 bin/
 .env
+.uicheck-out/
+.claude/settings.local.json
