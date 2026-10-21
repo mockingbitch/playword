@@ -38,45 +38,47 @@ type SiteModel struct {
 // ---------- home ----------
 templ HomePage(m SiteModel) {
 	@Layout("Playword — từ điển vần cho rapper Việt", "home", m.Page) {
-		<section class="hero">
-			<div class="hero-copy">
-				<p class="eyebrow"><span class="sticker">Từ điển vần</span> cho rapper Việt</p>
-				<h1 class="display">Gieo vần<br/>chuẩn từng <span class="hl">chữ.</span></h1>
-				<p class="lede">Gõ từ cuối câu — Playword trả về những từ <strong>có thật</strong>, cùng vần, kèm nghĩa. Năm mức từ vần chuẩn tới ép vần, đủ giọng Bắc, Trung, Nam.</p>
-				<form class="hero-search" action="/search" method="get" role="search">
-					<label class="sr-only" for="hq">Từ cần tìm vần</label>
-					<input id="hq" name="q" type="search" placeholder="vd: ngày tàn" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"/>
-					<button class="btn primary" type="submit">Tìm vần</button>
-				</form>
-				<p class="try">
-					<span class="muted">Thử:</span>
-					for _, w := range []string{"ngày tàn", "may mắn", "cuộc đời", "thành phố", "money"} {
-						<a href={ templ.URL(tryURL(w)) }>{ w }</a>
-					}
-				</p>
-			</div>
-			if m.Data.Demo != nil && len(m.Data.Demo.Hits) > 0 {
-				<aside class="hero-demo" aria-label="Ví dụ kết quả">
-					<p class="demo-q"><span class="muted">Vần cho</span> “{ m.Data.DemoText }”</p>
-					<ul class="demo-hits">
-						for _, h := range m.Data.Demo.Hits {
-							<li class={ levelClass(h.Level) }>
-								<a class="hit-word" href={ templ.URL(panelURL(h, m.Data.Demo.Params, false)) }>
-									<span class="word">
-										for _, w := range hitWords(h) {
-											<span class="w">{ w.Head }<b class="rh">{ w.Rime }</b></span>
-										}
-									</span>
-								</a>
-							</li>
+		<div class="stage">
+			<section class="hero">
+				<div class="hero-copy">
+					<p class="eyebrow"><span class="sticker">Từ điển vần</span> cho rapper Việt</p>
+					<h1 class="display">Gieo vần<br/>chuẩn từng <span class="hl">chữ.</span></h1>
+					<p class="lede">Gõ từ cuối câu — Playword trả về những từ <strong>có thật</strong>, cùng vần, kèm nghĩa. Năm mức từ vần chuẩn tới ép vần, đủ giọng Bắc, Trung, Nam.</p>
+					<form class="hero-search" action="/search" method="get" role="search">
+						<label class="sr-only" for="hq">Từ cần tìm vần</label>
+						<input id="hq" name="q" type="search" placeholder="vd: ngày tàn" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"/>
+						<button class="btn primary" type="submit">Tìm vần</button>
+					</form>
+					<p class="try">
+						<span class="muted">Thử:</span>
+						for _, w := range []string{"ngày tàn", "may mắn", "cuộc đời", "thành phố", "money"} {
+							<a href={ templ.URL(tryURL(w)) }>{ w }</a>
 						}
-					</ul>
-					<p class="demo-foot">
-						<a href={ templ.URL(SearchURL(m.Data.Demo.Params, nil)) }>Xem tất cả { countLabel(m.Data.Demo) } →</a>
 					</p>
-				</aside>
-			}
-		</section>
+				</div>
+				if m.Data.Demo != nil && len(m.Data.Demo.Hits) > 0 {
+					<aside class="hero-demo" aria-label="Ví dụ kết quả">
+						<p class="demo-q"><span class="muted">Vần cho</span> “{ m.Data.DemoText }”</p>
+						<ul class="demo-hits">
+							for _, h := range m.Data.Demo.Hits {
+								<li class={ levelClass(h.Level) }>
+									<a class="hit-word" href={ templ.URL(panelURL(h, m.Data.Demo.Params, false)) }>
+										<span class="word">
+											for _, w := range hitWords(h) {
+												<span class="w">{ w.Head }<b class="rh">{ w.Rime }</b></span>
+											}
+										</span>
+									</a>
+								</li>
+							}
+						</ul>
+						<p class="demo-foot">
+							<a href={ templ.URL(SearchURL(m.Data.Demo.Params, nil)) }>Xem tất cả { countLabel(m.Data.Demo) } →</a>
+						</p>
+					</aside>
+				}
+			</section>
+		</div>
 		<section class="stats" aria-label="Số liệu">
 			<div><strong>{ thousands(m.Data.Entries) }</strong><span>mục từ có nghĩa</span></div>
 			<div><strong>5</strong><span>mức vần</span></div>

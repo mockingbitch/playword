@@ -48,7 +48,14 @@ shell được ưu tiên hơn giá trị trong file. `.env` nằm trong `.gitign
 - **Tìm vần** `/` · `GET /api/v1/rhymes?q=&lang=&dialect=&level=&min_syl=&max_syl=&match=&slang=&proper=&limit=&cursor=`
   - Tiếng Việt: mức `L0` (chuẩn) → `L1` (cùng bằng/trắc) → `L2` (khác thanh) → `L25` (rap-flex, mặc định) → `L3` (ép vần); ba giọng.
   - Tiếng Anh: `perfect` → `family` (mặc định) → `assonance`, vần tính từ nguyên âm có trọng âm.
-  - Kết quả khớp nhiều âm luôn đứng trước; tên riêng đứng sau từ thường; trong cùng nhóm thì xếp theo mức, tần suất, trend.
+  - Bộ lọc quyết định tập kết quả; xếp hạng theo từng bậc ([ADR-004](.docs/adr/ADR-004-xep-hang-do-gan-van.md)):
+    1. khớp nhiều âm hơn;
+    2. từ thường trước tên riêng;
+    3. ít âm trùng chính từ đã tra;
+    4. mức chặt hơn;
+    5. khoảng cách âm nhỏ hơn (thanh, âm cuối, nguyên âm, âm đệm);
+    6. cuối cùng mới đến tần suất và trend.
+  - API trả thêm `distance` (khoảng cách âm) và `repeats_query` (số âm tiết trùng từ đã tra). `score` chỉ để phân định khi các bậc trên hoà.
 - **Từ điển** `/dictionary` · `GET /api/v1/words/{lang}/{text}` · gợi ý khi gõ không dấu, Telex hoặc gõ sai.
 - **Đăng nhập bằng Google** `/auth/google` (OAuth 2.0 + PKCE, chỉ nhận email đã xác minh). Xem cách cấu hình trong [runbook](.docs/runbook.md#đăng-nhập-bằng-google).
 - **Website**: trang chủ `/`, `/about` (giới thiệu, các mức vần, ba giọng — ví dụ lấy trực tiếp từ index), `/sources` (nguồn và giấy phép, số mục từ theo nguồn), `/terms`, `/privacy`, trang 404, `robots.txt`, `sitemap.xml`, manifest + icon + ảnh Open Graph. `/?q=…` vẫn là trang tìm vần như trước. Phông Be Vietnam Pro (OFL) đóng gói trong `static/fonts`.

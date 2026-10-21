@@ -59,7 +59,7 @@ func matchEN(qs, cs []en.Seg, q Query) (Result, bool) {
 		best, found := Result{}, false
 		lo, hi := windowRange(len(cs), n, q.Match)
 		for start := hi; start >= lo; start-- {
-			worst, ok := en.Perfect, true
+			worst, ok, dist := en.Perfect, true, 0
 			for i := range suffix {
 				l, segOK := en.SegLevel(suffix[i], cs[start+i])
 				if !segOK {
@@ -67,9 +67,15 @@ func matchEN(qs, cs []en.Seg, q Query) (Result, bool) {
 					break
 				}
 				worst = max(worst, l)
+				dist += segDistance(suffix[i], cs[start+i])
 			}
-			if lvl := fromEN(worst); ok && lvl <= q.Level && (!found || lvl < best.Level) {
-				best, found = Result{Matched: n, Level: lvl, Start: start, End: start + n}, true
+			lvl := fromEN(worst)
+			if !ok || lvl > q.Level {
+				continue
+			}
+			r := Result{Matched: n, Level: lvl, Start: start, End: start + n, Distance: uint16(dist)}
+			if !found || closer(r, best) {
+				best, found = r, true
 			}
 		}
 		if found {

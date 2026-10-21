@@ -1,9 +1,12 @@
 package views
 
 import (
+	"strings"
+
 	"playword/internal/adapters/index/rhymeindex"
 	"playword/internal/app"
 	"playword/internal/domain/entry"
+	"playword/internal/domain/rhyme"
 )
 
 // WordHeader names a word and what it rhymes on, with the main action.
@@ -90,6 +93,36 @@ type PanelModel struct {
 	CSRF   string
 	Next   string // where the no-JavaScript save comes back to
 	Desk   bool   // opened from the writing desk: offer to insert it
+	Why    *app.Explanation // why it rhymes with the search, nil if unknown
+}
+
+// whyRhymes explains a result syllable by syllable: what sounds the same,
+// what differs (the ranking distance, ADR-004).
+templ whyRhymes(x *app.Explanation, d rhyme.Dialect) {
+	if lines := whyLines(x, d); len(lines) > 0 {
+		<section class="why" aria-labelledby="why-title">
+			<h3 id="why-title">Vì sao khớp</h3>
+			<ul>
+				for _, l := range lines {
+					<li>
+						<span class="why-pair">{ l.Query } <span class="muted">→</span> { l.Word }</span>
+						<span class="why-rime">
+							<b>{ l.QRime }</b>
+							if l.Same {
+								=
+							} else {
+								~
+							}
+							<b>{ l.WRime }</b>
+						</span>
+						if len(l.Notes) > 0 {
+							<span class="why-note">{ strings.Join(l.Notes, " · ") }</span>
+						}
+					</li>
+				}
+			</ul>
+		</section>
+	}
 }
 
 // WordPanel fills the side panel (bottom sheet on phones).
@@ -103,6 +136,7 @@ templ WordPanel(m PanelModel) {
 			}
 			@SaveButton(m.Entry.ID, m.Params, m.CSRF, m.Next, "")
 		</div>
+		@whyRhymes(m.Why, m.Params.Dialect)
 		@Definition(m.Entry)
 		@wordActions(m.Entry, true)
 	</div>
@@ -119,6 +153,7 @@ templ WordPage(pc Page, e *rhymeindex.Entry, from *PanelModel, saved string) {
 					<a class="btn ghost" href={ templ.URL(SearchURL(from.Params, nil)) }>← Vần cho “{ from.Params.Text }”</a>
 				</p>
 				@SaveButton(e.ID, from.Params, from.CSRF, from.Next, saved)
+				@whyRhymes(from.Why, from.Params.Dialect)
 			} else {
 				@WordHeader(e, "", true)
 			}

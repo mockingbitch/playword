@@ -142,11 +142,15 @@ func NewQuery(p []vnphon.Syllable) Query {
 // Result is one ranked match.
 type Result struct {
 	Candidate *Candidate
-	Matched   int   // matched syllables
-	Level     Level // level of the weakest matched syllable
-	Start     int   // matched window in the candidate: Syllables[Start:End]
+	Matched   int // matched syllables
+	Start     int // matched window in the candidate: Syllables[Start:End]
 	End       int
 	Score     float64
+	// Level, Identical and Distance share one word: the top-K heap copies
+	// Results around, so the struct stays at 48 bytes.
+	Level     Level  // level of the weakest matched syllable
+	Identical uint8  // matched syllables that are the query's own word (spelled the same)
+	Distance  uint16 // phonetic distance inside the level, 0 for a perfect echo (closeness.go)
 }
 
 // Response holds the ranked results of one query.
@@ -213,8 +217,9 @@ func (e *Engine) SearchIn(q Query, cands []Candidate, subset []int32) (Response,
 	}
 	resp.Syllables = used
 	dmap := &e.codes.dialect[dialectIndex(q.Dialect)]
-	qc := e.Codes(used)
-	for i, c := range qc {
+	qu := e.Codes(used) // unmapped, for the identity check
+	qc := make([]Code, len(qu))
+	for i, c := range qu {
 		qc[i] = dmap[c]
 	}
 
@@ -244,6 +249,15 @@ func (e *Engine) SearchIn(q Query, cands []Candidate, subset []int32) (Response,
 		if r, ok := e.match(qc, cc, q); ok {
 			r.Candidate = c
 			r.Score = Score(r.Matched, r.Level, c.Zipf, c.Trend, len(c.Syllables), len(used))
+			// r is optimistic here (no repeated word, distance 0, the
+			// strictest window): if even that cannot enter a full top K,
+			// the real result cannot either, so skip computing closeness.
+			if top.full() && better(r, top.worst()) >= 0 {
+				continue
+			}
+			e.refine(&r, qc, cc, qu, codes, used, c.Syllables, q)
+			// refine may pick another window (AlignAny), whose level sets the score
+			r.Score = Score(r.Matched, r.Level, c.Zipf, c.Trend, len(c.Syllables), len(used))
 			top.push(r)
 		}
 	}
@@ -251,8 +265,16 @@ func (e *Engine) SearchIn(q Query, cands []Candidate, subset []int32) (Response,
 	return resp, nil
 }
 
-// better is the result order: more matched syllables, ordinary words before
-// names of people and places (product decision 2026-10-08), score, text, id.
+// better is the result order, tier by tier (.docs/adr/ADR-004):
+//
+//  1. more matched syllables (ADR-001 §7: one more syllable always wins)
+//  2. ordinary words before names of people and places (2026-10-08)
+//  3. fewer syllables that repeat the query's own word (2026-10-21, Q14)
+//  4. stricter level
+//  5. smaller phonetic distance (closeness.go)
+//  6. score: frequency, trend and length only break the ties left
+//  7. text, then id, so the order is total and pages stay stable
+//
 // It is on the hot path, so later keys are only compared on ties.
 func better(a, b Result) int {
 	if a.Matched != b.Matched {
@@ -260,6 +282,15 @@ func better(a, b Result) int {
 	}
 	if c := cmpBool(a.Candidate.IsProper, b.Candidate.IsProper); c != 0 {
 		return c
+	}
+	if a.Identical != b.Identical {
+		return cmp.Compare(a.Identical, b.Identical)
+	}
+	if a.Level != b.Level {
+		return cmp.Compare(a.Level, b.Level)
+	}
+	if a.Distance != b.Distance {
+		return cmp.Compare(a.Distance, b.Distance)
 	}
 	if a.Score != b.Score {
 		return cmp.Compare(b.Score, a.Score)
@@ -312,6 +343,11 @@ func (t *topK) push(r Result) {
 	}
 }
 
+// full reports whether the heap holds k results; worst is then its root.
+func (t *topK) full() bool { return len(t.h) == t.k }
+
+func (t *topK) worst() Result { return t.h[0] }
+
 func (t *topK) sorted() []Result {
 	slices.SortFunc(t.h, better)
 	return t.h
@@ -330,7 +366,9 @@ func cmpBool(a, b bool) int {
 
 // match finds the longest query suffix that rhymes with a window of the
 // candidate allowed by q.Match, at q.Level or stricter; both sides are
-// dialect-mapped codes.
+// dialect-mapped codes. It ranks windows by level only: closeness is
+// computed later, and only for results that can still enter the top K
+// (see refine), because most matches never do.
 func (e *Engine) match(qm, cm []Code, q Query) (Result, bool) {
 	for n := min(len(qm), q.MaxSyl, len(cm)); n >= q.MinSyl; n-- {
 		suffix := qm[len(qm)-n:]
@@ -347,6 +385,37 @@ func (e *Engine) match(qm, cm []Code, q Query) (Result, bool) {
 		}
 	}
 	return Result{}, false
+}
+
+// refine fills in the closeness of a match (qu, cu: unmapped codes; qs, cs:
+// syllables). With AlignAny a candidate may hold several windows of the same
+// length; refine keeps the one that ranks best — fewer repeated words, then
+// stricter level, then closer — the nearest the end on ties.
+func (e *Engine) refine(r *Result, qm, cm, qu, cu []Code, qs, cs []vnphon.Syllable, q Query) {
+	n := r.Matched
+	suffix, qusuf, qsuf := qm[len(qm)-n:], qu[len(qu)-n:], qs[max(len(qs)-n, 0):]
+	lo, hi := r.Start, r.Start
+	if q.Match == AlignAny {
+		lo, hi = windowRange(len(cm), n, q.Match)
+	}
+	found := false
+	best := *r
+	for start := hi; start >= lo; start-- {
+		l, ok := e.matchLevel(suffix, cm[start:start+n])
+		if !ok || l > q.Level {
+			continue
+		}
+		var cw []vnphon.Syllable
+		if start+n <= len(cs) {
+			cw = cs[start : start+n]
+		}
+		dist, ident := e.closeness(suffix, cm[start:start+n], qusuf, cu[start:start+n], qsuf, cw)
+		w := Result{Matched: n, Level: l, Start: start, End: start + n, Identical: uint8(ident), Distance: uint16(dist)}
+		if !found || closer(w, best) {
+			best, found = w, true
+		}
+	}
+	r.Level, r.Start, r.End, r.Identical, r.Distance = best.Level, best.Start, best.End, best.Identical, best.Distance
 }
 
 // windowRange gives the candidate start positions allowed for an
@@ -423,3 +492,15 @@ func (e *Engine) ConfigID() string { return e.configID }
 
 // ConfigSource returns the raw YAML this engine was loaded from.
 func (e *Engine) ConfigSource() (families, dialects string) { return e.familiesYAML, e.dialectsYAML }
+
+// closer compares two windows of one candidate with the ranking tiers that
+// can differ between them.
+func closer(a, b Result) bool {
+	if a.Identical != b.Identical {
+		return a.Identical < b.Identical
+	}
+	if a.Level != b.Level {
+		return a.Level < b.Level
+	}
+	return a.Distance < b.Distance
+}

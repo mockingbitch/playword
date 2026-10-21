@@ -249,8 +249,8 @@ func TestSearchOptions(t *testing.T) {
 		t.Fatalf("limit: %d results, %v", len(resp.Results), err)
 	}
 	for i := 1; i < len(resp.Results); i++ {
-		if resp.Results[i-1].Score < resp.Results[i].Score {
-			t.Fatal("results not sorted by score")
+		if better(resp.Results[i-1], resp.Results[i]) > 0 {
+			t.Fatalf("results not in ranking order at %d: %+v before %+v", i, resp.Results[i-1], resp.Results[i])
 		}
 	}
 	if resp.Results[0].Matched != 2 {

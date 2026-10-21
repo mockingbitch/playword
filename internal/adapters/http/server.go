@@ -295,6 +295,12 @@ func (s *Server) pageWord(w http.ResponseWriter, r *http.Request) {
 	from := s.fromResults(r, lang)
 	if from != nil {
 		from.Entry = e
+		// Best effort: without it the panel just shows the meaning.
+		why, err := s.svc.Explain(r.Context(), from.Params, e.ID)
+		if err != nil && !errors.Is(err, app.ErrNotReady) && r.Context().Err() == nil {
+			slog.DebugContext(r.Context(), "explain rhyme", "err", err)
+		}
+		from.Why = why
 		s.record(r, analytics.Event{Type: analytics.ClickResult, Lang: string(lang), EntryID: e.ID,
 			Query: queryText(from.Params.Text)})
 	}
@@ -327,7 +333,12 @@ func (s *Server) fromResults(r *http.Request, lang entry.Lang) *views.PanelModel
 	if q.Get("from") != "rhyme" {
 		return nil
 	}
-	v := url.Values{"q": {q.Get("q")}, "lang": {string(lang)}, "dialect": {q.Get("dialect")}, "level": {q.Get("level")}}
+	v := url.Values{"q": {q.Get("q")}, "lang": {string(lang)}}
+	for _, k := range []string{"dialect", "level", "min_syl", "max_syl", "match", "slang", "proper"} {
+		if x := q.Get(k); x != "" {
+			v.Set(k, x)
+		}
+	}
 	p, err := rhymeParamsFor(pageQuery(v), nil)
 	if err != nil {
 		p = app.DefaultRhymeParams(q.Get("q"))

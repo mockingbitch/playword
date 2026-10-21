@@ -1,0 +1,1265 @@
+query	rank	text	matched	level	score	identical	distance	proper
+ngày tàn	1	giày ban	2	L1	227.2	0	1	0
+ngày tàn	2	dày dạn	2	L2	232.6	0	2	0
+ngày tàn	3	hương đăng bày án	2	L2	208.0	0	2	0
+ngày tàn	4	lạy van	2	L2	223.5	0	3	0
+ngày tàn	5	máy khoan	2	L2	231.2	0	4	0
+ngày tàn	6	chạy án	2	L2	230.3	0	4	0
+ngày tàn	7	tài bàn	2	L25	223.8	0	4	0
+ngày tàn	8	bàn tay vàng	2	L25	216.0	0	4	0
+ngày tàn	9	tay ngang	2	L25	222.9	0	5	0
+ngày tàn	10	mây ngàn	2	L25	222.6	0	5	0
+ngày tàn	11	trai đàn	2	L25	221.2	0	5	0
+ngày tàn	12	chạy làng	2	L25	215.2	0	5	0
+ngày tàn	13	vầy đoàn	2	L25	212.0	0	5	0
+ngày tàn	14	tài sản	2	L25	236.1	0	6	0
+ngày tàn	15	dài hạn	2	L25	232.5	0	6	0
+ngày tàn	16	bài bản	2	L25	229.1	0	6	0
+ngày tàn	17	tay chân	2	L25	229.1	0	6	0
+ngày tàn	18	dày dặn	2	L25	226.5	0	6	0
+ngày tàn	19	khai man	2	L25	224.9	0	6	0
+ngày tàn	20	tài cán	2	L25	224.3	0	6	0
+hải quân	1	giải ngân	2	L0	243.7	0	1	0
+hải quân	2	cải tân	2	L0	233.2	0	1	0
+hải quân	3	ải Vân	2	L0	233.2	0	1	0
+hải quân	4	ái ân	2	L1	235.9	0	2	0
+hải quân	5	đại tuần	2	L1	232.7	0	2	0
+hải quân	6	ái quần	2	L1	232.6	0	2	0
+hải quân	7	gái tân	2	L1	231.1	0	2	0
+hải quân	8	lãi thuần	2	L1	228.7	0	2	0
+hải quân	9	vương mệnh tại thân	2	L1	214.0	0	2	0
+hải quân	10	đại thần	2	L1	246.3	0	3	0
+hải quân	11	quái nhân	2	L1	237.0	0	3	0
+hải quân	12	ngại ngần	2	L1	235.2	0	3	0
+hải quân	13	hoại thân	2	L1	232.2	0	3	0
+hải quân	14	hoại nhân	2	L1	231.1	0	3	0
+hải quân	15	cải huấn	2	L2	230.9	0	2	0
+hải quân	16	khai xuân	2	L2	226.2	0	2	0
+hải quân	17	giai nhân	2	L2	232.6	0	3	0
+hải quân	18	sai phân	2	L2	230.8	0	3	0
+hải quân	19	hai thân	2	L2	230.8	0	3	0
+hải quân	20	khái luận	2	L2	229.2	0	3	0
+cuộc đời	1	trục lợi	2	L25	227.2	0	6	0
+cuộc đời	2	phúc lợi	2	L25	232.1	0	7	0
+cuộc đời	3	thời	1	L0	156.5	0	0	0
+cuộc đời	4	đồng thời	1	L0	156.3	0	0	0
+cuộc đời	5	trả lời	1	L0	153.5	0	0	0
+cuộc đời	6	tạm thời	1	L0	152.8	0	0	0
+cuộc đời	7	lời	1	L0	152.6	0	0	0
+cuộc đời	8	tuyệt vời	1	L0	151.9	0	0	0
+cuộc đời	9	đương thời	1	L0	151.7	0	0	0
+cuộc đời	10	trời	1	L0	151.4	0	0	0
+cuộc đời	11	bầu trời	1	L0	151.3	0	0	0
+cuộc đời	12	lâm thời	1	L0	151.3	0	0	0
+cuộc đời	13	rời	1	L0	151.0	0	0	0
+cuộc đời	14	ngoài trời	1	L0	150.6	0	0	0
+cuộc đời	15	kịp thời	1	L0	150.2	0	0	0
+cuộc đời	16	mời	1	L0	150.0	0	0	0
+cuộc đời	17	nhận lời	1	L0	149.7	0	0	0
+cuộc đời	18	nhiều lời	1	L0	149.5	0	0	0
+cuộc đời	19	tách rời	1	L0	149.4	0	0	0
+cuộc đời	20	lỗi thời	1	L0	149.2	0	0	0
+vẻ khó	1	trẻ nhỏ	2	L1	241.8	0	1	0
+vẻ khó	2	trẻ mỏ	2	L1	224.0	0	1	0
+vẻ khó	3	bé nhỏ	2	L1	240.3	0	2	0
+vẻ khó	4	bé đỏ	2	L1	224.0	0	2	0
+vẻ khó	5	mẹ đỏ	2	L1	224.0	0	2	0
+vẻ khó	6	nghé ngọ	2	L1	224.0	0	2	0
+vẻ khó	7	xe bò	2	L2	231.4	0	4	0
+vẻ khó	8	xe đò	2	L2	230.5	0	4	0
+vẻ khó	9	chè kho	2	L2	226.9	0	4	0
+vẻ khó	10	ve bò	2	L2	221.2	0	4	0
+vẻ khó	11	vé số	2	L25	225.4	0	5	0
+vẻ khó	12	phế bỏ	2	L25	228.4	0	6	0
+vẻ khó	13	kẻ ô	2	L25	223.8	0	6	0
+vẻ khó	14	khé cổ	2	L25	212.0	0	6	0
+vẻ khó	15	xe cộ	2	L25	229.6	0	7	0
+vẻ khó	16	è cổ	2	L25	215.2	0	7	0
+vẻ khó	17	ghe cộ	2	L25	212.0	0	7	0
+vẻ khó	18	bê bò	2	L25	216.7	0	8	0
+vẻ khó	19	hệ số	2	L25	233.0	0	9	0
+vẻ khó	20	ghế bố	2	L25	219.7	0	9	0
+vô vàn	1	khô khan	2	L1	238.1	0	1	0
+vô vàn	2	bồ đoàn	2	L1	235.3	0	2	0
+vô vàn	3	khoan hỡi hồ khoan	2	L1	214.0	0	3	0
+vô vàn	4	khô cạn	2	L2	232.6	0	2	0
+vô vàn	5	đồ án	2	L2	234.4	0	3	0
+vô vàn	6	đồ bản	2	L2	229.1	0	3	0
+vô vàn	7	hô hoán	2	L2	226.9	0	3	0
+vô vàn	8	nổ ran	2	L2	221.2	0	3	0
+vô vàn	9	thổ quan	2	L2	231.8	0	4	0
+vô vàn	10	thổ sản	2	L2	231.1	0	4	0
+vô vàn	11	gỗ dán	2	L2	230.5	0	4	0
+vô vàn	12	hộ sản	2	L2	230.3	0	4	0
+vô vàn	13	gỗ ván	2	L2	227.2	0	4	0
+vô vàn	14	bổ bán	2	L2	222.7	0	4	0
+vô vàn	15	ngộ nạn	2	L2	222.7	0	4	0
+vô vàn	16	đổ nản	2	L2	218.0	0	4	0
+vô vàn	17	khô cằn	2	L25	230.2	0	4	0
+vô vàn	18	đồ hàng	2	L25	224.0	0	4	0
+vô vàn	19	lộ hàng	2	L25	221.9	0	5	0
+vô vàn	20	sổ vàng	2	L25	220.7	0	5	0
+tan	1	ban	1	L0	160.3	0	0	0
+tan	2	lan	1	L0	159.4	0	0	0
+tan	3	gian	1	L0	159.3	0	0	0
+tan	4	an	1	L0	159.1	0	0	0
+tan	5	san	1	L0	156.5	0	0	0
+tan	6	van	1	L0	155.0	0	0	0
+tan	7	đan	1	L0	155.0	0	0	0
+tan	8	can	1	L0	154.6	0	0	0
+tan	9	man	1	L0	154.1	0	0	0
+tan	10	than	1	L0	153.8	0	0	0
+tan	11	thời gian	1	L0	153.5	0	0	0
+tan	12	gan	1	L0	152.3	0	0	0
+tan	13	khan	1	L0	152.2	0	0	0
+tan	14	ủy ban	1	L0	151.5	0	0	0
+tan	15	han	1	L0	151.2	0	0	0
+tan	16	chan	1	L0	151.1	0	0	0
+tan	17	nan	1	L0	150.3	0	0	0
+tan	18	không gian	1	L0	149.9	0	0	0
+tan	19	công an	1	L0	148.9	0	0	0
+tan	20	ran	1	L0	148.9	0	0	0
+may mắn	1	ngay ngắn	2	L0	242.7	0	0	0
+may mắn	2	dày dặn	2	L1	238.5	0	2	0
+may mắn	3	cay đắng	2	L25	228.8	0	3	0
+may mắn	4	tay trắng	2	L25	226.4	0	3	0
+may mắn	5	say nắng	2	L25	223.3	0	3	0
+may mắn	6	ngay thẳng	2	L25	227.9	0	4	0
+may mắn	7	gay cấn	2	L25	226.4	0	4	0
+may mắn	8	mày trắng	2	L25	224.8	0	4	0
+may mắn	9	gay gấn	2	L25	215.2	0	4	0
+may mắn	10	hương đăng bày án	2	L25	202.0	0	5	0
+may mắn	11	tay chân	2	L25	229.1	0	6	0
+may mắn	12	đầy đặn	2	L25	226.7	0	6	0
+may mắn	13	dày dạn	2	L25	226.6	0	6	0
+may mắn	14	chạy án	2	L25	224.3	0	6	0
+may mắn	15	thay chân	2	L25	221.8	0	6	0
+may mắn	16	chất thải rắn	2	L25	221.0	0	6	0
+may mắn	17	bài văn	2	L25	228.9	0	7	0
+may mắn	18	hài văn	2	L25	220.2	0	7	0
+may mắn	19	giày ban	2	L25	215.2	0	7	0
+may mắn	20	con tạo xoay vần	2	L25	208.2	0	7	0
+hồ quang	1	đồ hàng	2	L1	236.0	0	2	0
+hồ quang	2	hổ mang	2	L2	235.0	0	3	0
+hồ quang	3	đồ đảng	2	L2	230.4	0	3	0
+hồ quang	4	rắn hổ mang	2	L2	229.8	0	3	0
+hồ quang	5	hộ tang	2	L2	228.4	0	3	0
+hồ quang	6	hổ lang	2	L2	227.4	0	3	0
+hồ quang	7	sổ tang	2	L2	227.0	0	3	0
+hồ quang	8	lộ hàng	2	L2	227.9	0	4	0
+hồ quang	9	sổ vàng	2	L2	226.7	0	4	0
+hồ quang	10	sỗ sàng	2	L2	226.6	0	4	0
+hồ quang	11	khố vàng	2	L2	225.7	0	4	0
+hồ quang	12	lính khố vàng	2	L2	220.1	0	4	0
+hồ quang	13	vô duyên vô dạng	2	L2	208.0	0	4	0
+hồ quang	14	số hạng	2	L2	235.5	0	5	0
+hồ quang	15	bộ dạng	2	L2	232.6	0	5	0
+hồ quang	16	mộ táng	2	L2	232.2	0	5	0
+hồ quang	17	lỗ mãng	2	L2	229.9	0	5	0
+hồ quang	18	bồ đoàn	2	L25	223.3	0	4	0
+hồ quang	19	khô khan	2	L25	226.1	0	5	0
+hồ quang	20	thổ quan	2	L25	225.8	0	5	0
+cun cút	1	vun vút	2	L0	238.9	0	0	0
+cun cút	2	tun hút	2	L0	230.0	0	0	0
+cun cút	3	gùn gút	2	L1	224.0	0	1	0
+cun cút	4	vùn vụt	2	L1	233.0	0	2	0
+cun cút	5	ngùn ngụt	2	L1	232.6	0	2	0
+cun cút	6	phùn phụt	2	L1	228.7	0	2	0
+cun cút	7	chùn chụt	2	L1	224.0	0	2	0
+cun cút	8	buôn buốt	2	L25	212.0	0	8	0
+cun cút	9	tuồn tuột	2	L25	215.2	0	10	0
+cun cút	10	chuồn chuột	2	L25	212.0	0	10	0
+cun cút	11	ruộng thụt	2	L25	212.0	0	10	0
+cun cút	12	tuốt tuồn tuột	2	L25	207.0	0	10	0
+cun cút	13	thu hút	1	L0	154.0	0	0	0
+cun cút	14	một chút	1	L0	151.8	0	0	0
+cun cút	15	rút	1	L0	151.2	0	0	0
+cun cút	16	phút	1	L0	150.6	0	0	0
+cun cút	17	hút	1	L0	150.0	0	0	0
+cun cút	18	giảm sút	1	L0	148.6	0	0	0
+cun cút	19	bút	1	L0	148.2	0	0	0
+cun cút	20	chút	1	L0	148.1	0	0	0
+huyết nguyệt	1	quyết liệt	2	L0	250.2	0	1	0
+huyết nguyệt	2	tiết việt	2	L0	241.6	0	2	0
+huyết nguyệt	3	triết thuyết	2	L1	235.0	0	2	0
+huyết nguyệt	4	phiệt duyệt	2	L1	227.2	0	2	0
+huyết nguyệt	5	nhiệt huyết	2	L1	240.7	0	3	0
+huyết nguyệt	6	nhiệt liệt	2	L1	240.4	0	3	0
+huyết nguyệt	7	giết thịt	2	L25	226.9	0	6	0
+huyết nguyệt	8	hăng tiết vịt	2	L25	207.0	0	6	0
+huyết nguyệt	9	khít rịt	2	L25	215.2	0	10	0
+huyết nguyệt	10	khít khịt	2	L25	212.0	0	10	0
+huyết nguyệt	11	lít nhít	2	L25	215.2	0	11	0
+huyết nguyệt	12	tịt mít	2	L25	212.0	0	12	0
+huyết nguyệt	13	phê duyệt	1	L0	151.3	0	0	0
+huyết nguyệt	14	tuyệt	1	L0	150.5	0	0	0
+huyết nguyệt	15	kiểm duyệt	1	L0	150.2	0	0	0
+huyết nguyệt	16	trình duyệt	1	L0	150.2	0	0	0
+huyết nguyệt	17	duyệt	1	L0	148.8	0	0	0
+huyết nguyệt	18	cự tuyệt	1	L0	146.6	0	0	0
+huyết nguyệt	19	xảo quyệt	1	L0	145.6	0	0	0
+huyết nguyệt	20	đoạn tuyệt	1	L0	145.2	0	0	0
+bại quân	1	vương mệnh tại thân	2	L0	220.0	0	1	0
+bại quân	2	hoại thân	2	L0	238.2	0	2	0
+bại quân	3	hoại nhân	2	L0	237.1	0	2	0
+bại quân	4	đại tuần	2	L1	232.7	0	1	0
+bại quân	5	đại thần	2	L1	246.3	0	2	0
+bại quân	6	giải ngân	2	L1	237.7	0	2	0
+bại quân	7	ái ân	2	L1	235.9	0	2	0
+bại quân	8	ngại ngần	2	L1	235.2	0	2	0
+bại quân	9	ái quần	2	L1	232.6	0	2	0
+bại quân	10	gái tân	2	L1	231.1	0	2	0
+bại quân	11	lãi thuần	2	L1	228.7	0	2	0
+bại quân	12	cải tân	2	L1	227.2	0	2	0
+bại quân	13	ải Vân	2	L1	227.2	0	2	0
+bại quân	14	quái nhân	2	L1	237.0	0	3	0
+bại quân	15	hải tần	2	L1	230.7	0	3	0
+bại quân	16	khai xuân	2	L2	226.2	0	2	0
+bại quân	17	tại trận	2	L2	238.0	0	3	0
+bại quân	18	giai nhân	2	L2	232.6	0	3	0
+bại quân	19	đại vận	2	L2	232.4	0	3	0
+bại quân	20	cải huấn	2	L2	230.9	0	3	0
+bè nó	1	kẻ khó	2	L2	227.0	0	2	0
+bè nó	2	chè kho	2	L2	226.9	0	2	0
+bè nó	3	trẻ nhỏ	2	L2	235.8	0	3	0
+bè nó	4	bé nhỏ	2	L2	234.3	0	3	0
+bè nó	5	xe bò	2	L2	231.4	0	3	0
+bè nó	6	xe đò	2	L2	230.5	0	3	0
+bè nó	7	ve bò	2	L2	221.2	0	3	0
+bè nó	8	bé đỏ	2	L2	218.0	0	3	0
+bè nó	9	mẹ đỏ	2	L2	218.0	0	3	0
+bè nó	10	nghé ngọ	2	L2	218.0	0	3	0
+bè nó	11	trẻ mỏ	2	L2	218.0	0	3	0
+bè nó	12	è cổ	2	L25	215.2	0	5	0
+bè nó	13	xe cộ	2	L25	229.6	0	6	0
+bè nó	14	vé số	2	L25	225.4	0	6	0
+bè nó	15	ghe cộ	2	L25	212.0	0	6	0
+bè nó	16	phế bỏ	2	L25	228.4	0	7	0
+bè nó	17	bê bò	2	L25	216.7	0	7	0
+bè nó	18	khé cổ	2	L25	212.0	0	7	0
+bè nó	19	kẻ ô	2	L25	223.8	0	8	0
+bè nó	20	hệ số	2	L25	233.0	0	10	0
+mai sau	1	cãi nhau	2	L2	234.7	0	2	0
+mai sau	2	lai máu	2	L2	222.7	0	2	0
+mai sau	3	kim loại màu	2	L2	227.0	0	4	0
+mai sau	4	trai bao	2	L25	222.9	0	4	0
+mai sau	5	khai đao	2	L25	218.7	0	4	0
+mai sau	6	hai rằm	2	L25	212.0	0	4	0
+mai sau	7	đàn gảy tai trâu	2	L25	206.7	0	4	0
+mai sau	8	bay màu	2	L25	223.9	0	5	0
+mai sau	9	khai mào	2	L25	223.0	0	5	0
+mai sau	10	cai thầu	2	L25	220.4	0	5	0
+mai sau	11	nón quai thao	2	L25	216.6	0	5	0
+mai sau	12	nài bao	2	L25	212.0	0	5	0
+mai sau	13	nón thúng quai thao	2	L25	208.2	0	5	0
+mai sau	14	đức rộng tài cao	2	L25	202.0	0	5	0
+mai sau	15	tại sao	2	L25	233.4	0	6	0
+mai sau	16	khai báo	2	L25	229.8	0	6	0
+mai sau	17	hải âu	2	L25	229.3	0	6	0
+mai sau	18	lấy nhau	2	L25	227.5	0	6	0
+mai sau	19	giải lao	2	L25	226.7	0	6	0
+mai sau	20	đại châu	2	L25	225.8	0	6	0
+ngày tán	1	hương đăng bày án	2	L0	220.0	0	0	0
+ngày tán	2	dày dạn	2	L1	238.6	0	1	0
+ngày tán	3	chạy án	2	L2	230.3	0	2	0
+ngày tán	4	giày ban	2	L2	221.2	0	2	0
+ngày tán	5	lạy van	2	L2	223.5	0	4	0
+ngày tán	6	máy khoan	2	L2	231.2	0	5	0
+ngày tán	7	tài cán	2	L25	224.3	0	4	0
+ngày tán	8	đài gián	2	L25	219.7	0	4	0
+ngày tán	9	thầy phán	2	L25	216.7	0	4	0
+ngày tán	10	tài sản	2	L25	236.1	0	5	0
+ngày tán	11	may mắn	2	L25	233.9	0	5	0
+ngày tán	12	bài toán	2	L25	232.8	0	5	0
+ngày tán	13	dài hạn	2	L25	232.5	0	5	0
+ngày tán	14	bài bản	2	L25	229.1	0	5	0
+ngày tán	15	dày dặn	2	L25	226.5	0	5	0
+ngày tán	16	gay cấn	2	L25	226.4	0	5	0
+ngày tán	17	ngay ngắn	2	L25	224.7	0	5	0
+ngày tán	18	quản lý tài sản	2	L25	218.4	0	5	0
+ngày tán	19	gay gấn	2	L25	215.2	0	5	0
+ngày tán	20	tai nạn	2	L25	235.2	0	6	0
+xqzw	0	(invalid syllable "xqzw": invalid_char)	0	-	0
+city of heaven	0	(invalid syllable "city": unknown_rime)	0	-	0
+bẻ đó	1	kẻ khó	2	L0	239.0	0	0	0
+bẻ đó	2	trẻ nhỏ	2	L1	241.8	0	1	0
+bẻ đó	3	trẻ mỏ	2	L1	224.0	0	1	0
+bẻ đó	4	bé nhỏ	2	L1	240.3	0	2	0
+bẻ đó	5	bé đỏ	2	L1	224.0	0	2	0
+bẻ đó	6	mẹ đỏ	2	L1	224.0	0	2	0
+bẻ đó	7	nghé ngọ	2	L1	224.0	0	2	0
+bẻ đó	8	xe bò	2	L2	231.4	0	4	0
+bẻ đó	9	xe đò	2	L2	230.5	0	4	0
+bẻ đó	10	chè kho	2	L2	226.9	0	4	0
+bẻ đó	11	ve bò	2	L2	221.2	0	4	0
+bẻ đó	12	vé số	2	L25	225.4	0	5	0
+bẻ đó	13	phế bỏ	2	L25	228.4	0	6	0
+bẻ đó	14	kẻ ô	2	L25	223.8	0	6	0
+bẻ đó	15	khé cổ	2	L25	212.0	0	6	0
+bẻ đó	16	xe cộ	2	L25	229.6	0	7	0
+bẻ đó	17	è cổ	2	L25	215.2	0	7	0
+bẻ đó	18	ghe cộ	2	L25	212.0	0	7	0
+bẻ đó	19	bê bò	2	L25	216.7	0	8	0
+bẻ đó	20	hệ số	2	L25	233.0	0	9	0
+hải	1	giải	1	L0	161.1	0	0	0
+hải	2	phải	1	L0	160.1	0	0	0
+hải	3	cải	1	L0	157.1	0	0	0
+hải	4	tải	1	L0	156.2	0	0	0
+hải	5	trải	1	L0	155.6	0	0	0
+hải	6	thải	1	L0	153.7	0	0	0
+hải	7	dải	1	L0	153.4	0	0	0
+hải	8	khải	1	L0	152.6	0	0	0
+hải	9	sải	1	L0	152.5	0	0	0
+hải	10	vải	1	L0	152.3	0	0	0
+hải	11	rải	1	L0	151.5	0	0	0
+hải	12	ải	1	L0	149.6	0	0	0
+hải	13	ngải	1	L0	149.3	0	0	0
+hải	14	vận tải	1	L0	149.3	0	0	0
+hải	15	chải	1	L0	149.1	0	0	0
+hải	16	gặp phải	1	L0	146.3	0	0	0
+hải	17	phân giải	1	L0	145.7	0	0	0
+hải	18	mải	1	L0	145.7	0	0	0
+hải	19	đăng tải	1	L0	145.6	0	0	0
+hải	20	xe tải	1	L0	145.5	0	0	0
+hội bạn	1	nội loạn	2	L0	245.7	0	1	0
+hội bạn	2	nội gián	2	L1	238.9	0	1	0
+hội bạn	3	bội phản	2	L1	234.8	0	1	0
+hội bạn	4	rối loạn	2	L1	246.8	0	2	0
+hội bạn	5	nổi loạn	2	L1	245.8	0	2	0
+hội bạn	6	tối giản	2	L1	240.3	0	2	0
+hội bạn	7	nội quán	2	L1	227.2	0	2	0
+hội bạn	8	nội san	2	L2	230.2	0	2	0
+hội bạn	9	bội lan	2	L2	223.5	0	2	0
+hội bạn	10	bồi bàn	2	L2	232.8	0	4	0
+hội bạn	11	tồi tàn	2	L2	232.1	0	4	0
+hội bạn	12	sôi gan	2	L2	223.5	0	4	0
+hội bạn	13	gối loan	2	L2	221.2	0	4	0
+hội bạn	14	bôi bàn	2	L2	218.0	0	4	0
+hội bạn	15	dãy hồi lan	2	L2	213.0	0	4	0
+hội bạn	16	hồi loan	2	L2	228.2	0	5	0
+hội bạn	17	nội tạng	2	L25	230.4	0	3	0
+hội bạn	18	tội trạng	2	L25	226.8	0	3	0
+hội bạn	19	nối mạng	2	L25	228.7	0	4	0
+hội bạn	20	nội tháng	2	L25	222.2	0	4	0
+bè	1	hè	1	L0	155.1	0	0	0
+bè	2	chè	1	L0	150.1	0	0	0
+bè	3	mùa hè	1	L0	149.8	0	0	0
+bè	4	đè	1	L0	149.8	0	0	0
+bè	5	kè	1	L0	149.4	0	0	0
+bè	6	mè	1	L0	148.1	0	0	0
+bè	7	nghè	1	L0	147.3	0	0	0
+bè	8	dè	1	L0	147.3	0	0	0
+bè	9	tè	1	L0	146.3	0	0	0
+bè	10	vè	1	L0	146.0	0	0	0
+bè	11	rè	1	L0	145.3	0	0	0
+bè	12	lè	1	L0	144.5	0	0	0
+bè	13	è	1	L0	144.2	0	0	0
+bè	14	nhè	1	L0	143.8	0	0	0
+bè	15	khè	1	L0	143.1	0	0	0
+bè	16	ghè	1	L0	142.6	0	0	0
+bè	17	tắc kè	1	L0	142.6	0	0	0
+bè	18	thè	1	L0	142.2	0	0	0
+bè	19	vỉa hè	1	L0	142.1	0	0	0
+bè	20	nghỉ hè	1	L0	141.2	0	0	0
+lành lạnh	1	bành bạnh	2	L0	230.0	0	0	0
+lành lạnh	2	hành chánh	2	L1	241.6	0	1	0
+lành lạnh	3	thanh mảnh	2	L1	240.6	0	2	0
+lành lạnh	4	tranh ảnh	2	L1	238.7	0	2	0
+lành lạnh	5	hoành thánh	2	L1	237.3	0	2	0
+lành lạnh	6	thanh cảnh	2	L1	236.7	0	2	0
+lành lạnh	7	ranh mãnh	2	L1	236.1	0	2	0
+lành lạnh	8	canh cánh	2	L1	233.7	0	2	0
+lành lạnh	9	lanh lảnh	2	L1	231.7	0	2	0
+lành lạnh	10	thanh thảnh	2	L1	228.7	0	2	0
+lành lạnh	11	anh ánh	2	L1	227.2	0	2	0
+lành lạnh	12	nhanh nhánh	2	L1	227.2	0	2	0
+lành lạnh	13	lanh lánh	2	L1	224.0	0	2	0
+lành lạnh	14	nhanh nhảnh	2	L1	224.0	0	2	0
+lành lạnh	15	vanh vánh	2	L1	224.0	0	2	0
+lành lạnh	16	quanh quánh	2	L1	224.0	0	4	0
+lành lạnh	17	thành danh	2	L2	235.2	0	2	0
+lành lạnh	18	dành dành	2	L2	230.4	0	2	0
+lành lạnh	19	rành rành	2	L2	228.5	0	2	0
+lành lạnh	20	mành mành	2	L2	226.2	0	2	0
+maybach	0	(invalid syllable "maybach": unknown_rime)	0	-	0
+ngày t	0	(invalid syllable "t": no_vowel)	0	-	0
+siêu thoát	1	phiêu bạt	2	L1	238.8	0	2	0
+siêu thoát	2	phiêu dạt	2	L1	233.9	0	2	0
+siêu thoát	3	biểu đạt	2	L2	234.8	0	4	0
+siêu thoát	4	kiểm soát	2	L25	237.9	0	5	0
+siêu thoát	5	yêu thuật	2	L25	223.9	0	5	0
+siêu thoát	6	hiệu suất	2	L25	233.9	0	6	0
+siêu thoát	7	kiểm sát	2	L25	233.3	0	6	0
+siêu thoát	8	chiếm đoạt	2	L25	230.9	0	6	0
+siêu thoát	9	tiếm đoạt	2	L25	221.2	0	6	0
+siêu thoát	10	phiêu dật	2	L25	219.9	0	6	0
+siêu thoát	11	liềm vạt	2	L25	212.0	0	6	0
+siêu thoát	12	phản chiếu suất	2	L25	207.0	0	6	0
+siêu thoát	13	niêm luật	2	L25	223.3	0	8	0
+siêu thoát	14	niêm cất	2	L25	222.9	0	8	0
+siêu thoát	15	thiếu mặt	2	L25	219.4	0	8	0
+siêu thoát	16	tiêm tất	2	L25	212.0	0	8	0
+siêu thoát	17	mở niêm cất	2	L25	207.0	0	8	0
+siêu thoát	18	nghiêm ngặt	2	L25	232.3	0	9	0
+siêu thoát	19	nghiêm nhặt	2	L25	223.0	0	9	0
+siêu thoát	20	hiu hắt	2	L25	222.2	0	9	0
+nghe tiếng	1	nhẹ miệng	2	L2	221.2	0	3	0
+nghe tiếng	2	xe điện	2	L25	231.0	0	4	0
+nghe tiếng	3	se duyên	2	L25	222.7	0	6	0
+nghe tiếng	4	trễ biếng	2	L25	219.9	0	6	0
+nghe tiếng	5	xe duyên	2	L25	219.1	0	6	0
+nghe tiếng	6	quê kiểng	2	L25	212.0	0	6	0
+nghe tiếng	7	kết tóc se duyên	2	L25	205.2	0	6	0
+nghe tiếng	8	rẻ tiền	2	L25	229.6	0	7	0
+nghe tiếng	9	che kín	2	L25	226.4	0	7	0
+nghe tiếng	10	vẽ chuyện	2	L25	215.2	0	7	0
+nghe tiếng	11	đê tiện	2	L25	224.2	0	8	0
+nghe tiếng	12	kẻ đê tiện	2	L25	213.7	0	8	0
+nghe tiếng	13	đồ đê tiện	2	L25	207.0	0	8	0
+nghe tiếng	14	thế chiến	2	L25	236.8	0	9	0
+nghe tiếng	15	chế biến	2	L25	234.5	0	9	0
+nghe tiếng	16	kê biên	2	L25	223.1	0	9	0
+nghe tiếng	17	bệ kiến	2	L25	222.2	0	9	0
+nghe tiếng	18	thể hiện	2	L25	237.8	0	10	0
+nghe tiếng	19	thể diện	2	L25	226.3	0	10	0
+nghe tiếng	20	ghế điện	2	L25	225.2	0	10	0
+thành phố	1	doanh số	2	L1	245.8	0	2	0
+thành phố	2	danh bộ	2	L1	236.5	0	2	0
+thành phố	3	hoành độ	2	L1	233.7	0	2	0
+thành phố	4	ganh gổ	2	L1	224.0	0	2	0
+thành phố	5	bành tô	2	L2	225.1	0	2	0
+thành phố	6	lãnh thổ	2	L2	244.0	0	3	0
+thành phố	7	thánh tổ	2	L2	234.6	0	3	0
+thành phố	8	cảnh ngộ	2	L2	232.2	0	3	0
+thành phố	9	mãnh hổ	2	L2	231.9	0	3	0
+thành phố	10	hạnh ngộ	2	L2	227.8	0	3	0
+thành phố	11	bánh tổ	2	L2	227.7	0	3	0
+thành phố	12	lính thủy đánh bộ	2	L2	223.4	0	3	0
+thành phố	13	rành rõ	2	L25	217.5	0	5	0
+thành phố	14	xanh cỏ	2	L25	221.4	0	6	0
+thành phố	15	bánh bó	2	L25	217.5	0	6	0
+thành phố	16	tạnh gió	2	L25	215.2	0	6	0
+thành phố	17	danh nho	2	L25	224.6	0	7	0
+thành phố	18	quanh co	2	L25	228.1	0	8	0
+thành phố	19	bánh bò	2	L25	223.6	0	8	0
+thành phố	20	bánh tro	2	L25	223.3	0	8	0
+tàn	1	bàn	1	L0	157.8	0	0	0
+tàn	2	hàn	1	L0	157.4	0	0	0
+tàn	3	đàn	1	L0	156.7	0	0	0
+tàn	4	màn	1	L0	155.5	0	0	0
+tàn	5	dàn	1	L0	154.3	0	0	0
+tàn	6	ngàn	1	L0	153.4	0	0	0
+tàn	7	sàn	1	L0	152.9	0	0	0
+tàn	8	làn	1	L0	152.8	0	0	0
+tàn	9	càn	1	L0	152.3	0	0	0
+tàn	10	tràn	1	L0	152.3	0	0	0
+tàn	11	nàn	1	L0	150.1	0	0	0
+tàn	12	nhàn	1	L0	149.9	0	0	0
+tàn	13	giàn	1	L0	149.4	0	0	0
+tàn	14	ghi bàn	1	L0	148.5	0	0	0
+tàn	15	địa bàn	1	L0	148.4	0	0	0
+tàn	16	mở màn	1	L0	145.8	0	0	0
+tàn	17	diễn đàn	1	L0	145.6	0	0	0
+tàn	18	tiếng Hàn	1	L0	145.6	0	0	0
+tàn	19	khàn	1	L0	145.4	0	0	0
+tàn	20	phàn nàn	1	L0	143.8	0	0	0
+đêm	1	thêm	1	L0	159.6	0	0	0
+đêm	2	nêm	1	L0	148.6	0	0	0
+đêm	3	êm	1	L0	148.4	0	0	0
+đêm	4	têm	1	L0	145.1	0	0	0
+đêm	5	chêm	1	L0	143.3	0	0	0
+đêm	6	học thêm	1	L0	141.6	0	0	0
+đêm	7	mắm nêm	1	L0	135.7	0	0	0
+đêm	8	ấm êm	1	L0	132.9	0	0	0
+đêm	9	xêm xêm	1	L0	131.2	0	0	0
+đêm	10	êm êm	1	L0	131.2	0	0	0
+đêm	11	áo quần như nêm	1	L0	118.2	0	0	0
+đêm	12	êm lại ngoài êm	1	L0	115.0	0	0	0
+đêm	13	mềm	1	L1	150.4	0	1	0
+đêm	14	thềm	1	L1	143.7	0	1	0
+đêm	15	phần mềm	1	L1	143.4	0	1	0
+đêm	16	thân mềm	1	L1	143.3	0	1	0
+đêm	17	kềm	1	L1	138.1	0	1	0
+đêm	18	đĩa mềm	1	L1	134.3	0	1	0
+đêm	19	êm đềm	1	L1	133.6	0	1	0
+đêm	20	bóng mềm	1	L1	132.7	0	1	0
+tiền	1	miền	1	L0	158.3	0	0	0
+tiền	2	liền	1	L0	155.2	0	0	0
+tiền	3	điền	1	L0	154.8	0	0	0
+tiền	4	thiền	1	L0	153.4	0	0	0
+tiền	5	hiền	1	L0	153.1	0	0	0
+tiền	6	viền	1	L0	151.6	0	0	0
+tiền	7	phiền	1	L0	150.0	0	0	0
+tiền	8	nghiền	1	L0	149.7	0	0	0
+tiền	9	biền	1	L0	147.9	0	0	0
+tiền	10	triền	1	L0	147.7	0	0	0
+tiền	11	đất liền	1	L0	146.8	0	0	0
+tiền	12	gắn liền	1	L0	146.7	0	0	0
+tiền	13	tên miền	1	L0	145.4	0	0	0
+tiền	14	đồn điền	1	L0	144.9	0	0	0
+tiền	15	nối liền	1	L0	144.7	0	0	0
+tiền	16	giền	1	L0	142.7	0	0	0
+tiền	17	than phiền	1	L0	141.1	0	0	0
+tiền	18	chùa chiền	1	L0	141.1	0	0	0
+tiền	19	người hiền	1	L0	140.8	0	0	0
+tiền	20	làm phiền	1	L0	140.7	0	0	0
+giang hồ	1	hang ổ	2	L2	232.7	0	2	0
+giang hồ	2	lang lổ	2	L2	218.0	0	2	0
+giang hồ	3	sang sổ	2	L2	218.0	0	2	0
+giang hồ	4	quang phổ	2	L2	238.3	0	3	0
+giang hồ	5	loang lổ	2	L2	230.8	0	3	0
+giang hồ	6	hàng phố	2	L2	226.4	0	3	0
+giang hồ	7	kính quang phổ	2	L2	223.2	0	3	0
+giang hồ	8	đảng bộ	2	L2	239.3	0	4	0
+giang hồ	9	hoàng thổ	2	L2	232.6	0	4	0
+giang hồ	10	báng bổ	2	L2	232.4	0	4	0
+giang hồ	11	bảng số	2	L2	231.4	0	4	0
+giang hồ	12	khăn quàng cổ	2	L2	227.1	0	4	0
+giang hồ	13	tỉnh đảng bộ	2	L2	222.0	0	4	0
+giang hồ	14	san hô	2	L25	235.1	0	4	0
+giang hồ	15	ban-giô	2	L25	212.0	0	4	0
+giang hồ	16	man-tô	2	L25	212.0	0	4	0
+giang hồ	17	bản đồ	2	L25	235.6	0	5	0
+giang hồ	18	ban bố	2	L25	229.5	0	5	0
+giang hồ	19	gian khổ	2	L25	228.8	0	5	0
+giang hồ	20	giản đồ	2	L25	225.9	0	5	0
+anh em	1	bánh kem	2	L2	230.9	0	2	0
+anh em	2	bánh xèo	2	L25	226.0	0	6	0
+anh em	3	bánh bèo	2	L25	224.9	0	6	0
+anh em	4	cánh bèo	2	L25	219.7	0	6	0
+anh em	5	lạnh lẽo	2	L25	227.6	0	7	0
+anh em	6	bánh dẻo	2	L25	224.9	0	7	0
+anh em	7	quanh quéo	2	L25	212.0	0	7	0
+anh em	8	xe đạp bánh béo	2	L25	202.0	0	7	0
+anh em	9	xem	1	L0	154.5	0	0	0
+anh em	10	người xem	1	L0	152.0	0	0	0
+anh em	11	đem	1	L0	150.3	0	0	0
+anh em	12	kem	1	L0	146.8	0	0	0
+anh em	13	lọ lem	1	L0	146.1	0	0	0
+anh em	14	tem	1	L0	144.8	0	0	0
+anh em	15	lem	1	L0	143.0	0	0	0
+anh em	16	nem	1	L0	142.7	0	0	0
+anh em	17	kiêng khem	1	L0	142.4	0	0	0
+anh em	18	nhá nhem	1	L0	140.1	0	0	0
+anh em	19	khem	1	L0	139.1	0	0	0
+anh em	20	lấm lem	1	L0	138.4	0	0	0
+chiến thắng	1	liến thoắng	2	L0	238.2	0	1	0
+chiến thắng	2	nghiến răng	2	L2	230.9	0	2	0
+chiến thắng	3	yên ắng	2	L2	229.1	0	2	0
+chiến thắng	4	điện năng	2	L2	237.0	0	3	0
+chiến thắng	5	yên lặng	2	L2	233.4	0	3	0
+chiến thắng	6	thiên đăng	2	L2	227.3	0	4	0
+chiến thắng	7	quyền năng	2	L2	235.5	0	5	0
+chiến thắng	8	duyên Đằng	2	L2	218.0	0	5	0
+chiến thắng	9	truyện ngắn	2	L25	233.3	0	5	0
+chiến thắng	10	biến dạng	2	L25	231.9	0	5	0
+chiến thắng	11	kiến văn	2	L25	227.5	0	5	0
+chiến thắng	12	tiếng rằng	2	L25	224.9	0	5	0
+chiến thắng	13	điện kháng	2	L25	224.2	0	5	0
+chiến thắng	14	điện táng	2	L25	215.2	0	5	0
+chiến thắng	15	biếng rằng	2	L25	212.0	0	5	0
+chiến thắng	16	diễn văn	2	L25	231.4	0	6	0
+chiến thắng	17	hiện trạng	2	L25	229.6	0	6	0
+chiến thắng	18	điện văn	2	L25	225.7	0	6	0
+chiến thắng	19	kiến vàng	2	L25	224.2	0	6	0
+chiến thắng	20	thiện căn	2	L25	220.9	0	6	0
+giấc mơ	1	xác xơ	2	L25	221.7	0	4	0
+giấc mơ	2	bạc phơ	2	L25	222.7	0	5	0
+giấc mơ	3	khắc cờ	2	L25	212.0	0	5	0
+giấc mơ	4	nhắc nhở	2	L25	230.7	0	6	0
+giấc mơ	5	trắc trở	2	L25	226.7	0	6	0
+giấc mơ	6	mắc nợ	2	L25	226.5	0	6	0
+giấc mơ	7	mắc cỡ	2	L25	222.9	0	6	0
+giấc mơ	8	mắc mớ	2	L25	212.0	0	6	0
+giấc mơ	9	sặc sỡ	2	L25	229.3	0	7	0
+giấc mơ	10	lắc lư	2	L25	226.2	0	8	0
+giấc mơ	11	giác thư	2	L25	223.8	0	8	0
+giấc mơ	12	nhạc sư	2	L25	224.9	0	9	0
+giấc mơ	13	mắc lừa	2	L25	223.6	0	9	0
+giấc mơ	14	đắc cử	2	L25	232.3	0	10	0
+giấc mơ	15	tác tử	2	L25	222.4	0	10	0
+giấc mơ	16	giác cự	2	L25	215.2	0	10	0
+giấc mơ	17	ngắc ngứ	2	L25	215.2	0	10	0
+giấc mơ	18	khặc khừ	2	L25	212.0	0	10	0
+giấc mơ	19	ngắc nga ngắc ngứ	2	L25	202.0	0	10	0
+giấc mơ	20	loạn thần tặc tử	2	L25	209.4	0	11	0
+ánh đèn	1	đánh ghen	2	L1	236.0	0	1	0
+ánh đèn	2	đánh chén	2	L2	228.5	0	2	0
+ánh đèn	3	nhanh nhẹn	2	L2	236.7	0	4	0
+ánh đèn	4	lanh lẹn	2	L2	224.7	0	4	0
+ánh đèn	5	thanh vẹn	2	L2	218.0	0	4	0
+ánh đèn	6	bèn	1	L0	148.7	0	0	0
+ánh đèn	7	thợ rèn	1	L0	146.1	0	0	0
+ánh đèn	8	rèn	1	L0	145.5	0	0	0
+ánh đèn	9	kèn	1	L0	145.2	0	0	0
+ánh đèn	10	lò rèn	1	L0	144.5	0	0	0
+ánh đèn	11	chèn	1	L0	144.3	0	0	0
+ánh đèn	12	thấp hèn	1	L0	143.7	0	0	0
+ánh đèn	13	hèn	1	L0	143.4	0	0	0
+ánh đèn	14	thổi kèn	1	L0	143.4	0	0	0
+ánh đèn	15	phèn	1	L0	143.2	0	0	0
+ánh đèn	16	đường phèn	1	L0	142.0	0	0	0
+ánh đèn	17	nghèo hèn	1	L0	141.9	0	0	0
+ánh đèn	18	đê hèn	1	L0	141.1	0	0	0
+ánh đèn	19	lèn	1	L0	139.5	0	0	0
+ánh đèn	20	mèn	1	L0	139.5	0	0	0
+quê hương	1	lê dương	2	L0	247.9	0	1	0
+quê hương	2	thê lương	2	L0	243.1	0	1	0
+quê hương	3	lính lê-dương	2	L0	225.0	0	1	0
+quê hương	4	đề cương	2	L1	238.4	0	2	0
+quê hương	5	nghê thường	2	L1	234.8	0	2	0
+quê hương	6	lề đường	2	L1	239.2	0	3	0
+quê hương	7	dễ thương	2	L2	236.8	0	3	0
+quê hương	8	đế vương	2	L2	235.6	0	3	0
+quê hương	9	đề xướng	2	L2	236.0	0	4	0
+quê hương	10	lễ đường	2	L2	232.3	0	4	0
+quê hương	11	thế thường	2	L2	231.8	0	4	0
+quê hương	12	tể tướng	2	L2	238.3	0	5	0
+quê hương	13	lễ nhượng	2	L2	225.9	0	5	0
+quê hương	14	thuê mướn	2	L25	227.2	0	5	0
+quê hương	15	dín gió e sương	2	L25	202.0	0	5	0
+quê hương	16	rợn gió e sương	2	L25	202.0	0	5	0
+quê hương	17	cà phê trứng	2	L25	216.6	0	7	0
+quê hương	18	kê đơn	2	L25	229.1	0	8	0
+quê hương	19	lẽ thường	2	L25	225.4	0	8	0
+quê hương	20	bé đường	2	L25	215.2	0	8	0
+trái tim	1	khoai lim	2	L2	218.0	0	3	0
+trái tim	2	khái niệm	2	L25	236.2	0	6	0
+trái tim	3	tái chiếm	2	L25	231.5	0	6	0
+trái tim	4	gái điếm	2	L25	227.5	0	6	0
+trái tim	5	tái nhiễm	2	L25	224.2	0	6	0
+trái tim	6	tái kiểm	2	L25	224.1	0	6	0
+trái tim	7	trải nghiệm	2	L25	234.1	0	7	0
+trái tim	8	quay phim	2	L25	234.0	0	7	0
+trái tim	9	bãi nhiệm	2	L25	229.1	0	7	0
+trái tim	10	oai nghiêm	2	L25	223.7	0	7	0
+trái tim	11	tài xỉu	2	L25	219.9	0	7	0
+trái tim	12	phải điều	2	L25	229.4	0	9	0
+trái tim	13	thái miếu	2	L25	228.3	0	9	0
+trái tim	14	hoài niệm	2	L25	227.6	0	9	0
+trái tim	15	bãi triều	2	L25	225.9	0	9	0
+trái tim	16	ai làm nấy chịu	2	L25	202.0	0	9	0
+trái tim	17	đại biểu	2	L25	237.4	0	10	0
+trái tim	18	ngoại kiều	2	L25	226.0	0	10	0
+trái tim	19	giải hiệu	2	L25	221.4	0	10	0
+trái tim	20	hai Kiều	2	L25	219.1	0	10	0
+tuyệt vọng	1	nghiệt ngõng	2	L1	224.0	0	2	0
+tuyệt vọng	2	biết tỏng	2	L1	229.5	0	3	0
+tuyệt vọng	3	riết róng	2	L1	224.0	0	3	0
+tuyệt vọng	4	diệt vong	2	L2	236.8	0	3	0
+tuyệt vọng	5	biệt động	2	L25	230.2	0	5	0
+tuyệt vọng	6	huyết động	2	L25	224.0	0	5	0
+tuyệt vọng	7	huyết thống	2	L25	229.5	0	6	0
+tuyệt vọng	8	trứng vịt lộn	2	L25	218.4	0	12	0
+tuyệt vọng	9	hột vịt lộn	2	L25	214.4	0	12	0
+tuyệt vọng	10	Việt Long	2	L2	230.0	0	3	1
+tuyệt vọng	11	Việt Thống	2	L25	222.0	0	6	1
+tuyệt vọng	12	Việt Hồng	2	L25	224.8	0	7	1
+tuyệt vọng	13	Việt Đông	2	L25	224.3	0	7	1
+tuyệt vọng	14	Thiết ống	2	L25	223.8	0	7	1
+tuyệt vọng	15	quan trọng	1	L0	157.0	0	0	0
+tuyệt vọng	16	trọng	1	L0	153.9	0	0	0
+tuyệt vọng	17	nghiêm trọng	1	L0	153.7	0	0	0
+tuyệt vọng	18	tôn trọng	1	L0	151.4	0	0	0
+tuyệt vọng	19	chú trọng	1	L0	150.2	0	0	0
+tuyệt vọng	20	tải trọng	1	L0	150.1	0	0	0
+khuyết điểm	1	tiết kiệm	2	L1	245.3	0	2	0
+khuyết điểm	2	nguyệt liễm	2	L1	224.0	0	2	0
+khuyết điểm	3	thiết yếu	2	L25	232.4	0	5	0
+khuyết điểm	4	tuyệt diệu	2	L25	225.6	0	5	0
+khuyết điểm	5	nhiệt biểu	2	L25	220.4	0	5	0
+khuyết điểm	6	biệt hiệu	2	L25	229.9	0	6	0
+khuyết điểm	7	biết điều	2	L25	228.4	0	6	0
+khuyết điểm	8	liệt chiếu	2	L25	219.9	0	6	0
+khuyết điểm	9	bát chiết yêu	2	L25	210.2	0	6	0
+khuyết điểm	10	triệt tiêu	2	L25	228.9	0	7	0
+khuyết điểm	11	vịt tiềm	2	L25	218.7	0	8	0
+khuyết điểm	12	viết nhịu	2	L25	212.0	0	9	0
+khuyết điểm	13	ít nhiều	2	L25	230.6	0	10	0
+khuyết điểm	14	ghế ít đít nhiều	2	L25	202.0	0	10	0
+khuyết điểm	15	tít điểm	2	L25	212.0	1	5	0
+khuyết điểm	16	ưu khuyết điểm	2	L0	234.3	2	0	0
+khuyết điểm	17	Yết Kiêu	2	L25	226.2	0	6	1
+khuyết điểm	18	việt kiều	2	L25	229.0	0	7	1
+khuyết điểm	19	nguy hiểm	1	L0	153.4	0	0	0
+khuyết điểm	20	kiểm	1	L0	152.3	0	0	0
+luyến tiếc	1	yến tiệc	2	L1	239.7	0	2	0
+luyến tiếc	2	biêng biếc	2	L25	215.2	0	6	0
+luyến tiếc	3	siêng việc	2	L25	212.0	0	7	0
+luyến tiếc	4	xin việc	2	L25	226.8	0	8	0
+luyến tiếc	5	chiếc	1	L0	153.5	0	0	0
+luyến tiếc	6	gánh xiếc	1	L0	144.7	0	0	0
+luyến tiếc	7	thiếc	1	L0	144.0	0	0	0
+luyến tiếc	8	gớm ghiếc	1	L0	143.2	0	0	0
+luyến tiếc	9	xiếc	1	L0	143.1	0	0	0
+luyến tiếc	10	xanh biếc	1	L0	142.9	0	0	0
+luyến tiếc	11	mắng nhiếc	1	L0	142.6	0	0	0
+luyến tiếc	12	điếc	1	L0	141.7	0	0	0
+luyến tiếc	13	biếc	1	L0	141.0	0	0	0
+luyến tiếc	14	đơn chiếc	1	L0	140.5	0	0	0
+luyến tiếc	15	độc chiếc	1	L0	139.9	0	0	0
+luyến tiếc	16	làm xiếc	1	L0	139.7	0	0	0
+luyến tiếc	17	hàm thiếc	1	L0	138.4	0	0	0
+luyến tiếc	18	liếc	1	L0	138.2	0	0	0
+luyến tiếc	19	nhiếc	1	L0	138.0	0	0	0
+luyến tiếc	20	giấy thiếc	1	L0	137.4	0	0	0
+nước mắt	1	trước mặt	2	L1	243.8	0	1	0
+nước mắt	2	bước ngoặt	2	L1	243.4	0	2	0
+nước mắt	3	trước nhất	2	L25	225.5	0	4	0
+nước mắt	4	dược chất	2	L25	225.0	0	5	0
+nước mắt	5	tước trật	2	L25	219.7	0	5	0
+nước mắt	6	tước đoạt	2	L25	228.6	0	6	0
+nước mắt	7	lược thuật	2	L25	220.7	0	7	0
+nước mắt	8	phức chất	2	L25	227.2	0	8	0
+nước mắt	9	thực chất	2	L25	232.7	0	9	0
+nước mắt	10	sức bật	2	L25	224.2	0	9	0
+nước mắt	11	thực vật	2	L25	244.3	0	10	0
+nước mắt	12	trực nhật	2	L25	219.7	0	10	0
+nước mắt	13	bơ thực vật	2	L25	219.3	0	10	0
+nước mắt	14	tản thực vật	2	L25	210.2	0	10	0
+nước mắt	15	thuốc bảo vệ thực vật	2	L25	210.0	0	10	0
+nước mắt	16	sỏi thực vật	2	L25	207.0	0	10	0
+nước mắt	17	trước mắt	2	L0	248.3	1	0	0
+nước mắt	18	nước mặt	2	L1	240.4	1	1	0
+nước mắt	19	ngược mắt	2	L1	227.2	1	1	0
+nước mắt	20	nước cất	2	L25	225.7	1	4	0
+mong muốn	1	con buôn	2	L25	223.5	0	5	0
+mong muốn	2	lông buồn	2	L25	216.7	0	6	0
+mong muốn	3	ngọn nguồn	2	L25	224.5	0	7	0
+mong muốn	4	nòng súng	2	L25	230.4	0	8	0
+mong muốn	5	suối nóng phun	2	L25	207.0	0	8	0
+mong muốn	6	đồng ruộng	2	L25	228.9	0	9	0
+mong muốn	7	phóng túng	2	L25	227.4	0	9	0
+mong muốn	8	ngông cuồng	2	L25	226.2	0	9	0
+mong muốn	9	long cung	2	L25	224.4	0	9	0
+mong muốn	10	trọng dụng	2	L25	230.2	0	10	0
+mong muốn	11	lòng vả lòng sung	2	L25	202.0	0	10	0
+mong muốn	12	công chúng	2	L25	235.4	0	11	0
+mong muốn	13	đóng khung	2	L25	226.9	0	11	0
+mong muốn	14	vọng cung	2	L25	223.1	0	11	0
+mong muốn	15	đóng thùng	2	L25	223.0	0	11	0
+mong muốn	16	bóng thung	2	L25	212.0	0	11	0
+mong muốn	17	thông dụng	2	L25	232.6	0	12	0
+mong muốn	18	công dụng	2	L25	231.2	0	12	0
+mong muốn	19	không trung	2	L25	231.1	0	13	0
+mong muốn	20	đông cung	2	L25	228.8	0	13	0
+con thuyền	1	còn nguyên	2	L1	242.6	0	2	0
+con thuyền	2	trăng kỳ tròn khuyên	2	L1	214.0	0	2	0
+con thuyền	3	ôn tuyền	2	L25	223.3	0	4	0
+con thuyền	4	côn quyền	2	L25	219.4	0	4	0
+con thuyền	5	tòng quyền	2	L25	217.5	0	4	0
+con thuyền	6	ngộ biến tòng quyền	2	L25	202.0	0	4	0
+con thuyền	7	bóng chuyền	2	L25	232.8	0	5	0
+con thuyền	8	dòng tiền	2	L25	228.4	0	5	0
+con thuyền	9	phong kiến	2	L25	233.6	0	6	0
+con thuyền	10	phòng tuyến	2	L25	232.3	0	6	0
+con thuyền	11	đồn điền	2	L25	231.9	0	6	0
+con thuyền	12	ngon miệng	2	L25	226.8	0	6	0
+con thuyền	13	vòng xuyến	2	L25	225.3	0	6	0
+con thuyền	14	ôn luyện	2	L25	222.8	0	6	0
+con thuyền	15	xướng ngôn viên	2	L25	220.0	0	6	0
+con thuyền	16	chế độ phong kiến	2	L25	218.9	0	6	0
+con thuyền	17	phóng viên	2	L25	233.2	0	7	0
+con thuyền	18	dòng điện	2	L25	232.6	0	7	0
+con thuyền	19	hồn nhiên	2	L25	227.9	0	7	0
+con thuyền	20	công quyền	2	L25	227.3	0	7	0
+rượu	1	phượu	1	L0	130.0	0	0	0
+rượu	2	bướu	1	L1	142.7	0	1	0
+rượu	3	khướu	1	L1	140.8	0	1	0
+rượu	4	ung bướu	1	L1	132.0	0	1	0
+rượu	5	mưỡu	1	L1	130.2	0	1	0
+rượu	6	lạc đà hai bướu	1	L1	121.1	0	1	0
+rượu	7	hươu	1	L2	139.1	0	2	0
+rượu	8	bươu	1	L2	131.1	0	2	0
+rượu	9	ốc bươu	1	L2	125.9	0	2	0
+rượu	10	tườu	1	L2	124.2	0	2	0
+rượu	11	lá hươu	1	L2	113.0	0	2	0
+rượu	12	đầu gạc ốc bươu	1	L2	103.0	0	2	0
+rượu	13	lượm	1	L25	129.8	0	3	0
+rượu	14	đượm	1	L25	126.4	0	3	0
+rượu	15	thu lượm	1	L25	121.0	0	3	0
+rượu	16	gượm	1	L25	116.7	0	3	0
+rượu	17	hượm	1	L25	115.2	0	3	0
+rượu	18	bướm	1	L25	140.8	0	4	0
+rượu	19	cựu	1	L25	138.0	0	4	0
+rượu	20	tựu	1	L25	133.9	0	4	0
+lặng thầm	1	thăng trầm	2	L2	234.6	0	2	0
+lặng thầm	2	tặng phẩm	2	L2	231.1	0	2	0
+lặng thầm	3	hằng tâm	2	L2	221.2	0	3	0
+lặng thầm	4	lăng tẩm	2	L2	234.4	0	4	0
+lặng thầm	5	răng cấm	2	L2	218.0	0	4	0
+lặng thầm	6	nặng đầu	2	L25	225.0	0	3	0
+lặng thầm	7	thắng thầu	2	L25	224.4	0	4	0
+lặng thầm	8	băng cầu	2	L25	219.9	0	5	0
+lặng thầm	9	tầng hầm	2	L25	230.1	0	6	0
+lặng thầm	10	đẳng cấu	2	L25	229.0	0	6	0
+lặng thầm	11	răng hàm	2	L25	228.7	0	6	0
+lặng thầm	12	phép đẳng cấu	2	L25	218.2	0	6	0
+lặng thầm	13	găng trâu	2	L25	215.2	0	6	0
+lặng thầm	14	ngăn cấm	2	L25	229.1	0	7	0
+lặng thầm	15	hoàng cầm	2	L25	226.7	0	7	0
+lặng thầm	16	trăn gấm	2	L25	224.7	0	7	0
+lặng thầm	17	vàng tâm	2	L25	222.5	0	7	0
+lặng thầm	18	băng lậu	2	L25	221.7	0	7	0
+lặng thầm	19	răng vẩu	2	L25	218.2	0	7	0
+lặng thầm	20	bếp Hoàng Cầm	2	L25	216.6	0	7	0
+đường phố	1	giường bố	2	L0	230.0	0	0	0
+đường phố	2	cường độ	2	L1	245.9	0	1	0
+đường phố	3	trường độ	2	L1	238.1	0	1	0
+đường phố	4	thương số	2	L1	236.9	0	1	0
+đường phố	5	tương hỗ	2	L1	240.9	0	2	0
+đường phố	6	hương lộ	2	L1	237.6	0	2	0
+đường phố	7	tương ngộ	2	L1	233.8	0	2	0
+đường phố	8	tướng số	2	L2	229.5	0	2	0
+đường phố	9	ngưỡng mộ	2	L2	237.6	0	3	0
+đường phố	10	nhượng bộ	2	L2	236.5	0	3	0
+đường phố	11	thượng cổ	2	L2	234.4	0	3	0
+đường phố	12	lương khô	2	L2	229.7	0	3	0
+đường phố	13	thượng lộ	2	L2	227.8	0	3	0
+đường phố	14	trường thọ	2	L25	228.2	0	5	0
+đường phố	15	thương khó	2	L25	225.6	0	5	0
+đường phố	16	sương gió	2	L25	222.6	0	5	0
+đường phố	17	sừng sộ	2	L25	212.0	0	5	0
+đường phố	18	trừng trộ	2	L25	212.0	0	5	0
+đường phố	19	đứng số	2	L25	224.9	0	6	0
+đường phố	20	hưởng thọ	2	L25	231.3	0	7	0
+hào quang	1	tào khang	2	L0	238.2	0	1	0
+hào quang	2	sao đang	2	L1	238.8	0	2	0
+hào quang	3	chào hàng	2	L1	237.6	0	2	0
+hào quang	4	cao sang	2	L1	237.5	0	2	0
+hào quang	5	tao khang	2	L1	227.2	0	2	0
+hào quang	6	phao tang	2	L1	224.0	0	2	0
+hào quang	7	sao vàng	2	L1	242.3	0	3	0
+hào quang	8	rao hàng	2	L1	231.4	0	3	0
+hào quang	9	vào khoảng	2	L2	241.8	0	2	0
+hào quang	10	giáo hoàng	2	L2	242.4	0	3	0
+hào quang	11	áo choàng	2	L2	236.3	0	3	0
+hào quang	12	bảo hoàng	2	L2	235.2	0	3	0
+hào quang	13	báo tang	2	L2	229.6	0	3	0
+hào quang	14	bảo tàng	2	L2	243.2	0	4	0
+hào quang	15	viện bảo tàng	2	L2	232.2	0	4	0
+hào quang	16	xao lãng	2	L2	230.7	0	4	0
+hào quang	17	lão làng	2	L2	230.4	0	4	0
+hào quang	18	xao nhãng	2	L2	230.1	0	4	0
+hào quang	19	thao giảng	2	L2	225.1	0	4	0
+hào quang	20	chão chàng	2	L2	218.0	0	4	0
+tự do	1	chữ Nho	2	L1	239.6	0	1	0
+tự do	2	từ bỏ	2	L2	240.6	0	4	0
+tự do	3	thư ngỏ	2	L2	233.2	0	4	0
+tự do	4	trừ bỏ	2	L2	232.2	0	4	0
+tự do	5	sư phó	2	L2	230.2	0	4	0
+tự do	6	tử tô	2	L25	221.3	0	5	0
+tự do	7	sự cố	2	L25	234.4	0	6	0
+tự do	8	sứ đồ	2	L25	228.3	0	6	0
+tự do	9	hư vô	2	L25	227.6	0	6	0
+tự do	10	giở trò	2	L25	224.9	0	6	0
+tự do	11	mỡ bò	2	L25	223.7	0	6	0
+tự do	12	sư cô	2	L25	223.6	0	6	0
+tự do	13	sư mô	2	L25	219.7	0	6	0
+tự do	14	mưa tro	2	L25	219.4	0	6	0
+tự do	15	chân trời sự cố	2	L25	202.0	0	6	0
+tự do	16	há miệng chờ ho	2	L25	202.0	0	6	0
+tự do	17	chữ số	2	L25	232.2	0	7	0
+tự do	18	tư đồ	2	L25	229.5	0	7	0
+tự do	19	sứ bộ	2	L25	227.6	0	7	0
+tự do	20	như hồ	2	L25	227.6	0	7	0
+ninh sơ	1	binh cơ	2	L0	247.7	0	0	0
+ninh sơ	2	sinh cơ	2	L0	243.8	0	0	0
+ninh sơ	3	dinh cơ	2	L0	241.7	0	0	0
+ninh sơ	4	tinh mơ	2	L0	239.4	0	0	0
+ninh sơ	5	sáng tinh mơ	2	L0	233.2	0	0	0
+ninh sơ	6	tình cờ	2	L1	244.2	0	2	0
+ninh sơ	7	sinh nở	2	L2	234.7	0	2	0
+ninh sơ	8	kinh sợ	2	L2	233.0	0	2	0
+ninh sơ	9	tỉnh bơ	2	L2	225.4	0	2	0
+ninh sơ	10	phỉnh phờ	2	L2	224.7	0	3	0
+ninh sơ	11	định sở	2	L2	228.0	0	4	0
+ninh sơ	12	kinh sư	2	L25	229.9	0	4	0
+ninh sơ	13	binh thư	2	L25	225.7	0	4	0
+ninh sơ	14	chứng minh thư	2	L25	219.7	0	4	0
+ninh sơ	15	sinh từ	2	L25	231.9	0	5	0
+ninh sơ	16	hình như	2	L25	231.5	0	5	0
+ninh sơ	17	kình ngư	2	L25	228.3	0	5	0
+ninh sơ	18	công trình sư	2	L25	222.5	0	5	0
+ninh sơ	19	bình thư	2	L25	222.2	0	5	0
+ninh sơ	20	tình thư	2	L25	220.7	0	5	0
+nháo	1	giáo	1	L0	160.3	0	0	0
+nháo	2	báo	1	L0	159.0	0	0	0
+nháo	3	cáo	1	L0	157.4	0	0	0
+nháo	4	pháo	1	L0	157.1	0	0	0
+nháo	5	áo	1	L0	156.8	0	0	0
+nháo	6	tháo	1	L0	154.2	0	0	0
+nháo	7	đáo	1	L0	152.6	0	0	0
+nháo	8	táo	1	L0	152.1	0	0	0
+nháo	9	báo cáo	1	L0	150.4	0	0	0
+nháo	10	sáo	1	L0	150.4	0	0	0
+nháo	11	thông báo	1	L0	150.2	0	0	0
+nháo	12	tôn giáo	1	L0	150.2	0	0	0
+nháo	13	quảng cáo	1	L0	149.1	0	0	0
+nháo	14	náo	1	L0	148.6	0	0	0
+nháo	15	ráo	1	L0	148.5	0	0	0
+nháo	16	cháo	1	L0	148.2	0	0	0
+nháo	17	nhà báo	1	L0	147.9	0	0	0
+nháo	18	cảnh báo	1	L0	147.6	0	0	0
+nháo	19	bài báo	1	L0	147.4	0	0	0
+nháo	20	tình báo	1	L0	147.2	0	0	0
+thanh nho	1	quanh co	2	L0	246.1	0	1	0
+thanh nho	2	bánh tro	2	L2	229.3	0	2	0
+thanh nho	3	bánh gio	2	L2	227.9	0	2	0
+thanh nho	4	xanh cỏ	2	L2	227.4	0	2	0
+thanh nho	5	bánh bò	2	L2	229.6	0	3	0
+thanh nho	6	bánh giò	2	L2	228.1	0	3	0
+thanh nho	7	rành rõ	2	L2	223.5	0	3	0
+thanh nho	8	chánh cò	2	L2	218.0	0	3	0
+thanh nho	9	bánh bó	2	L2	223.5	0	4	0
+thanh nho	10	tạnh gió	2	L2	221.2	0	4	0
+thanh nho	11	bành tô	2	L25	219.1	0	5	0
+thanh nho	12	danh bộ	2	L25	224.5	0	6	0
+thanh nho	13	ganh gổ	2	L25	212.0	0	6	0
+thanh nho	14	thành phố	2	L25	241.9	0	7	0
+thanh nho	15	doanh số	2	L25	233.8	0	7	0
+thanh nho	16	thành bộ	2	L25	232.1	0	7	0
+thanh nho	17	thành tố	2	L25	228.5	0	7	0
+thanh nho	18	tam nhân thành hổ	2	L25	209.1	0	7	0
+thanh nho	19	lãnh thổ	2	L25	238.0	0	8	0
+thanh nho	20	thánh tổ	2	L25	228.6	0	8	0
+khùa	1	mùa	1	L0	158.9	0	0	0
+khùa	2	chùa	1	L0	155.3	0	0	0
+khùa	3	rùa	1	L0	151.8	0	0	0
+khùa	4	đùa	1	L0	150.3	0	0	0
+khùa	5	bùa	1	L0	148.9	0	0	0
+khùa	6	thùa	1	L0	145.8	0	0	0
+khùa	7	lùa	1	L0	145.7	0	0	0
+khùa	8	ở mùa	1	L0	145.4	0	0	0
+khùa	9	gió mùa	1	L0	144.4	0	0	0
+khùa	10	hùa	1	L0	143.8	0	0	0
+khùa	11	ùa	1	L0	143.5	0	0	0
+khùa	12	đậu mùa	1	L0	143.1	0	0	0
+khùa	13	trò đùa	1	L0	142.4	0	0	0
+khùa	14	chơi đùa	1	L0	141.0	0	0	0
+khùa	15	hội chùa	1	L0	140.7	0	0	0
+khùa	16	mất mùa	1	L0	140.7	0	0	0
+khùa	17	nói đùa	1	L0	140.7	0	0	0
+khùa	18	mai rùa	1	L0	140.2	0	0	0
+khùa	19	bọ rùa	1	L0	140.2	0	0	0
+khùa	20	nhà chùa	1	L0	139.6	0	0	0
+nhí nhắt	1	ký tắt	2	L0	240.0	0	0	0
+nhí nhắt	2	bỉ mặt	2	L1	227.2	0	2	0
+nhí nhắt	3	khí chất	2	L25	226.5	0	4	0
+nhí nhắt	4	bí mật	2	L25	235.8	0	5	0
+nhí nhắt	5	nghỉ mát	2	L25	230.5	0	5	0
+nhí nhắt	6	thị sát	2	L25	228.7	0	5	0
+nhí nhắt	7	khí vật	2	L25	220.4	0	5	0
+nhí nhắt	8	chia cắt	2	L25	232.6	0	6	0
+nhí nhắt	9	bịa đặt	2	L25	228.0	0	6	0
+nhí nhắt	10	dị vật	2	L25	226.1	0	6	0
+nhí nhắt	11	bi đát	2	L25	225.9	0	6	0
+nhí nhắt	12	vi chất	2	L25	225.3	0	6	0
+nhí nhắt	13	đi sát	2	L25	224.8	0	6	0
+nhí nhắt	14	bí thuật	2	L25	223.8	0	6	0
+nhí nhắt	15	rỉ mật	2	L25	221.4	0	6	0
+nhí nhắt	16	quý vật	2	L25	219.9	0	6	0
+nhí nhắt	17	húy nhật	2	L25	219.7	0	6	0
+nhí nhắt	18	nghị gật	2	L25	218.2	0	6	0
+nhí nhắt	19	quí vật	2	L25	212.0	0	6	0
+nhí nhắt	20	tì tất	2	L25	212.0	0	6	0
+uể oải	1	thể loại	2	L1	248.1	0	2	0
+uể oải	2	tuế toái	2	L1	224.0	0	2	0
+uể oải	3	kể lại	2	L1	244.9	0	3	0
+uể oải	4	phế thải	2	L1	237.8	0	3	0
+uể oải	5	trễ nải	2	L1	236.0	0	3	0
+uể oải	6	lệ ngoại	2	L1	233.8	0	3	0
+uể oải	7	ghế vải	2	L1	229.5	0	3	0
+uể oải	8	tế toái	2	L1	224.0	0	3	0
+uể oải	9	hệ phái	2	L1	241.8	0	4	0
+uể oải	10	tệ hại	2	L1	240.9	0	4	0
+uể oải	11	dễ dãi	2	L1	238.5	0	4	0
+uể oải	12	lễ bái	2	L1	238.3	0	4	0
+uể oải	13	thế thái	2	L1	236.5	0	4	0
+uể oải	14	rễ cái	2	L1	234.7	0	4	0
+uể oải	15	nhễ nhại	2	L1	228.7	0	4	0
+uể oải	16	nhân tình thế thái	2	L1	223.7	0	4	0
+uể oải	17	thuê ngoài	2	L2	232.6	0	4	0
+uể oải	18	tuế sai	2	L2	232.2	0	4	0
+uể oải	19	thể tài	2	L2	231.1	0	4	0
+uể oải	20	thể chai	2	L2	229.5	0	4	0
+uy phong	1	suy vong	2	L0	245.3	0	0	0
+uy phong	2	tùy tòng	2	L1	233.4	0	2	0
+uy phong	3	ghi lòng	2	L1	231.7	0	2	0
+uy phong	4	hy vọng	2	L2	240.5	0	3	0
+uy phong	5	hi vọng	2	L2	237.0	0	3	0
+uy phong	6	lò vi sóng	2	L2	227.9	0	3	0
+uy phong	7	kỳ vọng	2	L2	237.8	0	4	0
+uy phong	8	quý trọng	2	L2	233.1	0	4	0
+uy phong	9	quí trọng	2	L2	225.1	0	4	0
+uy phong	10	giá trị kỳ vọng	2	L2	221.5	0	4	0
+uy phong	11	phỉ lòng	2	L2	218.0	0	4	0
+uy phong	12	tỷ trọng	2	L2	236.2	0	5	0
+uy phong	13	ỷ trọng	2	L2	223.5	0	5	0
+uy phong	14	vũ khí nóng	2	L2	222.2	0	5	0
+uy phong	15	công ty con	2	L25	227.3	0	4	0
+uy phong	16	quy công	2	L25	222.2	0	4	0
+uy phong	17	công ti con	2	L25	211.7	0	4	0
+uy phong	18	phi công	2	L25	235.3	0	5	0
+uy phong	19	khi không	2	L25	233.3	0	5	0
+uy phong	20	thi công	2	L25	232.2	0	5	0
+yêu chuộng	1	tiêu dụng	2	L25	219.1	0	4	0
+yêu chuộng	2	kiêu dũng	2	L25	224.8	0	5	0
+yêu chuộng	3	tiêu dùng	2	L25	234.5	0	6	0
+yêu chuộng	4	hàng tiêu dùng	2	L25	223.5	0	6	0
+yêu chuộng	5	tiêu tùng	2	L25	218.7	0	6	0
+yêu chuộng	6	kiêm dụng	2	L25	226.4	0	7	0
+yêu chuộng	7	điếu phúng	2	L25	217.5	0	7	0
+yêu chuộng	8	tiêm chủng	2	L25	230.1	0	8	0
+yêu chuộng	9	hiếu trung	2	L25	226.0	0	8	0
+yêu chuộng	10	hiếm muộn	2	L25	224.9	0	8	0
+yêu chuộng	11	hiệu dung	2	L25	218.2	0	8	0
+yêu chuộng	12	chiếm dụng	2	L25	226.8	0	9	0
+yêu chuộng	13	chim muông	2	L25	225.2	0	9	0
+yêu chuộng	14	khiếm dụng	2	L25	218.2	0	9	0
+yêu chuộng	15	nghiệm đúng	2	L25	222.6	0	10	0
+yêu chuộng	16	chìm xuồng	2	L25	220.7	0	10	0
+yêu chuộng	17	điềm hùng	2	L25	212.0	0	10	0
+yêu chuộng	18	nhiễm trùng	2	L25	233.2	0	11	0
+yêu chuộng	19	kiếm cung	2	L25	220.7	0	11	0
+yêu chuộng	20	liễm dung	2	L25	212.0	0	11	0
+móm xều	1	thòm thèm	2	L25	217.5	0	9	0
+móm xều	2	tròm trèm	2	L25	215.2	0	9	0
+móm xều	3	sóm sém	2	L25	212.0	0	9	0
+móm xều	4	tróm trém	2	L25	212.0	0	9	0
+móm xều	5	bỏm bẻm	2	L25	216.7	0	10	0
+móm xều	6	hom hem	2	L25	216.7	0	10	0
+móm xều	7	tòm tem	2	L25	216.7	0	10	0
+móm xều	8	nhom nhem	2	L25	212.0	0	10	0
+móm xều	9	móm mém	2	L25	217.5	1	9	0
+móm xều	10	đều	1	L0	153.6	0	0	0
+móm xều	11	đồng đều	1	L0	148.5	0	0	0
+móm xều	12	chia đều	1	L0	146.6	0	0	0
+móm xều	13	túp lều	1	L0	146.1	0	0	0
+móm xều	14	lều	1	L0	144.4	0	0	0
+móm xều	15	tam giác đều	1	L0	139.3	0	0	0
+móm xều	16	rều	1	L0	136.3	0	0	0
+móm xều	17	kều	1	L0	134.8	0	0	0
+móm xều	18	khều	1	L0	133.9	0	0	0
+móm xều	19	lếu lều	1	L0	130.0	0	0	0
+móm xều	20	lều bều	1	L0	130.0	0	0	0
+bây bẩy	1	nguây nguẩy	2	L0	230.0	0	2	0
+bây bẩy	2	quây quẩy	2	L0	230.0	0	2	0
+bây bẩy	3	gây gấy	2	L1	224.0	0	1	0
+bây bẩy	4	ngây ngấy	2	L1	224.0	0	1	0
+bây bẩy	5	đầy rẫy	2	L1	239.0	0	2	0
+bây bẩy	6	đầy dẫy	2	L1	236.2	0	2	0
+bây bẩy	7	ngầy ngậy	2	L1	231.4	0	2	0
+bây bẩy	8	quầy quậy	2	L1	224.0	0	4	0
+bây bẩy	9	lây bây	2	L2	218.0	0	2	0
+bây bẩy	10	lây dây	2	L2	218.0	0	2	0
+bây bẩy	11	lây nhây	2	L2	218.0	0	2	0
+bây bẩy	12	nhây nhây	2	L2	218.0	0	2	0
+bây bẩy	13	phây phây	2	L2	218.0	0	2	0
+bây bẩy	14	đây thây	2	L2	218.0	0	2	0
+bây bẩy	15	bầy nhầy	2	L2	226.7	0	3	0
+bây bẩy	16	lầy nhầy	2	L2	225.4	0	3	0
+bây bẩy	17	nhầy nhầy	2	L2	222.7	0	3	0
+bây bẩy	18	bầy hầy	2	L2	221.2	0	3	0
+bây bẩy	19	lẫy đẫy	2	L2	218.0	0	3	0
+bây bẩy	20	bấy chầy	2	L2	218.0	0	4	0
+đền tội	1	nên nỗi	2	L1	235.2	0	2	0
+đền tội	2	lên ngôi	2	L2	241.6	0	3	0
+đền tội	3	đến nỗi	2	L2	238.0	0	3	0
+đền tội	4	tên gọi	2	L25	237.9	0	5	0
+đền tội	5	đen tối	2	L25	230.7	0	6	0
+đền tội	6	kèn đôi	2	L25	212.0	0	6	0
+đền tội	7	chén mồi	2	L25	218.2	0	8	0
+đền tội	8	len lỏi	2	L25	226.1	0	10	0
+đền tội	9	quen thói	2	L25	223.2	0	11	0
+đền tội	10	đền bồi	2	L2	225.9	1	2	0
+đền tội	11	Bến Gối	2	L2	218.0	0	3	1
+đền tội	12	xã hội	1	L0	157.7	0	0	0
+đền tội	13	quân đội	1	L0	157.6	0	0	0
+đền tội	14	quốc hội	1	L0	156.5	0	0	0
+đền tội	15	hội	1	L0	156.0	0	0	0
+đền tội	16	đội	1	L0	155.7	0	0	0
+đền tội	17	đại hội	1	L0	155.1	0	0	0
+đền tội	18	hiệp hội	1	L0	154.8	0	0	0
+đền tội	19	hạm đội	1	L0	154.7	0	0	0
+đền tội	20	giáo hội	1	L0	154.2	0	0	0
+nương tử	1	tương tự	2	L1	250.2	0	1	0
+nương tử	2	phương ngữ	2	L1	245.9	0	1	0
+nương tử	3	đương sự	2	L1	239.8	0	1	0
+nương tử	4	vương sự	2	L1	232.2	0	1	0
+nương tử	5	thương sự	2	L1	231.9	0	1	0
+nương tử	6	trưởng sử	2	L2	234.2	0	2	0
+nương tử	7	tương tư	2	L2	233.0	0	2	0
+nương tử	8	vương sư	2	L2	230.4	0	2	0
+nương tử	9	hương sư	2	L2	227.0	0	2	0
+nương tử	10	dường như	2	L2	241.2	0	3	0
+nương tử	11	trưởng nữ	2	L2	234.2	0	3	0
+nương tử	12	lưỡng lự	2	L2	233.1	0	3	0
+nương tử	13	lượng thứ	2	L2	231.4	0	3	0
+nương tử	14	đại trưởng cự	2	L2	213.0	0	3	0
+nương tử	15	lưỡng cư	2	L2	240.8	0	4	0
+nương tử	16	thượng thư	2	L2	239.7	0	4	0
+nương tử	17	định hướng từ	2	L2	222.9	0	4	0
+nương tử	18	hương lửa	2	L25	221.2	0	4	0
+nương tử	19	tường lửa	2	L25	228.1	0	5	0
+nương tử	20	thương nhớ	2	L25	227.7	0	5	0
+lột sột	1	đột ngột	2	L0	251.2	0	0	0
+lột sột	2	đột cốt	2	L1	235.1	0	1	0
+lột sột	3	cốt đột	2	L1	228.7	0	1	0
+lột sột	4	ốt dột	2	L1	224.0	0	1	0
+lột sột	5	thốt nốt	2	L1	241.1	0	2	0
+lột sột	6	bột ngọt	2	L25	226.8	0	4	0
+lột sột	7	trót lọt	2	L25	223.4	0	9	0
+lột sột	8	chót vót	2	L25	225.5	0	10	0
+lột sột	9	chót bót	2	L25	212.0	0	10	0
+lột sột	10	lót tót	2	L25	212.0	0	10	0
+lột sột	11	sốt sột	2	L1	224.0	1	1	0
+lột sột	12	một	1	L0	160.0	0	0	0
+lột sột	13	có một	1	L0	157.9	0	0	0
+lột sột	14	xung đột	1	L0	154.1	0	0	0
+lột sột	15	đột	1	L0	151.0	0	0	0
+lột sột	16	số một	1	L0	150.6	0	0	0
+lột sột	17	mười một	1	L0	149.8	0	0	0
+lột sột	18	năm một	1	L0	149.4	0	0	0
+lột sột	19	bột	1	L0	149.2	0	0	0
+lột sột	20	cột	1	L0	149.1	0	0	0
+phóng	1	bóng	1	L0	160.6	0	0	0
+phóng	2	đóng	1	L0	158.2	0	0	0
+phóng	3	sóng	1	L0	156.8	0	0	0
+phóng	4	chóng	1	L0	155.4	0	0	0
+phóng	5	nóng	1	L0	154.4	0	0	0
+phóng	6	móng	1	L0	152.6	0	0	0
+phóng	7	nhanh chóng	1	L0	150.3	0	0	0
+phóng	8	phát sóng	1	L0	150.2	0	0	0
+phóng	9	lóng	1	L0	148.4	0	0	0
+phóng	10	chiếm đóng	1	L0	148.3	0	0	0
+phóng	11	óng	1	L0	147.9	0	0	0
+phóng	12	gióng	1	L0	146.8	0	0	0
+phóng	13	làn sóng	1	L0	146.0	0	0	0
+phóng	14	hóng	1	L0	144.9	0	0	0
+phóng	15	ngóng	1	L0	144.9	0	0	0
+phóng	16	bước sóng	1	L0	144.6	0	0	0
+phóng	17	cóng	1	L0	144.5	0	0	0
+phóng	18	nền móng	1	L0	144.2	0	0	0
+phóng	19	bong bóng	1	L0	143.7	0	0	0
+phóng	20	sân bóng	1	L0	142.9	0	0	0
+hồng huyết cầu	1	Vọng Nguyệt cầm	3	L25	312.0	0	10	1
+hồng huyết cầu	2	yết hầu	2	L0	238.5	0	1	0
+hồng huyết cầu	3	liệt hầu	2	L1	233.8	0	2	0
+hồng huyết cầu	4	biết đâu	2	L1	232.6	0	2	0
+hồng huyết cầu	5	quyết đấu	2	L2	228.5	0	2	0
+hồng huyết cầu	6	tiết tấu	2	L2	229.9	0	3	0
+hồng huyết cầu	7	chiết khấu	2	L2	229.7	0	3	0
+hồng huyết cầu	8	tiết lậu	2	L2	220.4	0	3	0
+hồng huyết cầu	9	yết hậu	2	L2	219.7	0	3	0
+hồng huyết cầu	10	việt khẩu	2	L2	213.0	0	4	0
+hồng huyết cầu	11	quyết tâm	2	L25	227.7	0	4	0
+hồng huyết cầu	12	ít lâu	2	L25	226.6	0	6	0
+hồng huyết cầu	13	biết bao	2	L25	224.3	0	6	0
+hồng huyết cầu	14	thuyết giáo	2	L25	222.9	0	6	0
+hồng huyết cầu	15	tuyệt phẩm	2	L25	220.6	0	6	0
+hồng huyết cầu	16	tuyệt giao	2	L25	220.3	0	6	0
+hồng huyết cầu	17	nhiệt tâm	2	L25	219.8	0	6	0
+hồng huyết cầu	18	biệt tâm	2	L25	214.1	0	6	0
+hồng huyết cầu	19	tiết mao	2	L25	212.5	0	6	0
+hồng huyết cầu	20	tuyệt hảo	2	L25	221.1	0	7	0
+mới tinh	1	khởi binh	2	L1	242.4	0	1	0
+mới tinh	2	khởi sinh	2	L1	235.6	0	1	0
+mới tinh	3	gợi tình	2	L1	237.9	0	2	0
+mới tinh	4	gợi hình	2	L1	233.4	0	2	0
+mới tinh	5	cỡi kình	2	L1	224.0	0	2	0
+mới tinh	6	giới tính	2	L2	240.7	0	2	0
+mới tinh	7	thời bình	2	L2	235.1	0	3	0
+mới tinh	8	người mình	2	L25	228.7	0	7	0
+mới tinh	9	cười tình	2	L25	212.0	0	7	0
+mới tinh	10	tươi tỉnh	2	L25	220.7	0	8	0
+mới tinh	11	cười nịnh	2	L25	212.0	0	8	0
+mới tinh	12	Thới Bình	2	L1	240.4	0	1	1
+mới tinh	13	Hơi chính	2	L2	226.7	0	4	1
+mới tinh	14	sinh	1	L0	156.4	0	0	0
+mới tinh	15	liên minh	1	L0	155.4	0	0	0
+mới tinh	16	bộ binh	1	L0	155.0	0	0	0
+mới tinh	17	kinh	1	L0	154.7	0	0	0
+mới tinh	18	minh	1	L0	154.7	0	0	0
+mới tinh	19	thí sinh	1	L0	154.4	0	0	0
+mới tinh	20	đồng minh	1	L0	154.3	0	0	0
+thanh tường	1	tranh cường	2	L0	239.2	0	0	0
+thanh tường	2	xanh dương	2	L1	242.5	0	1	0
+thanh tường	3	hành hương	2	L1	243.9	0	2	0
+thanh tường	4	giọt nước cành dương	2	L1	214.0	0	2	0
+thanh tường	5	thánh đường	2	L2	238.2	0	2	0
+thanh tường	6	khanh tướng	2	L2	231.2	0	2	0
+thanh tường	7	sảnh đường	2	L2	231.2	0	2	0
+thanh tường	8	bành trướng	2	L2	237.4	0	3	0
+thanh tường	9	ánh dương	2	L2	232.5	0	3	0
+thanh tường	10	ảnh hưởng	2	L2	244.9	0	4	0
+thanh tường	11	cảnh tượng	2	L2	235.3	0	4	0
+thanh tường	12	bánh nướng	2	L2	234.4	0	4	0
+thanh tường	13	mãnh tướng	2	L2	232.0	0	4	0
+thanh tường	14	thánh thượng	2	L2	230.3	0	4	0
+thanh tường	15	thánh tướng	2	L2	224.7	0	4	0
+thanh tường	16	nói thánh tướng	2	L2	213.0	0	4	0
+thanh tường	17	canh chừng	2	L25	226.4	0	4	0
+thanh tường	18	danh xưng	2	L25	232.5	0	5	0
+thanh tường	19	bánh chưng	2	L25	227.5	0	7	0
+thanh tường	20	nồi bánh chưng	2	L25	213.2	0	7	0
+láu cá	1	rau má	2	L2	232.2	0	2	0
+láu cá	2	tàu lá	2	L2	228.0	0	2	0
+láu cá	3	lục tàu xá	2	L2	217.7	0	2	0
+láu cá	4	màu da	2	L2	236.4	0	4	0
+láu cá	5	tàu hỏa	2	L2	236.1	0	4	0
+láu cá	6	tàu hoả	2	L2	231.1	0	4	0
+láu cá	7	đấu giá	2	L25	231.6	0	4	0
+láu cá	8	đấu đá	2	L25	227.3	0	4	0
+láu cá	9	báo giá	2	L25	225.8	0	4	0
+láu cá	10	bán đấu giá	2	L25	223.5	0	4	0
+láu cá	11	giáo hóa	2	L25	228.5	0	5	0
+láu cá	12	xảo trá	2	L25	224.7	0	5	0
+láu cá	13	dấu ngã	2	L25	223.6	0	5	0
+láu cá	14	thảo xá	2	L25	219.1	0	5	0
+láu cá	15	tháo dạ	2	L25	215.2	0	5	0
+láu cá	16	châu Á	2	L25	237.8	0	6	0
+láu cá	17	xấu xa	2	L25	230.3	0	6	0
+láu cá	18	ẩu đả	2	L25	228.6	0	6	0
+láu cá	19	tạo hóa	2	L25	227.5	0	6	0
+láu cá	20	cẩu thả	2	L25	227.0	0	6	0
+than vãn	1	ngoan ngoãn	2	L0	245.7	0	2	0
+than vãn	2	can gián	2	L1	240.0	0	1	0
+than vãn	3	nhan nhản	2	L1	234.1	0	1	0
+than vãn	4	can án	2	L1	231.4	0	1	0
+than vãn	5	ngan ngán	2	L1	228.7	0	1	0
+than vãn	6	bàn tán	2	L1	239.3	0	2	0
+than vãn	7	nhàn tản	2	L1	236.6	0	2	0
+than vãn	8	sàn sạn	2	L1	227.2	0	2	0
+than vãn	9	bàn soạn	2	L1	230.2	0	3	0
+than vãn	10	lan can	2	L2	234.4	0	2	0
+than vãn	11	lan tràn	2	L2	234.2	0	2	0
+than vãn	12	gian nan	2	L2	233.5	0	2	0
+than vãn	13	an nhàn	2	L2	231.5	0	2	0
+than vãn	14	lan man	2	L2	229.2	0	2	0
+than vãn	15	man man	2	L2	226.2	0	2	0
+than vãn	16	man-gan	2	L2	218.0	0	2	0
+than vãn	17	an toàn	2	L2	242.5	0	3	0
+than vãn	18	bản án	2	L2	237.9	0	3	0
+than vãn	19	phàn nàn	2	L2	236.8	0	3	0
+than vãn	20	hạn hán	2	L2	236.6	0	3	0
+trước giả	1	nước đá	2	L1	240.2	0	1	0
+trước giả	2	nước lã	2	L1	237.0	0	1	0
+trước giả	3	người dưng nước lã	2	L1	218.7	0	1	0
+trước giả	4	nước nhà	2	L2	235.4	0	2	0
+trước giả	5	nước da	2	L2	232.6	0	2	0
+trước giả	6	nước trà	2	L2	230.1	0	2	0
+trước giả	7	thước ta	2	L2	228.9	0	2	0
+trước giả	8	nước hoa	2	L2	237.2	0	3	0
+trước giả	9	chiến lược gia	2	L2	227.8	0	3	0
+trước giả	10	bức xạ	2	L25	233.6	0	5	0
+trước giả	11	cực tả	2	L25	225.9	0	5	0
+trước giả	12	an toàn bức xạ	2	L25	213.1	0	5	0
+trước giả	13	anh em thức bá	2	L25	202.0	0	5	0
+trước giả	14	tức là	2	L25	235.4	0	6	0
+trước giả	15	bức họa	2	L25	228.9	0	6	0
+trước giả	16	hợp thức hóa	2	L25	222.2	0	6	0
+trước giả	17	thực ra	2	L25	232.4	0	7	0
+trước giả	18	thực thà	2	L25	219.4	0	7	0
+trước giả	19	trước bạ	2	L1	235.5	1	1	0
+trước giả	20	sau quen trước lạ	2	L1	214.0	1	1	0

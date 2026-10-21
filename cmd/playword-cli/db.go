@@ -156,6 +156,7 @@ func searchCmd(args []string, out io.Writer) error {
 	dsn := dbFlag(fs)
 	config := fs.String("config", "configs", "rhyme config directory")
 	sf := addSearchFlags(fs)
+	queries := fs.String("queries", "", "file of queries, one per line: run them all against one index build and print TSV (query, rank, text, matched, level, score, identical, distance, proper) — for comparing rankings")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -169,10 +170,6 @@ func searchCmd(args []string, out io.Writer) error {
 		return err
 	}
 	defer st.Close()
-	q, err := sf.query(strings.Join(fs.Args(), " "))
-	if err != nil {
-		return err
-	}
 
 	var h rhymeindex.Holder
 	start := time.Now()
@@ -181,6 +178,13 @@ func searchCmd(args []string, out io.Writer) error {
 		return err
 	}
 	built := time.Since(start)
+	if *queries != "" {
+		return searchBatch(out, snap, e, sf, *queries)
+	}
+	q, err := sf.query(strings.Join(fs.Args(), " "))
+	if err != nil {
+		return err
+	}
 	start = time.Now()
 	resp, err := snap.Search(e, q)
 	if err != nil {
@@ -416,5 +420,39 @@ func maintainCmd(args []string, out io.Writer) error {
 		return err
 	}
 	fmt.Fprintf(out, "partitions created %d, dropped %d; views refreshed; expired sessions removed %d\n", made, dropped, sessions)
+	return nil
+}
+
+// searchBatch runs every query of a file against one snapshot and prints
+// one TSV row per result, so two rankings can be diffed line by line.
+func searchBatch(out io.Writer, snap *rhymeindex.Snapshot, e *rhyme.Engine, sf searchFlags, path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintln(out, "query\trank\ttext\tmatched\tlevel\tscore\tidentical\tdistance\tproper")
+	for _, line := range strings.Split(string(data), "\n") {
+		text := strings.TrimSpace(line)
+		if text == "" || strings.HasPrefix(text, "#") {
+			continue
+		}
+		q, err := sf.query(text)
+		if err != nil {
+			fmt.Fprintf(out, "%s\t0\t(%v)\t0\t-\t0\t0\t0\t0\n", text, err)
+			continue
+		}
+		resp, err := snap.Search(e, q)
+		if err != nil {
+			fmt.Fprintf(out, "%s\t0\t(%v)\t0\t-\t0\t0\t0\t0\n", text, err)
+			continue
+		}
+		for i, r := range resp.Results {
+			proper := 0
+			if r.Candidate.IsProper {
+				proper = 1
+			}
+			fmt.Fprintf(out, "%s\t%d\t%s\t%d\t%s\t%.1f\t%d\t%d\t%d\n", text, i+1, r.Candidate.Text, r.Matched, r.Level, r.Score, r.Identical, r.Distance, proper)
+		}
+	}
 	return nil
 }

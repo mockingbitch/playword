@@ -31,6 +31,7 @@ const usage = `usage:
   playword-cli maintain     [-db dsn]                                              (event partitions + retention, views, sessions)
   playword-cli freq         [-db dsn] [-lang vi|en] (-corpus text | -list "word count" file) [-name n -license l -url u] [-dry-run]
   playword-cli search       [-db dsn] [-config dir] [search flags] <text>        (database index)
+  playword-cli search       [-db dsn] [-config dir] [search flags] -queries file  (one query per line → TSV, see .docs/ranking)
 
 search flags: -dialect bac|trung|nam -level L0|L1|L2|L25|L3 -match suffix|prefix|any
               -min-syl n -max-syl n -limit n -no-slang -no-proper -json

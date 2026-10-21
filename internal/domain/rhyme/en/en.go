@@ -192,3 +192,10 @@ func equal(a, b []string, f func(string) string) bool {
 	}
 	return true
 }
+
+// SameConsonantGroup reports whether two consonants share a group (nasals,
+// voiced stops, unvoiced stops, fricatives, approximants).
+func SameConsonantGroup(a, b string) bool {
+	ga, ok := consonantGroup[a]
+	return ok && ga == consonantGroup[b]
+}

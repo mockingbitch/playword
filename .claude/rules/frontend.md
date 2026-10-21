@@ -24,3 +24,7 @@ paths:
   for live announcements (never `aria-live` on a whole result list), visible focus, reduced motion respected.
 - Vietnamese copy, sentence case except display headings; never invent words in examples — use live results.
 - Budget: hand-written CSS + JS < 30 KB gzip.
+- **Imagery is original artwork** (`static/stage-*.svg`, `grain.svg`, logo): no photos or likenesses of real
+  artists — copyright and right of publicity, and Playword must not look endorsed. Photos only with a
+  commercial licence (and a model release for people) that the owner provides. Keep art as small SVG with
+  faded edges; check it at every width with `make uicheck`.

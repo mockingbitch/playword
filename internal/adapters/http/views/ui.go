@@ -169,6 +169,24 @@ func panelURL(h app.Hit, p app.RhymeParams, desk bool) string {
 	v.Set("q", p.Text)
 	v.Set("dialect", string(p.Dialect))
 	v.Set("level", p.Level.String())
+	// the other filters too, so the panel explains the same ranking (only
+	// when they differ from the defaults, to keep the link short)
+	d := app.DefaultRhymeParams(p.Text)
+	if p.MinSyl != d.MinSyl {
+		v.Set("min_syl", strconv.Itoa(p.MinSyl))
+	}
+	if p.MaxSyl != d.MaxSyl {
+		v.Set("max_syl", strconv.Itoa(p.MaxSyl))
+	}
+	if p.Match != d.Match {
+		v.Set("match", string(p.Match))
+	}
+	if !p.IncludeSlang {
+		v.Set("slang", "false")
+	}
+	if !p.IncludeProper {
+		v.Set("proper", "false")
+	}
 	v.Set("hl", h.Level.String())
 	if desk {
 		v.Set("desk", "1")
@@ -295,4 +313,69 @@ func countOrDash(n int) string {
 		return "—"
 	}
 	return thousands(n)
+}
+
+// whyLine is one matched syllable explained for the word panel: "ngày ~
+// dày: ay = ay".
+type whyLine struct {
+	Query, Word  string // the two syllables as written
+	QRime, WRime string // their rimes without tone marks
+	Same         bool   // the rimes sound the same (in the chosen dialect)
+	Notes        []string
+}
+
+// whyLines turns the engine's explanation into words. The rules are the
+// engine's (rhyme.Diff); this only names them.
+func whyLines(x *app.Explanation, d rhyme.Dialect) []whyLine {
+	if x == nil {
+		return nil
+	}
+	out := make([]whyLine, 0, len(x.Pairs))
+	for _, p := range x.Pairs {
+		q, err1 := vnphon.Render(p.Query)
+		w, err2 := vnphon.Render(p.Candidate)
+		if err1 != nil || err2 != nil {
+			return nil
+		}
+		qr, _ := vnphon.WrittenRime(q)
+		wr, _ := vnphon.WrittenRime(w)
+		l := whyLine{Query: q, Word: w, QRime: qr, WRime: wr,
+			Same: p.Diff&^(rhyme.DiffTone|rhyme.DiffToneGroup) == 0}
+		switch {
+		case p.Identical:
+			l.Notes = append(l.Notes, "trùng từ đã tra")
+		case p.Diff == 0 && (qr != wr || p.Query.Tone != p.Candidate.Tone):
+			l.Notes = append(l.Notes, "đọc giống nhau ở giọng "+DialectLabel(d))
+		case p.Diff == 0 && p.Query.Tone == p.Candidate.Tone:
+			l.Notes = append(l.Notes, "trùng vần, trùng thanh")
+		}
+		if p.Diff&rhyme.DiffMedial != 0 {
+			l.Notes = append(l.Notes, "lệch âm đệm")
+		}
+		if p.Diff&rhyme.DiffNucleus != 0 {
+			l.Notes = append(l.Notes, "nguyên âm gần")
+		}
+		switch {
+		case p.Diff&rhyme.DiffCoda != 0:
+			l.Notes = append(l.Notes, "âm cuối gần")
+		case p.Diff&rhyme.DiffCodaFamily != 0:
+			l.Notes = append(l.Notes, "âm cuối cùng họ")
+		}
+		tones := toneNames[p.Query.Tone] + " / " + toneNames[p.Candidate.Tone]
+		switch {
+		case p.Diff&rhyme.DiffTone != 0:
+			l.Notes = append(l.Notes, "khác thanh, cùng "+toneGroup(p.Query.Tone)+" ("+tones+")")
+		case p.Diff&rhyme.DiffToneGroup != 0:
+			l.Notes = append(l.Notes, "khác thanh, bằng – trắc ("+tones+")")
+		}
+		out = append(out, l)
+	}
+	return out
+}
+
+func toneGroup(t int) string {
+	if t <= vnphon.ToneHuyen {
+		return "bằng"
+	}
+	return "trắc"
 }

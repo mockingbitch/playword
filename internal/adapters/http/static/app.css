@@ -338,6 +338,71 @@ details.card[open] > summary { margin-bottom: var(--sp-3); }
   .hero { grid-template-columns: 1.15fr .85fr; padding-top: var(--sp-7); gap: var(--sp-7); }
   .hero-demo { transform: rotate(1deg); }
 }
+/* the stage: original artwork behind the hero (spotlights, haze, a microphone,
+   a sound-wave floor; no real people), full bleed, with a scrim so the copy
+   stays readable and a film grain on top */
+body.nav-home { overflow-x: clip; } /* the 100vw stage must not add a horizontal scroll */
+.stage { position: relative; isolation: isolate; }
+.stage::before, .stage::after {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
+  pointer-events: none;
+}
+.stage::before {
+  background:
+    linear-gradient(180deg, transparent 70%, var(--bg) 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, color-mix(in srgb, var(--bg) 45%, transparent) 50%, color-mix(in srgb, var(--bg) 25%, transparent) 80%),
+    url(/static/stage-dark.svg) -73vw 0 / 220vw auto no-repeat,
+    var(--bg);
+}
+.stage::after {
+  background: url(/static/grain.svg); opacity: .13; mix-blend-mode: overlay;
+  -webkit-mask-image: linear-gradient(180deg, #000 65%, transparent); mask-image: linear-gradient(180deg, #000 65%, transparent);
+}
+@media (prefers-color-scheme: light) {
+  .stage::before {
+    background:
+      linear-gradient(180deg, transparent 70%, var(--bg) 100%),
+      linear-gradient(180deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, color-mix(in srgb, var(--bg) 45%, transparent) 50%, color-mix(in srgb, var(--bg) 25%, transparent) 80%),
+      url(/static/stage-light.svg) -73vw 0 / 220vw auto no-repeat,
+      var(--bg);
+  }
+  .stage::after { opacity: .18; mix-blend-mode: multiply; }
+}
+@media (min-width: 600px) and (max-width: 999px) {
+  /* tablets: the microphone stands right of the search box, its foot behind the demo card */
+  .stage::before { background-size: 100% 100%, 100% 100%, 130vw auto, auto; background-position: 0 0, 0 0, -11vw 200px, 0 0; }
+}
+@media (min-width: 1000px) {
+  .stage::before {
+    background:
+      linear-gradient(180deg, transparent 72%, var(--bg) 100%),
+      linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 78%, transparent) 30%, transparent 58%),
+      url(/static/stage-dark.svg) right bottom / auto 100% no-repeat,
+      var(--bg);
+  }
+  .hero-demo { background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: blur(8px) saturate(1.2); -webkit-backdrop-filter: blur(8px) saturate(1.2); }
+}
+@media (min-width: 1000px) and (prefers-color-scheme: light) {
+  .stage::before {
+    background:
+      linear-gradient(180deg, transparent 72%, var(--bg) 100%),
+      linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 30%, transparent 58%),
+      url(/static/stage-light.svg) right bottom / auto 100% no-repeat,
+      var(--bg);
+  }
+}
+@media (min-width: 1280px) {
+  .stage::before { background-position: 0 0, 0 0, right -240px bottom, 0 0; }
+}
+/* the grain moves like film on wide screens only, and never with reduced motion */
+@media (min-width: 1000px) and (prefers-reduced-motion: no-preference) {
+  .stage::after { animation: grain .9s steps(6) infinite; }
+}
+@keyframes grain {
+  0% { background-position: 0 0; } 20% { background-position: -37px 21px; } 40% { background-position: 53px -44px; }
+  60% { background-position: -19px 61px; } 80% { background-position: 71px 13px; } 100% { background-position: 0 0; }
+}
+
 .stats {
   display: grid; grid-template-columns: repeat(2, 1fr); border-top: 2px solid var(--line); border-bottom: 2px solid var(--line);
   margin: var(--sp-5) 0 var(--sp-7);
@@ -580,6 +645,12 @@ html[data-view="full"] .hit-word[aria-current="true"] .word { text-decoration: u
 .rime { margin: 0; color: var(--muted); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }
 .rime b { color: var(--accent-text); font-size: 1.15rem; }
 .tone { font-size: .82rem; }
+.why { margin: var(--sp-3) 0 0; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--accent); background: var(--surface); border-radius: var(--r-sm); }
+.why h3 { margin: 0 0 4px; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.why ul { margin: 0; padding: 0; list-style: none; }
+.why li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 3px 0; min-width: 0; }
+.why-rime b { color: var(--accent-text); }
+.why-note { color: var(--muted); font-size: .85rem; flex-basis: 100%; }
 .defbody { margin: var(--sp-3) 0; }
 .senses { margin: 0; padding-left: 1.3em; }
 .senses li { margin: 8px 0; }

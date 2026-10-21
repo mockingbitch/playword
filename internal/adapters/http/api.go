@@ -87,7 +87,9 @@ type rhymeHitJSON struct {
 	Lang        entry.Lang       `json:"lang"`
 	Matched     int              `json:"matched_syllables"`
 	Level       rhyme.Level      `json:"level"`
-	Score       float64          `json:"score"`
+	Distance    int              `json:"distance"`      // phonetic distance inside the level; 0 = perfect echo
+	Repeats     int              `json:"repeats_query"` // matched syllables that are the query's own word
+	Score       float64          `json:"score"`         // frequency/trend/length tie-breaker; the order is by tiers (ADR-004)
 	Alignment   alignmentJSON    `json:"alignment"`
 	POS         string           `json:"pos,omitempty"`
 	Definitions []definitionJSON `json:"definitions"`
@@ -120,6 +122,7 @@ func (s *Server) apiRhymes(w http.ResponseWriter, r *http.Request) {
 	for i, h := range res.Hits {
 		hits[i] = rhymeHitJSON{
 			ID: h.Entry.ID, Text: h.Entry.Headword, Lang: p.Lang, Matched: h.Matched, Level: h.Level,
+			Distance: h.Distance, Repeats: h.Identical,
 			Score: round1(h.Score), Alignment: alignmentJSON{h.Start, h.End}, POS: h.Entry.POS,
 			Definitions: definitions(h.Entry), IsSlang: h.Entry.IsSlang, IsProper: isProper(h.Entry),
 			TrendScore: h.Entry.Trend, Source: h.Entry.Source, Phonetic: entryPhonetic(h.Entry), Confidence: h.Entry.Confidence,

@@ -105,12 +105,14 @@ func DefaultRhymeParams(text string) RhymeParams {
 
 // Hit is one ranked rhyme with the entry it points to.
 type Hit struct {
-	Entry   *rhymeindex.Entry
-	Matched int
-	Level   rhyme.Level
-	Start   int
-	End     int
-	Score   float64
+	Entry     *rhymeindex.Entry
+	Matched   int
+	Level     rhyme.Level
+	Start     int
+	End       int
+	Score     float64
+	Identical int // matched syllables that repeat the query's own word
+	Distance  int // phonetic distance inside the level (rhyme/closeness.go)
 }
 
 // RhymeResult is one page of hits.
@@ -192,6 +194,41 @@ func (s *Service) SearchRhymes(ctx context.Context, p RhymeParams) (*RhymeResult
 	return res, ctx.Err()
 }
 
+// Explanation is why one result rhymes: the hit as ranked for the search,
+// and each matched syllable next to the query's.
+type Explanation struct {
+	Hit   Hit
+	Pairs []rhyme.Pair
+}
+
+// Explain finds entry id in the ranking for p and says why it rhymes. It
+// reads the same (cached) ranking as SearchRhymes, so the panel agrees with
+// the list. It returns nil when the entry is not among the results, and for
+// English, which has no per-syllable explanation yet.
+func (s *Service) Explain(ctx context.Context, p RhymeParams, id int64) (*Explanation, error) {
+	if p.Lang == entry.EN {
+		return nil, nil
+	}
+	snap, err := s.Snapshot()
+	if err != nil {
+		return nil, err
+	}
+	list, err := s.ranked(ctx, snap, p)
+	if err != nil {
+		return nil, err
+	}
+	for _, h := range list.hits {
+		if h.Entry != nil && h.Entry.ID == id {
+			pairs := s.engine.Explain(list.query, p.Dialect, h.Entry.Syllables, h.Start, h.End)
+			if pairs == nil {
+				return nil, nil
+			}
+			return &Explanation{Hit: h, Pairs: pairs}, nil
+		}
+	}
+	return nil, nil
+}
+
 // ranked returns the full ranked list for p (ignoring paging), from the
 // cache or computed once for all concurrent callers.
 func (s *Service) ranked(ctx context.Context, snap *rhymeindex.Snapshot, p RhymeParams) (*ranked, error) {
@@ -231,7 +268,7 @@ func (s *Service) ranked(ctx context.Context, snap *rhymeindex.Snapshot, p Rhyme
 		r := &ranked{query: resp.Syllables, segs: q.Segs, conf: conf, warnings: resp.Warnings, hits: make([]Hit, 0, len(resp.Results))}
 		for _, x := range resp.Results {
 			r.hits = append(r.hits, Hit{Entry: snap.Entry(x.Candidate.ID), Matched: x.Matched, Level: x.Level,
-				Start: x.Start, End: x.End, Score: x.Score})
+				Start: x.Start, End: x.End, Score: x.Score, Identical: int(x.Identical), Distance: int(x.Distance)})
 		}
 		s.cache.Add(key, r)
 		return r, nil
