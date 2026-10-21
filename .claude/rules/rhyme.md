@@ -14,6 +14,9 @@ paths:
   (`TestCodeLevelMatchesKeys`).
 - `configs/*.yaml` and `KeyerVersion` are part of `ConfigID`; changing either requires `rebuild-keys`, and
   the server refuses to serve keys built from another config (`/readyz` 503) — that is intended.
+  **Every byte counts, comments included**: the hash is over the file text. Never touch these files in a
+  bulk find-and-replace (a path rename once broke every environment's index this way); leave stale comments
+  alone unless the change ships with `rebuild-keys`.
 - Dialect rules are checked against Wiktionary regional IPA with `playword-cli dialect-check`; report the
   match rate before and after a change.
 - **Ask before changing rules**: what rhymes, at which level, how groups form, which words are stopwords,

@@ -1,5 +1,5 @@
 # Playword — họ vần cho L2.5 / L3.  ĐỀ XUẤT M0, chờ duyệt.
-# Mã nucleus/coda: xem .docs/adr/ADR-001 §2. Loader kiểm tra lúc khởi động (fail-fast):
+# Mã nucleus/coda: xem docs/adr/ADR-001 §2. Loader kiểm tra lúc khởi động (fail-fast):
 #   - mỗi mã nucleus / coda thuộc đúng MỘT họ, không thiếu mã nào;
 #   - cặp chéo chỉ dùng mã coda hợp lệ; in ra các lớp sau khi gộp bắc cầu.
 version: 1
